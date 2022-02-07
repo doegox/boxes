@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Architecture &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Generators" href="api_generator.html" />
+    <link rel="prev" title="Using the Boxes.py API" href="apidoc.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_generator.html" title="Generators"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="apidoc.html" title="Using the Boxes.py API"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" accesskey="U">Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Architecture</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="architecture">
+<h1>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h1>
+<p>Boxes.py it structured into several distinct tiers.</p>
+<section id="user-interfaces">
+<h2>User Interfaces<a class="headerlink" href="#user-interfaces" title="Permalink to this headline">¶</a></h2>
+<p>User interfaces allow users to render the different generators. They
+handle the parameters of Generators and convert them to a readable
+form. The user interfaces are located in <cite>scripts/</cite>. Currently there is</p>
+<ul class="simple">
+<li><p>scripts/boxes – the command line interface</p></li>
+<li><p>scripts/boxesserver – the web interface</p></li>
+<li><p>scripts/boxes2inx – generates Inkscape extensions</p></li>
+<li><p>scripts/boxes_example.ipynb – Jupyter notebook</p></li>
+</ul>
+</section>
+<section id="generators">
+<h2>Generators<a class="headerlink" href="#generators" title="Permalink to this headline">¶</a></h2>
+<p>A (box) generator is an sub class of boxes.Boxes. It generates one
+drawing. The sub classes over load .__init__() to set their parameters
+and implement .render() that does the actual drawing.</p>
+<p>Generators are found in <code class="docutils literal notranslate"><span class="pre">boxes/generators/</span></code>. They are included into
+the web UI and the CLI tool by the name of their class. So whenever
+you copy either an existing generator or the sceleton in
+<code class="docutils literal notranslate"><span class="pre">boxes/generators/_template.py</span></code> you need to change the name of the
+main class first.</p>
+</section>
+<section id="parts">
+<h2>Parts<a class="headerlink" href="#parts" title="Permalink to this headline">¶</a></h2>
+<p>Parts are a single call that draws something according to a set of parameters.
+There is a number of standard parts. Their typical params are
+explained in the API docs.</p>
+<p>Only real requirement for a part it supporting the move parameter for
+placement.</p>
+<section id="part-callbacks">
+<h3>Part Callbacks<a class="headerlink" href="#part-callbacks" title="Permalink to this headline">¶</a></h3>
+<p>Most parts support callbacks - either one in the middle for round
+parts or one for each edge. They allow placing holes or other features
+on the part.</p>
+</section>
+</section>
+<section id="navigation-and-turtle-graphics">
+<h2>Navigation and Turtle Graphics<a class="headerlink" href="#navigation-and-turtle-graphics" title="Permalink to this headline">¶</a></h2>
+<p>Many drawing commands in Boxes.py are Turtle Graphics commands. They
+start at the current position and in the current direction and move
+the coordinate system with them. This way the absolute coordinates are
+never used and placement and movement is always relative to the
+current position.</p>
+<p>There are a few functions to move the origin to a convenient position
+or to return to a previously saved position.</p>
+</section>
+<section id="edges">
+<h2>Edges<a class="headerlink" href="#edges" title="Permalink to this headline">¶</a></h2>
+<p>Edges are turtle graphic commands. But they have been elevated to
+proper Classes to handle outsets. They can be passed as parameters to parts.
+There is a set of standard edges found in <code class="docutils literal notranslate"><span class="pre">.edges</span></code>. They are
+associated with a single char which can be used instead of the
+Edge object itself at most places. This allows passing the edge
+description of a part as a string.</p>
+</section>
+<section id="turtle-graphics">
+<h2>Turtle graphics<a class="headerlink" href="#turtle-graphics" title="Permalink to this headline">¶</a></h2>
+<p>There are a few turtle graphics commands that do the actual
+drawing. Corners with an positive angle (going counter clockwise)
+close the part while negative angles (going clockwise) create protrusions.
+This is inversed for holes which need to be drawn clockwise.</p>
+<p>Getting this directions right is important to make the burn correction
+(aka kerf) work properly.</p>
+</section>
+<section id="simple-drawing-commands">
+<h2>Simple drawing commands<a class="headerlink" href="#simple-drawing-commands" title="Permalink to this headline">¶</a></h2>
+<p>These also are simple drawing commands. Some of them get <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code> and
+<code class="docutils literal notranslate"><span class="pre">angle</span></code> parameters to draw somewhere specific. Some just draw right
+at the current coordinate origin. Often these commands create holes or
+hole patterns.</p>
+</section>
+<section id="back-end">
+<h2>Back end<a class="headerlink" href="#back-end" title="Permalink to this headline">¶</a></h2>
+<p>Boxes.py used to use cairo as graphics library. It now uses its own -
+pure Python - back end. It is not fully encapsulated
+within the drawing methods of the Boxes class. Although this is the
+long term goal. Boxes.ctx is the context all drawing is made on.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Architecture</a><ul>
+<li><a class="reference internal" href="#user-interfaces">User Interfaces</a></li>
+<li><a class="reference internal" href="#generators">Generators</a></li>
+<li><a class="reference internal" href="#parts">Parts</a><ul>
+<li><a class="reference internal" href="#part-callbacks">Part Callbacks</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#navigation-and-turtle-graphics">Navigation and Turtle Graphics</a></li>
+<li><a class="reference internal" href="#edges">Edges</a></li>
+<li><a class="reference internal" href="#turtle-graphics">Turtle graphics</a></li>
+<li><a class="reference internal" href="#simple-drawing-commands">Simple drawing commands</a></li>
+<li><a class="reference internal" href="#back-end">Back end</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="apidoc.html"
+                          title="previous chapter">Using the Boxes.py API</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="api_generator.html"
+                          title="next chapter">Generators</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api_architecture.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_generator.html" title="Generators"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="apidoc.html" title="Using the Boxes.py API"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" >Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Architecture</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.generators.planetary &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nature.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" accesskey="U">boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.planetary</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.generators.planetary</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># Copyright (C) 2013-2016 Florian Festi</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is free software: you can redistribute it and/or modify</span>
+<span class="c1">#   it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#   the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#   (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is distributed in the hope that it will be useful,</span>
+<span class="c1">#   but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#   GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#   You should have received a copy of the GNU General Public License</span>
+<span class="c1">#   along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">from</span> <span class="nn">boxes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="Planetary"><a class="viewcode-back" href="../../../generators.html#boxes.generators.planetary.Planetary">[docs]</a><span class="k">class</span> <span class="nc">Planetary</span><span class="p">(</span><span class="n">Boxes</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Planetary Gear with possibly multiple identical stages&quot;&quot;&quot;</span>
+
+    <span class="n">ui_group</span> <span class="o">=</span> <span class="s2">&quot;Part&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Boxes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--sunteeth&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;number of teeth on sun gear&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--planetteeth&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;number of teeth on planets&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--maxplanets&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;limit the number of planets (0 for as much as fit)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--deltateeth&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;enable secondary ring with given delta to the ring gear&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--modulus&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;modulus of the theeth in mm&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--shaft&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">6.</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;diameter of the shaft&quot;</span><span class="p">)</span>
+        <span class="c1"># self.argparser.add_argument(</span>
+        <span class="c1">#    &quot;--stages&quot;,  action=&quot;store&quot;, type=int, default=4,</span>
+        <span class="c1">#    help=&quot;number of stages in the gear reduction&quot;)</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">ringteeth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sunteeth</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">planetteeth</span>
+        <span class="n">spoke_width</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">shaft</span>
+
+        <span class="n">pitch1</span><span class="p">,</span> <span class="n">size1</span><span class="p">,</span> <span class="n">xxx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gears</span><span class="o">.</span><span class="n">sizes</span><span class="p">(</span><span class="n">teeth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sunteeth</span><span class="p">,</span>
+                                              <span class="n">dimension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">modulus</span><span class="p">)</span>
+        <span class="n">pitch2</span><span class="p">,</span> <span class="n">size2</span><span class="p">,</span> <span class="n">xxx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gears</span><span class="o">.</span><span class="n">sizes</span><span class="p">(</span><span class="n">teeth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">planetteeth</span><span class="p">,</span>
+                                              <span class="n">dimension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">modulus</span><span class="p">)</span>
+        <span class="n">pitch3</span><span class="p">,</span> <span class="n">size3</span><span class="p">,</span> <span class="n">xxx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gears</span><span class="o">.</span><span class="n">sizes</span><span class="p">(</span>
+            <span class="n">teeth</span><span class="o">=</span><span class="n">ringteeth</span><span class="p">,</span> <span class="n">internal_ring</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">spoke_width</span><span class="o">=</span><span class="n">spoke_width</span><span class="p">,</span>
+            <span class="n">dimension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">modulus</span><span class="p">)</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">planets</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">planetteeth</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">planetteeth</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sunteeth</span><span class="p">))))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxplanets</span><span class="p">:</span>
+            <span class="n">planets</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maxplanets</span><span class="p">,</span> <span class="n">planets</span><span class="p">)</span>
+
+        <span class="c1"># Make sure the teeth mash</span>
+        <span class="n">ta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sunteeth</span> <span class="o">+</span> <span class="n">ringteeth</span>
+        <span class="c1"># There are sunteeth+ringteeth mashing positions for the planets</span>
+        <span class="k">if</span> <span class="n">ta</span> <span class="o">%</span> <span class="n">planets</span><span class="p">:</span>
+            <span class="n">planetpositions</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">ta</span> <span class="o">/</span> <span class="n">planets</span><span class="p">)</span> <span class="o">*</span> <span class="mi">360</span> <span class="o">/</span> <span class="n">ta</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">planets</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">planetpositions</span> <span class="o">=</span> <span class="n">planets</span>
+
+        <span class="c1"># XXX make configurable?</span>
+        <span class="n">profile_shift</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="n">pressure_angle</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">disc</span><span class="p">(</span><span class="n">size3</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shaft</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gears</span><span class="p">(</span><span class="n">teeth</span><span class="o">=</span><span class="n">ringteeth</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">modulus</span><span class="p">,</span>
+                   <span class="n">angle</span><span class="o">=</span><span class="n">pressure_angle</span><span class="p">,</span> <span class="n">internal_ring</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                   <span class="n">spoke_width</span><span class="o">=</span><span class="n">spoke_width</span><span class="p">,</span> <span class="n">mount_hole</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shaft</span><span class="p">,</span>
+                   <span class="n">profile_shift</span><span class="o">=</span><span class="n">profile_shift</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gears</span><span class="o">.</span><span class="n">gearCarrier</span><span class="p">(</span><span class="n">pitch1</span> <span class="o">+</span> <span class="n">pitch2</span><span class="p">,</span> <span class="n">spoke_width</span><span class="p">,</span> <span class="n">planetpositions</span><span class="p">,</span>
+                               <span class="mi">2</span> <span class="o">*</span> <span class="n">spoke_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shaft</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gears</span><span class="p">(</span><span class="n">teeth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sunteeth</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">modulus</span><span class="p">,</span>
+                   <span class="n">angle</span><span class="o">=</span><span class="n">pressure_angle</span><span class="p">,</span>
+                   <span class="n">mount_hole</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shaft</span><span class="p">,</span> <span class="n">profile_shift</span><span class="o">=</span><span class="n">profile_shift</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="n">numplanets</span> <span class="o">=</span> <span class="n">planets</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltateeth</span><span class="p">:</span>
+            <span class="n">numplanets</span> <span class="o">+=</span> <span class="n">planets</span>
+            <span class="n">deltamodulus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">modulus</span> <span class="o">*</span> <span class="n">ringteeth</span> <span class="o">/</span> <span class="p">(</span><span class="n">ringteeth</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltateeth</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gears</span><span class="p">(</span><span class="n">teeth</span><span class="o">=</span><span class="n">ringteeth</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltateeth</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="n">deltamodulus</span><span class="p">,</span>
+                       <span class="n">angle</span><span class="o">=</span><span class="n">pressure_angle</span><span class="p">,</span> <span class="n">internal_ring</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                       <span class="n">spoke_width</span><span class="o">=</span><span class="n">spoke_width</span><span class="p">,</span> <span class="n">mount_hole</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shaft</span><span class="p">,</span>
+                       <span class="n">profile_shift</span><span class="o">=</span><span class="n">profile_shift</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numplanets</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gears</span><span class="p">(</span><span class="n">teeth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">planetteeth</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">modulus</span><span class="p">,</span>
+                       <span class="n">angle</span><span class="o">=</span><span class="n">pressure_angle</span><span class="p">,</span>
+                       <span class="n">mount_hole</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">shaft</span><span class="p">,</span> <span class="n">profile_shift</span><span class="o">=</span><span class="n">profile_shift</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span></div>
+
+
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" >boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.planetary</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

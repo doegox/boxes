@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.generators.regularbox &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nature.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" accesskey="U">boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.regularbox</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.generators.regularbox</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># Copyright (C) 2013-2014 Florian Festi</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is free software: you can redistribute it and/or modify</span>
+<span class="c1">#   it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#   the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#   (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is distributed in the hope that it will be useful,</span>
+<span class="c1">#   but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#   GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#   You should have received a copy of the GNU General Public License</span>
+<span class="c1">#   along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">from</span> <span class="nn">boxes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">boxes.generators.bayonetbox</span> <span class="kn">import</span> <span class="n">BayonetBox</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<div class="viewcode-block" id="RegularBox"><a class="viewcode-back" href="../../../generators.html#boxes.generators.regularbox.RegularBox">[docs]</a><span class="k">class</span> <span class="nc">RegularBox</span><span class="p">(</span><span class="n">BayonetBox</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Box with regular polygon as base&quot;&quot;&quot;</span>
+
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;For short side walls that don&#39;t fit a connecting finger reduce *surroundingspaces* and *finger* in the Finger Joint Settings.</span>
+
+<span class="s2">The lids needs to be glued. For the bayonet lid all outside rings attach to the bottom, all inside rings to the top.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+ 
+    <span class="n">ui_group</span> <span class="o">=</span> <span class="s2">&quot;Box&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Boxes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addSettingsArgs</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">FingerJointSettings</span><span class="p">,</span> <span class="n">surroundingspaces</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buildArgParser</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;outside&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--radius&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;inner radius if the box (at the corners)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--n&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;number of sides&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--top&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
+            <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;hole&quot;</span><span class="p">,</span> <span class="s2">&quot;angled hole&quot;</span><span class="p">,</span> <span class="s2">&quot;angled lid&quot;</span><span class="p">,</span> <span class="s2">&quot;angled lid2&quot;</span><span class="p">,</span> <span class="s2">&quot;round lid&quot;</span><span class="p">,</span> <span class="s2">&quot;bayonet mount&quot;</span><span class="p">],</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;style of the top and lid&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--alignment_pins&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;diameter of the alignment pins for bayonet lid&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lugs</span><span class="o">=</span><span class="mi">6</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">r</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outside</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">360</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjustSize</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;lid&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="o">!=</span> <span class="s2">&quot;angled lid&quot;</span><span class="p">:</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjustSize</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjustSize</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+
+        <span class="n">fingerJointSettings</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="s2">&quot;f&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
+        <span class="n">fingerJointSettings</span><span class="o">.</span><span class="n">setValues</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">360.</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">fingerJointSettings</span><span class="o">.</span><span class="n">edgeObjects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chars</span><span class="o">=</span><span class="s2">&quot;gGH&quot;</span><span class="p">)</span>
+
+        <span class="n">r</span><span class="p">,</span> <span class="n">sh</span><span class="p">,</span> <span class="n">side</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regularPolygon</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_context</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">regularPolygonWall</span><span class="p">(</span><span class="n">corners</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="o">==</span> <span class="s2">&quot;angled lid&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">regularPolygonWall</span><span class="p">(</span><span class="n">corners</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">regularPolygonWall</span><span class="p">(</span><span class="n">corners</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;angled hole&quot;</span><span class="p">,</span> <span class="s2">&quot;angled lid2&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">regularPolygonWall</span><span class="p">(</span><span class="n">corners</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span>
+                                        <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">regularPolygonAt</span><span class="p">(</span>
+                                            <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">sh</span><span class="o">-</span><span class="n">t</span><span class="p">)])</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="o">==</span> <span class="s2">&quot;angled lid2&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">regularPolygonWall</span><span class="p">(</span><span class="n">corners</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;hole&quot;</span><span class="p">,</span> <span class="s2">&quot;round lid&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">regularPolygonWall</span><span class="p">(</span><span class="n">corners</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span>
+                                        <span class="n">hole</span><span class="o">=</span><span class="p">(</span><span class="n">sh</span><span class="o">-</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="o">==</span> <span class="s2">&quot;round lid&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">disc</span><span class="p">(</span><span class="n">sh</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="o">==</span> <span class="s2">&quot;bayonet mount&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">diameter</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">sh</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">disc</span><span class="p">(</span><span class="n">sh</span><span class="o">*</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.1</span><span class="o">*</span><span class="n">t</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">lowerCB</span><span class="p">,</span>
+                                <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">regularPolygonWall</span><span class="p">(</span><span class="n">corners</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">,</span>
+                                        <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">upperCB</span><span class="p">],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parts</span><span class="o">.</span><span class="n">disc</span><span class="p">(</span><span class="n">sh</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">regularPolygonWall</span><span class="p">(</span><span class="n">corners</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up only&quot;</span><span class="p">)</span>
+
+        <span class="n">side</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">180.0</span><span class="o">/</span><span class="n">n</span><span class="p">))</span> <span class="o">*</span> <span class="n">r</span>
+        <span class="n">fingers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;hole&quot;</span><span class="p">,</span> <span class="s2">&quot;angled hole&quot;</span><span class="p">,</span> <span class="s2">&quot;round lid&quot;</span><span class="p">,</span>
+                               <span class="s2">&quot;angled lid2&quot;</span><span class="p">,</span> <span class="s2">&quot;bayonet mount&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span>
+                                     <span class="n">edges</span><span class="o">=</span><span class="s2">&quot;fgfG&quot;</span> <span class="k">if</span> <span class="n">fingers</span> <span class="k">else</span> <span class="s2">&quot;fgeG&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">//</span><span class="mi">2</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span>
+                                     <span class="n">edges</span><span class="o">=</span><span class="s2">&quot;fGfG&quot;</span> <span class="k">if</span> <span class="n">fingers</span> <span class="k">else</span> <span class="s2">&quot;fGeG&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">side</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span>
+                                     <span class="n">edges</span><span class="o">=</span><span class="s2">&quot;fgfg&quot;</span> <span class="k">if</span> <span class="n">fingers</span> <span class="k">else</span> <span class="s2">&quot;fgeg&quot;</span><span class="p">)</span></div>
+
+
+
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" >boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.regularbox</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Examples &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="All Box Generators" href="generators.html" />
+    <link rel="prev" title="Burn correction" href="api_burn.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generators.html" title="All Box Generators"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api_burn.html" title="Burn correction"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" accesskey="U">Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Examples</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<p>Decide whether you want to start from scratch or want to rework an
+existing generator.</p>
+<p>You should go over the arguments first. Get at least the most basic
+arguments done. For things you are still unsure you can just use a
+attribute set in the .__init__() method and turn it into a proper
+argument later on.</p>
+<p>Depending on what you want to do you can work on the different levels
+of the API. You can either use what is there and combine it into
+something new or you can implements new things in the appropriate level.</p>
+<p>Here are some examples:</p>
+<section id="housing-for-some-electronics">
+<h2>Housing for some electronics<a class="headerlink" href="#housing-for-some-electronics" title="Permalink to this headline">¶</a></h2>
+<p>You can use the ElectronicsBox or the ClosedBox as a basis. Write some
+callbacks to place holes in the walls to allow accessing the ports of
+the electronics boards. Place some holes to screw spacers into the
+bottom to mount the PBC on.</p>
+</section>
+<section id="nemamount">
+<h2>NemaMount<a class="headerlink" href="#nemamount" title="Permalink to this headline">¶</a></h2>
+<p>This is a good non box example to look at.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.generators.nemamount.NemaMount">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.generators.nemamount.</span></span><span class="sig-name descname"><span class="pre">NemaMount</span></span><a class="reference internal" href="_modules/boxes/generators/nemamount.html#NemaMount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.generators.nemamount.NemaMount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mounting braket for a Nema motor</p>
+</dd></dl>
+
+<p>Note that although it produces a cube like object it uses separate
+variables (<code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, <code class="docutils literal notranslate"><span class="pre">h</span></code>) for the different axis. Probably
+because it started as a copy of another generator like <code class="docutils literal notranslate"><span class="pre">ClosedBox</span></code>.</p>
+</section>
+<section id="displayshelf">
+<h2>DisplayShelf<a class="headerlink" href="#displayshelf" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.generators.displayshelf.DisplayShelf">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.generators.displayshelf.</span></span><span class="sig-name descname"><span class="pre">DisplayShelf</span></span><a class="reference internal" href="_modules/boxes/generators/displayshelf.html#DisplayShelf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.generators.displayshelf.DisplayShelf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shelf with slanted floors</p>
+</dd></dl>
+
+<p>The DisplayShelf is completely made out of rectangularWalls(). It uses
+a callback to place all the fingerHolesAt() right places on the sides.
+While the use of the Boxes.py API is pretty straight forward the
+calculations needed are a bit more tricky. You can use the <code class="docutils literal notranslate"><span class="pre">debug</span></code>
+default param to check if you got things right when attempting
+something like this yourself.</p>
+<p>Note that the front walls and the shelfs form a 90° angle so they work
+with the default FingerJoints.</p>
+</section>
+<section id="bintray">
+<h2>BinTray<a class="headerlink" href="#bintray" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.generators.bintray.BinTray">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.generators.bintray.</span></span><span class="sig-name descname"><span class="pre">BinTray</span></span><a class="reference internal" href="_modules/boxes/generators/bintray.html#BinTray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.generators.bintray.BinTray" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Type tray variant to be used up right with sloped walls in front</p>
+</dd></dl>
+
+<p>The BinTray is based on the TypeTray generator:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.generators.typetray.TypeTray">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.generators.typetray.</span></span><span class="sig-name descname"><span class="pre">TypeTray</span></span><a class="reference internal" href="_modules/boxes/generators/typetray.html#TypeTray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.generators.typetray.TypeTray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type tray - allows only continuous walls</p>
+</dd></dl>
+
+<p>TypeTray is an already pretty complicated generator.</p>
+<p>BinTray replaces the now vertical front (former top) edges with a
+special purpose one that does add the triangles:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.generators.bintray.BinFrontEdge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.generators.bintray.</span></span><span class="sig-name descname"><span class="pre">BinFrontEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/generators/bintray.html#BinFrontEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.generators.bintray.BinFrontEdge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>The <code class="docutils literal notranslate"><span class="pre">hi</span></code> (height of inner walls) argument was removed although the
+variable is still used internally - out of laziness.</p>
+<p>To complete the bin the front walls are added. Follow up patches then
+switched the slots between the vertical and horizontal walls to have
+better support for the now bottoms of the bins. Another patch adds
+angled finger joints for connecting the front walls with the bottoms
+of the bins.</p>
+<p>The TrafficLight generator uses a similar technique implementing its
+own Edge class. But it uses its own code to generate all the wall needed.</p>
+</section>
+<section id="stachel">
+<h2>Stachel<a class="headerlink" href="#stachel" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.generators.stachel.Stachel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.generators.stachel.</span></span><span class="sig-name descname"><span class="pre">Stachel</span></span><a class="reference internal" href="_modules/boxes/generators/stachel.html#Stachel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.generators.stachel.Stachel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bass Recorder Endpin</p>
+</dd></dl>
+
+<p>Stachel allows mounting a monopod to a bass recorder. It is basically
+just one part repeated with different parameters. It can’t really make
+use of much of the Boxes.py library. It implements this one part
+including the <code class="docutils literal notranslate"><span class="pre">move</span></code> parameter and draws everything using the
+<code class="docutils literal notranslate"><span class="pre">.polyline()</span></code> method. This is pretty painful as lots of angles and
+distances need to be calculated by hand.</p>
+<p>For symmetric sections it passes the parameters to <code class="docutils literal notranslate"><span class="pre">.polyline</span></code> twice
+– first in normal order and then reversed to get the mirrored section.</p>
+<p>This generator is beyond what Boxes.py is designed for. If you need
+something similar you may want to use another tool like OpenScad or a
+traditional CAD program.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Examples</a><ul>
+<li><a class="reference internal" href="#housing-for-some-electronics">Housing for some electronics</a></li>
+<li><a class="reference internal" href="#nemamount">NemaMount</a></li>
+<li><a class="reference internal" href="#displayshelf">DisplayShelf</a></li>
+<li><a class="reference internal" href="#bintray">BinTray</a></li>
+<li><a class="reference internal" href="#stachel">Stachel</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="api_burn.html"
+                          title="previous chapter">Burn correction</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="generators.html"
+                          title="next chapter">All Box Generators</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api_examples.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="generators.html" title="All Box Generators"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api_burn.html" title="Burn correction"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" >Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Examples</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

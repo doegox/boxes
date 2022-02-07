@@ -1,0 +1,290 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.generators.microrack &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nature.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" accesskey="U">boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.microrack</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.generators.microrack</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># Copyright (C) 2019 Gabriel Morell</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is free software: you can redistribute it and/or modify</span>
+<span class="c1">#   it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#   the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#   (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is distributed in the hope that it will be useful,</span>
+<span class="c1">#   but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#   GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#   You should have received a copy of the GNU General Public License</span>
+<span class="c1">#   along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="kn">import</span> <span class="nn">decimal</span>
+
+<span class="kn">from</span> <span class="nn">boxes</span> <span class="kn">import</span> <span class="n">Boxes</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">boolarg</span>
+
+
+<div class="viewcode-block" id="SBCMicroRack"><a class="viewcode-back" href="../../../generators.html#boxes.generators.microrack.SBCMicroRack">[docs]</a><span class="k">class</span> <span class="nc">SBCMicroRack</span><span class="p">(</span><span class="n">Boxes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Stackable rackable racks for SBC Pi-Style Computers&quot;&quot;&quot;</span>
+
+    <span class="n">webinterface</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">ui_group</span> <span class="o">=</span> <span class="s2">&quot;Shelf&quot;</span>  <span class="c1"># see ./__init__.py for names</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Boxes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">addSettingsArgs</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">FingerJointSettings</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addSettingsArgs</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">StackableSettings</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">buildArgParser</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">56</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">85</span><span class="p">)</span>
+
+        <span class="c1"># count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--sbcs&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;how many slots for sbcs&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># spaces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--clearance_x&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clearance for the board in the box (x) in mm&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--clearance_y&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;clearance for the board in the box (y) in mm&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--clearance_z&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;SBC Clearance in mm&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># mounting holes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--hole_dist_edge&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;hole distance from edge in mm&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--hole_grid_dimension_x&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">58</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;width of x hole area&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--hole_grid_dimension_y&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">49</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;width of y hole area&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--hole_diameter&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">2.75</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;hole diameters&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># i/o holes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--netusb_z&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;height of the net/usb hole mm&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--netusb_x&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">53</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;width of the net/usb hole in mm&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--stable&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">boolarg</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;draw some holes to put a 1/4</span><span class="se">\&quot;</span><span class="s2"> dowel through at the base and top&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--switch&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">boolarg</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;adds an additional vertical segment to hold the switch in place, works best w/ --stable&quot;</span>
+        <span class="p">)</span>
+        <span class="c1"># TODO flesh this idea out better</span>
+        <span class="c1">#self.argparser.add_argument(</span>
+        <span class="c1">#    &quot;--fan&quot;, action=&#39;store&#39;, type=int, default=0, required=False,</span>
+        <span class="c1">#    help=&quot;ensure that the x width is at least this much and as well, draw a snug holder for a fan someplace&quot;</span>
+        <span class="c1"># )</span>
+
+
+    <span class="k">def</span> <span class="nf">paint_mounting_holes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clearance_y</span>
+        <span class="n">cx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clearance_x</span>
+
+        <span class="n">h2r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_diameter</span>
+        <span class="n">hde</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_dist_edge</span>
+        <span class="n">hgdx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_grid_dimension_x</span>
+        <span class="n">hgdy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_grid_dimension_y</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span>
+            <span class="n">h2r</span> <span class="o">+</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">hde</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">h2r</span> <span class="o">+</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">hde</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">h2r</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span>
+            <span class="n">h2r</span> <span class="o">+</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">hgdx</span> <span class="o">+</span> <span class="n">hde</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">h2r</span> <span class="o">+</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">hde</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">h2r</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span>
+            <span class="n">h2r</span> <span class="o">+</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">hde</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">h2r</span> <span class="o">+</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">hgdy</span> <span class="o">+</span> <span class="n">hde</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">h2r</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span>
+            <span class="n">h2r</span> <span class="o">+</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">hgdx</span> <span class="o">+</span> <span class="n">hde</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">h2r</span> <span class="o">+</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">hgdy</span> <span class="o">+</span> <span class="n">hde</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">h2r</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">paint_stable_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span>
+                <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mf">6.5</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">paint_netusb_holes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_dist_edge</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">height_per</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clearance_z</span> <span class="o">+</span> <span class="n">t</span> 
+        <span class="n">usb_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netusb_z</span>
+        <span class="n">usb_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">netusb_x</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sbcs</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularHole</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">height_per</span><span class="p">)</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">15</span> <span class="p">,</span> <span class="n">usb_width</span><span class="p">,</span> <span class="n">usb_height</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">paint_finger_holes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">height_per</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clearance_z</span> <span class="o">+</span> <span class="n">t</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sbcs</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">((</span><span class="n">height_per</span><span class="p">)</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="o">+</span><span class="n">height_per</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">1.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_dist_edge</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># adjust to the variables you want in the local scope</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+
+        <span class="n">height_per</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clearance_z</span> <span class="o">+</span> <span class="n">t</span>
+        <span class="n">height_total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sbcs</span> <span class="o">*</span> <span class="n">height_per</span>
+
+        <span class="c1"># render your parts here</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_context</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">height_total</span> <span class="o">+</span> <span class="n">height_per</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                                 <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_dist_edge</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                                 <span class="s2">&quot;eseS&quot;</span><span class="p">,</span>
+                                 <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">paint_finger_holes</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">paint_netusb_holes</span><span class="p">],</span>
+                                 <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">height_total</span> <span class="o">+</span> <span class="n">height_per</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                                 <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_dist_edge</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                                 <span class="s2">&quot;eseS&quot;</span><span class="p">,</span>
+                                 <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">paint_finger_holes</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">paint_stable_features</span><span class="p">],</span>
+                                 <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">switch</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">height_total</span> <span class="o">+</span> <span class="n">height_per</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                                     <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_dist_edge</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                                     <span class="s2">&quot;eseS&quot;</span><span class="p">,</span>
+                                     <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">paint_stable_features</span><span class="p">],</span>
+                                     <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">height_total</span> <span class="o">+</span> <span class="n">height_per</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                             <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_dist_edge</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                             <span class="s2">&quot;eseS&quot;</span><span class="p">,</span>
+                             <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right only&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_dist_edge</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                             <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_dist_edge</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                             <span class="s2">&quot;efef&quot;</span><span class="p">,</span>
+                             <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sbcs</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_dist_edge</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                                 <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_dist_edge</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                                 <span class="s2">&quot;efef&quot;</span><span class="p">,</span>
+                                 <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">paint_mounting_holes</span><span class="p">],</span>
+                                 <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" >boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.microrack</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

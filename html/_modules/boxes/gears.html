@@ -1,0 +1,826 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.gears &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nature.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../boxes.html" accesskey="U">boxes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.gears</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.gears</h1><div class="highlight"><pre>
+<span></span><span class="ch">#! /usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="s2">&quot;&quot;</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Copyright (C) 2007 Aaron Spike  (aaron @ ekips.org)</span>
+<span class="sd">Copyright (C) 2007 Tavmjong Bah (tavmjong @ free.fr)</span>
+<span class="sd">Copyright (C) http://cnc-club.ru/forum/viewtopic.php?f=33&amp;t=434&amp;p=2594#p2500</span>
+<span class="sd">Copyright (C) 2014 Jürgen Weigert (juewei@fabmail.org)</span>
+
+<span class="sd">This program is free software; you can redistribute it and/or modify</span>
+<span class="sd">it under the terms of the GNU General Public License as published by</span>
+<span class="sd">the Free Software Foundation; either version 2 of the License, or</span>
+<span class="sd">(at your option) any later version.</span>
+
+<span class="sd">This program is distributed in the hope that it will be useful,</span>
+<span class="sd">but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="sd">MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="sd">GNU General Public License for more details.</span>
+
+<span class="sd">You should have received a copy of the GNU General Public License</span>
+<span class="sd">along with this program; if not, write to the Free Software</span>
+<span class="sd">Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA</span>
+
+<span class="sd">2014-03-20 jw@suse.de 0.2  Option --accuracy=0 for automatic added.</span>
+<span class="sd">2014-03-21                 sent upstream: https://bugs.launchpad.net/inkscape/+bug/1295641</span>
+<span class="sd">2014-03-21 jw@suse.de 0.3  Fixed center of rotation for gears with odd number of teeth.</span>
+<span class="sd">2014-04-04 juewei     0.7  Revamped calc_unit_factor(). </span>
+<span class="sd">2014-04-05 juewei    0.7a  Correctly positioned rack gear.</span>
+<span class="sd">                       The geometry above the meshing line is wrong.</span>
+<span class="sd">2014-04-06 juewei    0.7b  Undercut detection added. Reference:</span>
+<span class="sd">               http://nptel.ac.in/courses/IIT-MADRAS/Machine_Design_II/pdf/2_2.pdf</span>
+<span class="sd">               Manually merged https://github.com/jnweiger/inkscape-gears-dev/pull/15</span>
+<span class="sd">2014-04-07 juewei    0.7c  Manually merged https://github.com/jnweiger/inkscape-gears-dev/pull/17</span>
+<span class="sd">2014-04-09 juewei    0.8   Fixed https://github.com/jnweiger/inkscape-gears-dev/issues/19</span>
+<span class="sd">			   Ring gears are ready for production now. Thanks neon22 for driving this.</span>
+<span class="sd">			   Profile shift implemented (Advanced Tab), fixing </span>
+<span class="sd">			   https://github.com/jnweiger/inkscape-gears-dev/issues/9</span>
+<span class="sd">2015-05-29 juewei 0.9 	ported to inkscape 0.91</span>
+<span class="sd">			AttributeError: &#39;module&#39; object inkex has no attribute &#39;uutounit</span>
+<span class="sd">			Fixed https://github.com/jnweiger/inkscape-gears-dev</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">devnull</span> <span class="c1"># for debugging</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">tan</span><span class="p">,</span> <span class="n">radians</span><span class="p">,</span> <span class="n">degrees</span><span class="p">,</span> <span class="n">ceil</span><span class="p">,</span> <span class="n">asin</span><span class="p">,</span> <span class="n">acos</span><span class="p">,</span> <span class="n">sqrt</span>
+<span class="n">two_pi</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">boxes.vectors</span> <span class="kn">import</span> <span class="n">kerf</span><span class="p">,</span> <span class="n">vdiff</span><span class="p">,</span> <span class="n">vlength</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;0.9&#39;</span>
+
+<div class="viewcode-block" id="linspace"><a class="viewcode-back" href="../../boxes.html#boxes.gears.linspace">[docs]</a><span class="k">def</span> <span class="nf">linspace</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; return list of linear interp of a to b in n steps</span>
+<span class="sd">        - if a and b are ints - you&#39;ll get an int result.</span>
+<span class="sd">        - n must be an integer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">a</span><span class="o">+</span><span class="n">x</span><span class="o">*</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="involute_intersect_angle"><a class="viewcode-back" href="../../boxes.html#boxes.gears.involute_intersect_angle">[docs]</a><span class="k">def</span> <span class="nf">involute_intersect_angle</span><span class="p">(</span><span class="n">Rb</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+    <span class="s2">&quot; &quot;</span>
+    <span class="n">Rb</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Rb</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">R</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">Rb</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Rb</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="n">acos</span><span class="p">(</span><span class="n">Rb</span> <span class="o">/</span> <span class="n">R</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="point_on_circle"><a class="viewcode-back" href="../../boxes.html#boxes.gears.point_on_circle">[docs]</a><span class="k">def</span> <span class="nf">point_on_circle</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+    <span class="s2">&quot; return xy coord of the point at distance radius from origin at angle &quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+<span class="c1">### Undercut support functions</span>
+<div class="viewcode-block" id="undercut_min_teeth"><a class="viewcode-back" href="../../boxes.html#boxes.gears.undercut_min_teeth">[docs]</a><span class="k">def</span> <span class="nf">undercut_min_teeth</span><span class="p">(</span><span class="n">pitch_angle</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    computes the minimum tooth count for a</span>
+<span class="sd">    spur gear so that no undercut with the given pitch_angle (in deg)</span>
+<span class="sd">    and an addendum = k * metric_module, where 0 &lt; k &lt; 1</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">    The return value should be rounded upwards for perfect safety. E.g.</span>
+<span class="sd">    min_teeth = int(math.ceil(undercut_min_teeth(20.0)))    # 18, not 17</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="n">pitch_angle</span><span class="p">)),</span> <span class="mf">0.01</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">k</span> <span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="undercut_max_k"><a class="viewcode-back" href="../../boxes.html#boxes.gears.undercut_max_k">[docs]</a><span class="k">def</span> <span class="nf">undercut_max_k</span><span class="p">(</span><span class="n">teeth</span><span class="p">,</span> <span class="n">pitch_angle</span><span class="o">=</span><span class="mf">20.0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; computes the maximum k value for a given teeth count and pitch_angle</span>
+<span class="sd">        so that no undercut occurs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="n">pitch_angle</span><span class="p">)),</span> <span class="mf">0.01</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">teeth</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="undercut_min_angle"><a class="viewcode-back" href="../../boxes.html#boxes.gears.undercut_min_angle">[docs]</a><span class="k">def</span> <span class="nf">undercut_min_angle</span><span class="p">(</span><span class="n">teeth</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; computes the minimum pitch angle, to that the given teeth count (and</span>
+<span class="sd">        profile shift) cause no undercut.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">degrees</span><span class="p">(</span><span class="n">asin</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="mf">0.856</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">k</span><span class="o">/</span><span class="n">teeth</span><span class="p">))))</span>    <span class="c1"># max 59.9 deg</span></div>
+
+
+<div class="viewcode-block" id="have_undercut"><a class="viewcode-back" href="../../boxes.html#boxes.gears.have_undercut">[docs]</a><span class="k">def</span> <span class="nf">have_undercut</span><span class="p">(</span><span class="n">teeth</span><span class="p">,</span> <span class="n">pitch_angle</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; returns true if the specified number of teeth would</span>
+<span class="sd">        cause an undercut.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">teeth</span> <span class="o">&lt;</span> <span class="n">undercut_min_teeth</span><span class="p">(</span><span class="n">pitch_angle</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span></div>
+
+
+<span class="c1">## gather all basic gear calculations in one place</span>
+<div class="viewcode-block" id="gear_calculations"><a class="viewcode-back" href="../../boxes.html#boxes.gears.gear_calculations">[docs]</a><span class="k">def</span> <span class="nf">gear_calculations</span><span class="p">(</span><span class="n">num_teeth</span><span class="p">,</span> <span class="n">circular_pitch</span><span class="p">,</span> <span class="n">pressure_angle</span><span class="p">,</span> <span class="n">clearance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ring_gear</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">profile_shift</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Put base calcs for spur/ring gears in one place.</span>
+<span class="sd">        - negative profile shifting helps against undercut. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">diametral_pitch</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">/</span> <span class="n">circular_pitch</span>
+    <span class="n">pitch_diameter</span> <span class="o">=</span> <span class="n">num_teeth</span> <span class="o">/</span> <span class="n">diametral_pitch</span>
+    <span class="n">pitch_radius</span> <span class="o">=</span> <span class="n">pitch_diameter</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">addendum</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">diametral_pitch</span>
+    <span class="n">dedendum</span> <span class="o">=</span> <span class="n">addendum</span>
+    <span class="n">dedendum</span> <span class="o">*=</span> <span class="mi">1</span><span class="o">+</span><span class="n">profile_shift</span>
+    <span class="n">addendum</span> <span class="o">*=</span> <span class="mi">1</span><span class="o">-</span><span class="n">profile_shift</span>
+
+    <span class="k">if</span> <span class="n">ring_gear</span><span class="p">:</span>
+        <span class="n">addendum</span> <span class="o">=</span> <span class="n">addendum</span> <span class="o">+</span> <span class="n">clearance</span> <span class="c1"># our method</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dedendum</span> <span class="o">=</span> <span class="n">dedendum</span> <span class="o">+</span> <span class="n">clearance</span> <span class="c1"># our method</span>
+
+    <span class="n">base_radius</span> <span class="o">=</span> <span class="n">pitch_diameter</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="n">pressure_angle</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">outer_radius</span> <span class="o">=</span> <span class="n">pitch_radius</span> <span class="o">+</span> <span class="n">addendum</span>
+    <span class="n">root_radius</span> <span class="o">=</span>  <span class="n">pitch_radius</span> <span class="o">-</span> <span class="n">dedendum</span>
+
+    <span class="c1"># Tooth thickness: Tooth width along pitch circle.</span>
+    <span class="n">tooth_thickness</span>  <span class="o">=</span> <span class="p">(</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">pitch_diameter</span> <span class="p">)</span> <span class="o">/</span> <span class="p">(</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">num_teeth</span> <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">pitch_radius</span><span class="p">,</span> <span class="n">base_radius</span><span class="p">,</span>
+            <span class="n">addendum</span><span class="p">,</span> <span class="n">dedendum</span><span class="p">,</span> <span class="n">outer_radius</span><span class="p">,</span> <span class="n">root_radius</span><span class="p">,</span>
+            <span class="n">tooth_thickness</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_rack_points"><a class="viewcode-back" href="../../boxes.html#boxes.gears.generate_rack_points">[docs]</a><span class="k">def</span> <span class="nf">generate_rack_points</span><span class="p">(</span><span class="n">tooth_count</span><span class="p">,</span> <span class="n">pitch</span><span class="p">,</span> <span class="n">addendum</span><span class="p">,</span> <span class="n">pressure_angle</span><span class="p">,</span>
+                       <span class="n">base_height</span><span class="p">,</span> <span class="n">tab_length</span><span class="p">,</span> <span class="n">clearance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">draw_guides</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Return path (suitable for svg) of the Rack gear.</span>
+<span class="sd">        - rack gear uses straight sides</span>
+
+<span class="sd">            - involute on a circle of infinite radius is a simple linear ramp</span>
+
+<span class="sd">        - the meshing circle touches at y = 0, </span>
+<span class="sd">        - the highest elevation of the teeth is at y = +addendum</span>
+<span class="sd">        - the lowest elevation of the teeth is at y = -addendum-clearance</span>
+<span class="sd">        - the base_height extends downwards from the lowest elevation.</span>
+<span class="sd">        - we generate this middle tooth exactly centered on the y=0 line.</span>
+<span class="sd">          (one extra tooth on the right hand side, if number of teeth is even)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">spacing</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">pitch</span> <span class="c1"># rolling one pitch distance on the spur gear pitch_diameter.</span>
+
+    <span class="c1"># roughly center rack in drawing, exact position is so that it meshes</span>
+    <span class="c1"># nicely with the spur gear.</span>
+    <span class="c1"># -0.5*spacing has a gap in the center.</span>
+    <span class="c1"># +0.5*spacing has a tooth in the center.</span>
+
+    <span class="k">if</span> <span class="n">tab_length</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">tab_length</span> <span class="o">=</span> <span class="mf">1E-8</span>
+
+    <span class="n">tas</span>  <span class="o">=</span> <span class="n">tan</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="n">pressure_angle</span><span class="p">))</span> <span class="o">*</span> <span class="n">addendum</span>
+    <span class="n">tasc</span> <span class="o">=</span> <span class="n">tan</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="n">pressure_angle</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">addendum</span><span class="o">+</span><span class="n">clearance</span><span class="p">)</span>
+    <span class="n">base_top</span> <span class="o">=</span> <span class="n">addendum</span><span class="o">+</span><span class="n">clearance</span>
+    <span class="n">base_bot</span> <span class="o">=</span> <span class="n">addendum</span><span class="o">+</span><span class="n">clearance</span><span class="o">+</span><span class="n">base_height</span>
+
+    <span class="n">x_lhs</span> <span class="o">=</span> <span class="o">-</span><span class="n">pitch</span> <span class="o">*</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">tooth_count</span> <span class="o">-</span> <span class="n">tab_length</span>
+    <span class="c1"># Start with base tab on LHS</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># make list of points</span>
+    <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x_lhs</span><span class="p">,</span> <span class="n">base_bot</span><span class="p">))</span>
+    <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x_lhs</span><span class="p">,</span> <span class="n">base_top</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x_lhs</span> <span class="o">+</span> <span class="n">tab_length</span><span class="o">+</span><span class="n">tasc</span>
+
+    <span class="c1"># An involute on a circle of infinite radius is a simple linear ramp.</span>
+    <span class="c1"># We need to add curve at bottom and use clearance.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tooth_count</span><span class="p">):</span>
+        <span class="c1"># move along path, generating the next &#39;tooth&#39;</span>
+        <span class="c1"># pitch line is at y=0. the left edge hits the pitch line at x</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">tasc</span><span class="p">,</span> <span class="n">base_top</span><span class="p">))</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="o">+</span><span class="n">tas</span><span class="p">,</span> <span class="o">-</span><span class="n">addendum</span><span class="p">))</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="o">+</span><span class="n">spacing</span><span class="o">-</span><span class="n">tas</span><span class="p">,</span> <span class="o">-</span><span class="n">addendum</span><span class="p">))</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="o">+</span><span class="n">spacing</span><span class="o">+</span><span class="n">tasc</span><span class="p">,</span> <span class="n">base_top</span><span class="p">))</span> 
+        <span class="n">x</span> <span class="o">+=</span> <span class="n">pitch</span>
+
+    <span class="c1"># add base on RHS</span>
+    <span class="n">x_rhs</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">tasc</span> <span class="o">+</span> <span class="n">tab_length</span>
+    <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x_rhs</span><span class="p">,</span> <span class="n">base_top</span><span class="p">))</span>
+    <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x_rhs</span><span class="p">,</span> <span class="n">base_bot</span><span class="p">))</span>
+    <span class="c1"># We don&#39;t close the path here. Caller does it.</span>
+    <span class="c1"># points.append((x_lhs, base_bot))</span>
+
+    <span class="c1"># Draw line representing the pitch circle of infinite diameter</span>
+    <span class="n">guide_path</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">draw_guides</span><span class="p">:</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">(</span><span class="n">x_lhs</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tab_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">(</span><span class="n">x_rhs</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tab_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_spur_points"><a class="viewcode-back" href="../../boxes.html#boxes.gears.generate_spur_points">[docs]</a><span class="k">def</span> <span class="nf">generate_spur_points</span><span class="p">(</span><span class="n">teeth</span><span class="p">,</span> <span class="n">base_radius</span><span class="p">,</span> <span class="n">pitch_radius</span><span class="p">,</span> <span class="n">outer_radius</span><span class="p">,</span> <span class="n">root_radius</span><span class="p">,</span> <span class="n">accuracy_involute</span><span class="p">,</span> <span class="n">accuracy_circular</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; given a set of core gear params</span>
+<span class="sd">        - generate the svg path for the gear</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">half_thick_angle</span> <span class="o">=</span> <span class="n">two_pi</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">teeth</span> <span class="p">)</span> <span class="c1">#?? = pi / (2.0 * teeth)</span>
+    <span class="n">pitch_to_base_angle</span>  <span class="o">=</span> <span class="n">involute_intersect_angle</span><span class="p">(</span> <span class="n">base_radius</span><span class="p">,</span> <span class="n">pitch_radius</span> <span class="p">)</span>
+    <span class="n">pitch_to_outer_angle</span> <span class="o">=</span> <span class="n">involute_intersect_angle</span><span class="p">(</span> <span class="n">base_radius</span><span class="p">,</span> <span class="n">outer_radius</span> <span class="p">)</span> <span class="o">-</span> <span class="n">pitch_to_base_angle</span>
+
+    <span class="n">start_involute_radius</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">base_radius</span><span class="p">,</span> <span class="n">root_radius</span><span class="p">)</span>
+    <span class="n">radii</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="n">start_involute_radius</span><span class="p">,</span> <span class="n">outer_radius</span><span class="p">,</span> <span class="n">accuracy_involute</span><span class="p">)</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="p">[</span><span class="n">involute_intersect_angle</span><span class="p">(</span><span class="n">base_radius</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">radii</span><span class="p">]</span>
+
+    <span class="n">centers</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span> <span class="o">*</span> <span class="n">two_pi</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span> <span class="n">teeth</span><span class="p">)</span> <span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="n">teeth</span> <span class="p">)</span> <span class="p">]</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">centers</span><span class="p">:</span>
+    <span class="c1"># Angles</span>
+        <span class="n">pitch1</span> <span class="o">=</span> <span class="n">c</span> <span class="o">-</span> <span class="n">half_thick_angle</span>
+        <span class="n">base1</span>  <span class="o">=</span> <span class="n">pitch1</span> <span class="o">-</span> <span class="n">pitch_to_base_angle</span>
+        <span class="n">offsetangles1</span> <span class="o">=</span> <span class="p">[</span> <span class="n">base1</span> <span class="o">+</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">]</span>
+        <span class="n">points1</span> <span class="o">=</span> <span class="p">[</span> <span class="n">point_on_circle</span><span class="p">(</span> <span class="n">radii</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">offsetangles1</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">radii</span><span class="p">))</span> <span class="p">]</span>
+
+        <span class="n">pitch2</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="n">half_thick_angle</span>
+        <span class="n">base2</span>  <span class="o">=</span> <span class="n">pitch2</span> <span class="o">+</span> <span class="n">pitch_to_base_angle</span>
+        <span class="n">offsetangles2</span> <span class="o">=</span> <span class="p">[</span> <span class="n">base2</span> <span class="o">-</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">]</span> 
+        <span class="n">points2</span> <span class="o">=</span> <span class="p">[</span> <span class="n">point_on_circle</span><span class="p">(</span> <span class="n">radii</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">offsetangles2</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">radii</span><span class="p">))</span> <span class="p">]</span>
+
+        <span class="n">points_on_outer_radius</span> <span class="o">=</span> <span class="p">[</span> <span class="n">point_on_circle</span><span class="p">(</span><span class="n">outer_radius</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">linspace</span><span class="p">(</span><span class="n">offsetangles1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">offsetangles2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">accuracy_circular</span><span class="p">)</span> <span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">root_radius</span> <span class="o">&gt;</span> <span class="n">base_radius</span><span class="p">:</span>
+            <span class="n">pitch_to_root_angle</span> <span class="o">=</span> <span class="n">pitch_to_base_angle</span> <span class="o">-</span> <span class="n">involute_intersect_angle</span><span class="p">(</span><span class="n">base_radius</span><span class="p">,</span> <span class="n">root_radius</span> <span class="p">)</span>
+            <span class="n">root1</span> <span class="o">=</span> <span class="n">pitch1</span> <span class="o">-</span> <span class="n">pitch_to_root_angle</span>
+            <span class="n">root2</span> <span class="o">=</span> <span class="n">pitch2</span> <span class="o">+</span> <span class="n">pitch_to_root_angle</span>
+            <span class="n">points_on_root</span> <span class="o">=</span> <span class="p">[</span><span class="n">point_on_circle</span> <span class="p">(</span><span class="n">root_radius</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">linspace</span><span class="p">(</span><span class="n">root2</span><span class="p">,</span> <span class="n">root1</span><span class="o">+</span><span class="p">(</span><span class="n">two_pi</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">teeth</span><span class="p">)),</span> <span class="n">accuracy_circular</span><span class="p">)</span> <span class="p">]</span>
+            <span class="n">p_tmp</span> <span class="o">=</span> <span class="n">points1</span> <span class="o">+</span> <span class="n">points_on_outer_radius</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">points2</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">points_on_root</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># [::-1] reverses list; [1:-1] removes first and last element</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">points_on_root</span> <span class="o">=</span> <span class="p">[</span><span class="n">point_on_circle</span> <span class="p">(</span><span class="n">root_radius</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">linspace</span><span class="p">(</span><span class="n">base2</span><span class="p">,</span> <span class="n">base1</span><span class="o">+</span><span class="p">(</span><span class="n">two_pi</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">teeth</span><span class="p">)),</span> <span class="n">accuracy_circular</span><span class="p">)</span> <span class="p">]</span>
+            <span class="n">p_tmp</span> <span class="o">=</span> <span class="n">points1</span> <span class="o">+</span> <span class="n">points_on_outer_radius</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">points2</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">points_on_root</span> <span class="c1"># [::-1] reverses list</span>
+
+        <span class="n">points</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span> <span class="n">p_tmp</span> <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">points</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="inkbool"><a class="viewcode-back" href="../../boxes.html#boxes.gears.inkbool">[docs]</a><span class="k">def</span> <span class="nf">inkbool</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;False&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OptionParser"><a class="viewcode-back" href="../../boxes.html#boxes.gears.OptionParser">[docs]</a><span class="k">class</span> <span class="nc">OptionParser</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">):</span>
+
+    <span class="n">types</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;int&quot;</span> <span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s2">&quot;float&quot;</span> <span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="s2">&quot;string&quot;</span> <span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="s2">&quot;inkbool&quot;</span> <span class="p">:</span> <span class="n">inkbool</span><span class="p">,</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="OptionParser.add_option"><a class="viewcode-back" href="../../boxes.html#boxes.gears.OptionParser.add_option">[docs]</a>    <span class="k">def</span> <span class="nf">add_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">short</span><span class="p">,</span> <span class="n">long_</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">kw</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">types</span><span class="p">[</span><span class="n">kw</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">short</span><span class="p">:</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">short</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">long_</span><span class="p">:</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;--&quot;</span> <span class="o">+</span> <span class="n">long_</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">names</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="Gears"><a class="viewcode-back" href="../../boxes.html#boxes.gears.Gears">[docs]</a><span class="k">class</span> <span class="nc">Gears</span><span class="p">():</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="c1"># an alternate way to get debug info:</span>
+        <span class="c1"># could use inkex.debug(string) instead...</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tty</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;/dev/tty&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tty</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">devnull</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>  <span class="c1"># &#39;/dev/null&#39; for POSIX, &#39;nul&#39; for Windows.</span>
+            <span class="c1"># print &gt;&gt;self.tty, &quot;gears-dev &quot; + __version__</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span> <span class="o">=</span> <span class="n">boxes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span> <span class="o">=</span> <span class="n">OptionParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="s2">&quot;--teeth&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;int&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;teeth&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Number of teeth&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;--system&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> 
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;MM&#39;</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Select system: &#39;CP&#39; (Cyclic Pitch (default)), &#39;DP&#39; (Diametral Pitch), &#39;MM&#39; (Metric Module)&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-d&quot;</span><span class="p">,</span> <span class="s2">&quot;--dimension&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;dimension&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Tooth size, depending on system (which defaults to CP)&quot;</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;--angle&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Pressure Angle (common values: 14.5, 20, 25 degrees)&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="s2">&quot;--profile-shift&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;profile_shift&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Profile shift [in percent of the module]. Negative values help against undercut&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-u&quot;</span><span class="p">,</span> <span class="s2">&quot;--units&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;units&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;mm&#39;</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Units this dialog is using&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-A&quot;</span><span class="p">,</span> <span class="s2">&quot;--accuracy&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;int&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;accuracy&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Accuracy of involute: automatic: 5..20 (default), best: 20(default), medium 10, low: 5; good acuracy is important with a low tooth count&quot;</span><span class="p">)</span>
+        <span class="c1"># Clearance: Radial distance between top of tooth on one gear to bottom of gap on another.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--clearance&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;clearance&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Clearance between bottom of gap of this gear and top of tooth of another&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--annotation&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;inkbool&quot;</span><span class="p">,</span> 
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;annotation&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Draw annotation text&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="s2">&quot;--internal-ring&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;inkbool&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;internal_ring&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Ring (or Internal) gear style (default: normal spur gear)&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--mount-hole&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;mount_hole&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Mount hole diameter&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--mount-diameter&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;mount_diameter&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Mount support diameter&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--spoke-count&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;int&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;spoke_count&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Spokes count&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--spoke-width&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;spoke_width&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Spoke width&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--holes-rounding&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;holes_rounding&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Holes rounding&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--active-tab&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;active_tab&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Active tab. Not used now.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-x&quot;</span><span class="p">,</span> <span class="s2">&quot;--centercross&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;inkbool&quot;</span><span class="p">,</span> 
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;centercross&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Draw cross in center&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;--pitchcircle&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;inkbool&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;pitchcircle&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Draw pitch circle (for mating)&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;-r&quot;</span><span class="p">,</span> <span class="s2">&quot;--draw-rack&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;inkbool&quot;</span><span class="p">,</span> 
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;drawrack&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Draw rack gear instead of spur gear&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--rack-teeth-length&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;int&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;teeth_length&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Length (in teeth) of rack&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--rack-base-height&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;base_height&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Height of base of rack&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--rack-base-tab&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">,</span>
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;base_tab&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Length of tabs on ends of rack&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;--undercut-alert&quot;</span><span class="p">,</span>
+                                     <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;inkbool&quot;</span><span class="p">,</span> 
+                                     <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;undercut_alert&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Let the user confirm a warning dialog if undercut occurs. This dialog also shows helpful hints against undercut&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Gears.drawPoints"><a class="viewcode-back" href="../../boxes.html#boxes.gears.Gears.drawPoints">[docs]</a>    <span class="k">def</span> <span class="nf">drawPoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">kerfdir</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">close</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">kerfdir</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">kerf</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">burn</span><span class="o">*</span><span class="n">kerfdir</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="n">close</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="o">*</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">close</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="o">*</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Gears.calc_circular_pitch"><a class="viewcode-back" href="../../boxes.html#boxes.gears.Gears.calc_circular_pitch">[docs]</a>    <span class="k">def</span> <span class="nf">calc_circular_pitch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; We use math based on circular pitch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dimension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">dimension</span>
+        <span class="k">if</span>   <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;CP&#39;</span><span class="p">:</span> <span class="c1"># circular pitch</span>
+            <span class="n">circular_pitch</span> <span class="o">=</span> <span class="n">dimension</span> <span class="o">*</span> <span class="mf">25.4</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;DP&#39;</span><span class="p">:</span> <span class="c1"># diametral pitch </span>
+            <span class="n">circular_pitch</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">*</span> <span class="mf">25.4</span> <span class="o">/</span> <span class="n">dimension</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">system</span> <span class="o">==</span> <span class="s1">&#39;MM&#39;</span><span class="p">:</span> <span class="c1"># module (metric)</span>
+            <span class="n">circular_pitch</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">dimension</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unknown system &#39;</span><span class="si">%s</span><span class="s2">&#39;, try CP, DP, MM&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">system</span><span class="p">)</span>
+
+        <span class="c1"># circular_pitch defines the size in mm</span>
+        <span class="k">return</span> <span class="n">circular_pitch</span></div>
+
+<div class="viewcode-block" id="Gears.generate_spokes"><a class="viewcode-back" href="../../boxes.html#boxes.gears.Gears.generate_spokes">[docs]</a>    <span class="k">def</span> <span class="nf">generate_spokes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root_radius</span><span class="p">,</span> <span class="n">spoke_width</span><span class="p">,</span> <span class="n">spokes</span><span class="p">,</span> <span class="n">mount_radius</span><span class="p">,</span> <span class="n">mount_hole</span><span class="p">,</span>
+                             <span class="n">unit_factor</span><span class="p">,</span> <span class="n">unit_label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; given a set of constraints</span>
+<span class="sd">            - generate the svg path for the gear spokes</span>
+<span class="sd">            - lies between mount_radius (inner hole) and root_radius (bottom of the teeth)</span>
+<span class="sd">            - spoke width also defines the spacing at the root_radius</span>
+<span class="sd">            - mount_radius is adjusted so that spokes fit if there is room</span>
+<span class="sd">            - if no room (collision) then spokes not drawn</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">spokes</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># Spokes</span>
+        <span class="n">collision</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># assume we draw spokes</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>     <span class="c1"># messages to send back about changes.</span>
+        <span class="n">spoke_holes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">r_outer</span> <span class="o">=</span> <span class="n">root_radius</span> <span class="o">-</span> <span class="n">spoke_width</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">spoke_count</span> <span class="o">=</span> <span class="n">spokes</span>
+            <span class="n">spokes</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">/</span><span class="n">spokes</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spoke_count</span><span class="p">)]</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">spoke_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spokes</span><span class="p">)</span>
+            <span class="n">spokes</span> <span class="o">=</span> <span class="p">[</span><span class="n">radians</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">spokes</span><span class="p">]</span>
+        <span class="n">spokes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spokes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">two_pi</span><span class="p">)</span>
+
+        <span class="c1"># checks for collision with spokes</span>
+        <span class="c1"># check for mount hole collision with inner spokes</span>
+        <span class="k">if</span> <span class="n">mount_radius</span> <span class="o">&lt;=</span> <span class="n">mount_hole</span><span class="o">/</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">adj_factor</span> <span class="o">=</span> <span class="p">(</span><span class="n">r_outer</span> <span class="o">-</span> <span class="n">mount_hole</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">5</span>
+
+            <span class="k">if</span> <span class="n">adj_factor</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
+                <span class="c1"># not enough reasonable room</span>
+                <span class="n">collision</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mount_radius</span> <span class="o">=</span> <span class="n">mount_hole</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">adj_factor</span> <span class="c1"># small fix</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Mount support too small. Auto increased to </span><span class="si">%2.2f%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mount_radius</span><span class="o">/</span><span class="n">unit_factor</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">unit_label</span><span class="p">))</span>
+
+        <span class="c1"># then check to see if cross-over on spoke width</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spoke_count</span><span class="p">):</span>
+            <span class="n">angle</span> <span class="o">=</span> <span class="n">spokes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">spokes</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">spoke_width</span> <span class="o">&gt;=</span> <span class="n">angle</span> <span class="o">*</span> <span class="n">mount_radius</span><span class="p">:</span>
+                <span class="n">adj_factor</span> <span class="o">=</span> <span class="mf">1.2</span> <span class="c1"># wrong value. its probably one of the points distances calculated below</span>
+                <span class="n">mount_radius</span> <span class="o">+=</span> <span class="n">adj_factor</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Too many spokes. Increased Mount support by </span><span class="si">%2.3f%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">adj_factor</span><span class="o">/</span><span class="n">unit_factor</span><span class="p">,</span> <span class="n">unit_label</span><span class="p">))</span>
+
+        <span class="c1"># check for collision with outer rim</span>
+        <span class="k">if</span> <span class="n">r_outer</span> <span class="o">&lt;=</span> <span class="n">mount_radius</span><span class="p">:</span>
+            <span class="c1"># not enough room to draw spokes so cancel</span>
+            <span class="n">collision</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">collision</span><span class="p">:</span> <span class="c1"># don&#39;t draw spokes if no room.</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Not enough room for Spokes. Decrease Spoke width.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># draw spokes</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">spoke_count</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="n">start_a</span><span class="p">,</span> <span class="n">end_a</span> <span class="o">=</span> <span class="n">spokes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">spokes</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c1"># inner circle around mount</span>
+                <span class="n">asin_factor</span> <span class="o">=</span> <span class="n">spoke_width</span><span class="o">/</span><span class="n">mount_radius</span><span class="o">/</span><span class="mi">2</span>
+                <span class="c1"># check if need to clamp radius</span>
+                <span class="n">asin_factor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">asin_factor</span><span class="p">))</span> <span class="c1"># no longer needed - resized above</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">asin</span><span class="p">(</span><span class="n">asin_factor</span><span class="p">)</span>
+
+                <span class="c1"># is inner circle too small</span>
+                <span class="n">asin_factor</span> <span class="o">=</span> <span class="n">spoke_width</span><span class="o">/</span><span class="n">r_outer</span><span class="o">/</span><span class="mi">2</span>
+                <span class="c1"># check if need to clamp radius</span>
+                <span class="n">asin_factor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">asin_factor</span><span class="p">))</span> <span class="c1"># no longer needed - resized above</span>
+                <span class="n">a2</span> <span class="o">=</span> <span class="n">asin</span><span class="p">(</span><span class="n">asin_factor</span><span class="p">)</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="n">vlength</span><span class="p">(</span><span class="n">vdiff</span><span class="p">(</span><span class="n">point_on_circle</span><span class="p">(</span><span class="n">mount_radius</span><span class="p">,</span> <span class="n">start_a</span> <span class="o">+</span> <span class="n">a</span><span class="p">),</span>
+                                  <span class="n">point_on_circle</span><span class="p">(</span><span class="n">r_outer</span><span class="p">,</span> <span class="n">start_a</span> <span class="o">+</span> <span class="n">a2</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="o">*</span><span class="n">point_on_circle</span><span class="p">(</span><span class="n">mount_radius</span><span class="p">,</span> <span class="n">start_a</span> <span class="o">+</span> <span class="n">a</span><span class="p">),</span> <span class="n">degrees</span><span class="o">=</span><span class="n">degrees</span><span class="p">(</span><span class="n">start_a</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+                    <span class="n">l</span><span class="p">,</span>
+                    <span class="o">+</span><span class="mi">90</span><span class="o">+</span><span class="n">degrees</span><span class="p">(</span><span class="n">a2</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">degrees</span><span class="p">(</span><span class="n">end_a</span><span class="o">-</span><span class="n">start_a</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">a2</span><span class="p">),</span> <span class="n">r_outer</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="o">+</span><span class="mi">90</span><span class="o">+</span><span class="n">degrees</span><span class="p">(</span><span class="n">a2</span><span class="p">),</span>
+                    <span class="n">l</span><span class="p">,</span> <span class="mi">90</span><span class="o">-</span><span class="n">degrees</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="p">(</span><span class="o">-</span><span class="n">degrees</span><span class="p">(</span><span class="n">end_a</span><span class="o">-</span><span class="n">start_a</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">),</span> <span class="n">mount_radius</span><span class="p">),</span>
+                    <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="o">+</span><span class="n">degrees</span><span class="p">(</span><span class="n">a2</span><span class="p">),</span> <span class="mi">0</span>
+                <span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">messages</span></div>
+
+<div class="viewcode-block" id="Gears.sizes"><a class="viewcode-back" href="../../boxes.html#boxes.gears.Gears.sizes">[docs]</a>    <span class="k">def</span> <span class="nf">sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">([</span><span class="s2">&quot;--</span><span class="si">%s</span><span class="s2">=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kw</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="c1"># Pitch (circular pitch): Length of the arc from one tooth to the next)</span>
+        <span class="c1"># Pitch diameter: Diameter of pitch circle.</span>
+        <span class="n">pitch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_circular_pitch</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">drawrack</span><span class="p">:</span>
+            <span class="n">base_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">base_height</span> <span class="o">*</span> <span class="n">unit_factor</span>
+            <span class="n">tab_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">base_tab</span> <span class="o">*</span> <span class="n">unit_factor</span>
+            <span class="n">tooth_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">teeth_length</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="n">tooth_count</span> <span class="o">*</span> <span class="n">pitch</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">tab_width</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="n">base_height</span><span class="o">+</span> <span class="mi">2</span><span class="o">*</span> <span class="n">addendum</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
+
+        <span class="n">teeth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">teeth</span>
+        <span class="c1"># Angle of tangent to tooth at circular pitch wrt radial line.</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">angle</span>
+        <span class="c1"># Clearance: Radial distance between top of tooth on one gear to</span>
+        <span class="c1"># bottom of gap on another.</span>
+        <span class="n">clearance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">clearance</span> <span class="c1"># * unit_factor</span>
+        <span class="c1"># Replace section below with this call to get the combined gear_calculations() above</span>
+        <span class="p">(</span><span class="n">pitch_radius</span><span class="p">,</span> <span class="n">base_radius</span><span class="p">,</span> <span class="n">addendum</span><span class="p">,</span> <span class="n">dedendum</span><span class="p">,</span>
+         <span class="n">outer_radius</span><span class="p">,</span> <span class="n">root_radius</span><span class="p">,</span> <span class="n">tooth</span><span class="p">)</span> <span class="o">=</span> <span class="n">gear_calculations</span><span class="p">(</span><span class="n">teeth</span><span class="p">,</span> <span class="n">pitch</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">clearance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">internal_ring</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">profile_shift</span><span class="o">*</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">internal_ring</span><span class="p">:</span>
+            <span class="n">outer_radius</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">spoke_width</span>
+        <span class="k">return</span> <span class="n">pitch_radius</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">outer_radius</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">outer_radius</span></div>
+
+<div class="viewcode-block" id="Gears.gearCarrier"><a class="viewcode-back" href="../../boxes.html#boxes.gears.Gears.gearCarrier">[docs]</a>    <span class="k">def</span> <span class="nf">gearCarrier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">spoke_width</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">mount_radius</span><span class="p">,</span> <span class="n">mount_hole</span><span class="p">,</span> <span class="n">circle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">r</span><span class="o">+</span><span class="n">spoke_width</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">360</span><span class="o">/</span><span class="n">positions</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">positions</span><span class="p">)]</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">width</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">width</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">cc</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_spokes</span><span class="p">(</span><span class="n">r</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">spoke_width</span><span class="p">,</span> <span class="n">spoke_width</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">mount_radius</span><span class="p">,</span> <span class="n">mount_hole</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mount_hole</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="n">positions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mount_hole</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">r</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">spoke_width</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">burn</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span><span class="mi">360</span><span class="p">,</span> <span class="n">r</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">spoke_width</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">teeth_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate Gear factors from inputs.</span>
+<span class="sd">            - Make list of radii, angles, and centers for each tooth and </span>
+<span class="sd">              iterate through them</span>
+<span class="sd">            - Turn on other visual features e.g. cross, rack, annotations, etc</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">OptionParser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">([</span><span class="s2">&quot;--</span><span class="si">%s</span><span class="s2">=</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kw</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+
+        <span class="n">warnings</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># list of extra messages to be shown in annotations</span>
+        <span class="c1"># calculate unit factor for units defined in dialog. </span>
+        <span class="n">unit_factor</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># User defined options</span>
+        <span class="n">teeth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">teeth</span>
+        <span class="c1"># Angle of tangent to tooth at circular pitch wrt radial line.</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">angle</span> 
+        <span class="c1"># Clearance: Radial distance between top of tooth on one gear to </span>
+        <span class="c1"># bottom of gap on another.</span>
+        <span class="n">clearance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">clearance</span> <span class="o">*</span> <span class="n">unit_factor</span>
+        <span class="n">mount_hole</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">mount_hole</span> <span class="o">*</span> <span class="n">unit_factor</span>
+        <span class="c1"># for spokes</span>
+        <span class="n">mount_radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">mount_diameter</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">unit_factor</span>
+        <span class="n">spoke_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">spoke_count</span>
+        <span class="n">spoke_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">spoke_width</span> <span class="o">*</span> <span class="n">unit_factor</span>
+        <span class="n">holes_rounding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">holes_rounding</span> <span class="o">*</span> <span class="n">unit_factor</span> <span class="c1"># unused</span>
+        <span class="c1"># visible guide lines</span>
+        <span class="n">centercross</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">centercross</span> <span class="c1"># draw center or not (boolean)</span>
+        <span class="n">pitchcircle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">pitchcircle</span> <span class="c1"># draw pitch circle or not (boolean)</span>
+
+        <span class="c1"># Accuracy of teeth curves</span>
+        <span class="n">accuracy_involute</span> <span class="o">=</span> <span class="mi">20</span> <span class="c1"># Number of points of the involute curve</span>
+        <span class="n">accuracy_circular</span> <span class="o">=</span> <span class="mi">9</span>  <span class="c1"># Number of points on circular parts</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">accuracy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">accuracy</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  
+                <span class="c1"># automatic</span>
+                <span class="k">if</span>   <span class="n">teeth</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span> <span class="n">accuracy_involute</span> <span class="o">=</span> <span class="mi">20</span>
+                <span class="k">elif</span> <span class="n">teeth</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span> <span class="n">accuracy_involute</span> <span class="o">=</span> <span class="mi">12</span>
+                <span class="k">else</span><span class="p">:</span>            <span class="n">accuracy_involute</span> <span class="o">=</span> <span class="mi">6</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">accuracy_involute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">accuracy</span>
+
+            <span class="n">accuracy_circular</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">accuracy_involute</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># never less than three</span>
+        <span class="c1"># print &gt;&gt;self.tty, &quot;accuracy_circular=%s accuracy_involute=%s&quot; % (accuracy_circular, accuracy_involute)</span>
+        <span class="c1"># Pitch (circular pitch): Length of the arc from one tooth to the next)</span>
+        <span class="c1"># Pitch diameter: Diameter of pitch circle.</span>
+        <span class="n">pitch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_circular_pitch</span><span class="p">()</span>
+        <span class="c1"># Replace section below with this call to get the combined gear_calculations() above</span>
+        <span class="p">(</span><span class="n">pitch_radius</span><span class="p">,</span> <span class="n">base_radius</span><span class="p">,</span> <span class="n">addendum</span><span class="p">,</span> <span class="n">dedendum</span><span class="p">,</span>
+         <span class="n">outer_radius</span><span class="p">,</span> <span class="n">root_radius</span><span class="p">,</span> <span class="n">tooth</span><span class="p">)</span> <span class="o">=</span> <span class="n">gear_calculations</span><span class="p">(</span><span class="n">teeth</span><span class="p">,</span> <span class="n">pitch</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">clearance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">internal_ring</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">profile_shift</span><span class="o">*</span><span class="mf">0.01</span><span class="p">)</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">burn</span>
+        <span class="c1"># Add Rack (instead)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">drawrack</span><span class="p">:</span>
+            <span class="n">base_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">base_height</span> <span class="o">*</span> <span class="n">unit_factor</span>
+            <span class="n">tab_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">base_tab</span> <span class="o">*</span> <span class="n">unit_factor</span>
+            <span class="n">tooth_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">teeth_length</span>
+            <span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">guide_points</span><span class="p">)</span> <span class="o">=</span> <span class="n">generate_rack_points</span><span class="p">(</span><span class="n">tooth_count</span><span class="p">,</span> <span class="n">pitch</span><span class="p">,</span> <span class="n">addendum</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span>
+                                                          <span class="n">base_height</span><span class="p">,</span> <span class="n">tab_width</span><span class="p">,</span> <span class="n">clearance</span><span class="p">,</span> <span class="n">pitchcircle</span><span class="p">)</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="n">tooth_count</span> <span class="o">*</span> <span class="n">pitch</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">tab_width</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="n">base_height</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">addendum</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="k">return</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">cc</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">width</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">base_height</span><span class="o">+</span><span class="n">addendum</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">base_height</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drawPoints</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">close</span><span class="o">=</span><span class="n">base_height</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drawPoints</span><span class="p">(</span><span class="n">guide_points</span><span class="p">,</span> <span class="n">kerfdir</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span>
+
+            <span class="k">return</span>
+
+        <span class="c1"># Move only</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">outer_radius</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">internal_ring</span><span class="p">:</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="n">height</span> <span class="o">=</span> <span class="n">width</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">spoke_width</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">teeth_only</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Detect Undercut of teeth</span>
+<span class="c1">##        undercut = int(ceil(undercut_min_teeth( angle )))</span>
+<span class="c1">##        needs_undercut = teeth &lt; undercut #? no longer needed ?</span>
+        <span class="k">if</span> <span class="n">have_undercut</span><span class="p">(</span><span class="n">teeth</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">):</span>
+            <span class="n">min_teeth</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="n">undercut_min_teeth</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)))</span>
+            <span class="n">min_angle</span> <span class="o">=</span> <span class="n">undercut_min_angle</span><span class="p">(</span><span class="n">teeth</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">.1</span>
+            <span class="n">max_k</span> <span class="o">=</span> <span class="n">undercut_max_k</span><span class="p">(</span><span class="n">teeth</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Undercut Warning: This gear (</span><span class="si">%d</span><span class="s2"> teeth) will not work well.</span><span class="se">\n</span><span class="s2">Try tooth count of </span><span class="si">%d</span><span class="s2"> or more,</span><span class="se">\n</span><span class="s2">or a pressure angle of </span><span class="si">%.1f</span><span class="s2"> [deg] or more,</span><span class="se">\n</span><span class="s2">or try a profile shift of </span><span class="si">%d</span><span class="s2"> </span><span class="si">%%</span><span class="s2">.</span><span class="se">\n</span><span class="s2">Or other decent combinations.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">teeth</span><span class="p">,</span> <span class="n">min_teeth</span><span class="p">,</span> <span class="n">min_angle</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mf">100.</span><span class="o">*</span><span class="n">max_k</span><span class="p">)</span><span class="o">-</span><span class="mf">100.</span><span class="p">)</span>
+            <span class="c1"># alas annotation cannot handle the degree symbol. Also it ignore newlines.</span>
+            <span class="c1"># so split and make a list</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">))</span>
+
+        <span class="c1"># All base calcs done. Start building gear</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">generate_spur_points</span><span class="p">(</span><span class="n">teeth</span><span class="p">,</span> <span class="n">base_radius</span><span class="p">,</span> <span class="n">pitch_radius</span><span class="p">,</span> <span class="n">outer_radius</span><span class="p">,</span> <span class="n">root_radius</span><span class="p">,</span> <span class="n">accuracy_involute</span><span class="p">,</span> <span class="n">accuracy_circular</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">teeth_only</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">cc</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drawPoints</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="c1"># Spokes</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">teeth_only</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">internal_ring</span><span class="p">:</span>  <span class="c1"># only draw internals if spur gear</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_spokes</span><span class="p">(</span><span class="n">root_radius</span><span class="p">,</span> <span class="n">spoke_width</span><span class="p">,</span> <span class="n">spoke_count</span><span class="p">,</span> <span class="n">mount_radius</span><span class="p">,</span> <span class="n">mount_hole</span><span class="p">,</span>
+                                                    <span class="n">unit_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+            <span class="c1"># Draw mount hole</span>
+            <span class="c1"># A : rx,ry  x-axis-rotation, large-arch-flag, sweepflag  x,y</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">mount_hole</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">teeth_only</span><span class="p">:</span>
+            <span class="c1"># its a ring gear</span>
+            <span class="c1"># which only has an outer ring where width = spoke width</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">outer_radius</span> <span class="o">+</span> <span class="n">spoke_width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">burn</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">arc</span><span class="p">(</span><span class="o">-</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+
+        <span class="c1"># Add center</span>
+        <span class="k">if</span> <span class="n">centercross</span><span class="p">:</span>
+            <span class="n">cs</span> <span class="o">=</span> <span class="n">pitch</span> <span class="o">/</span> <span class="mf">3.0</span> <span class="c1"># centercross length</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="o">-</span><span class="n">cs</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="o">+</span><span class="n">cs</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">cs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">line_to</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">+</span><span class="n">cs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+
+        <span class="c1"># Add pitch circle (for mating)</span>
+        <span class="k">if</span> <span class="n">pitchcircle</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pitch_radius</span><span class="p">)</span>
+
+        <span class="c1"># Add Annotations (above)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">annotation</span><span class="p">:</span>
+            <span class="n">outer_dia</span> <span class="o">=</span> <span class="n">outer_radius</span> <span class="o">*</span> <span class="mi">2</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">internal_ring</span><span class="p">:</span>
+                <span class="n">outer_dia</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">spoke_width</span>
+
+            <span class="n">notes</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">notes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">warnings</span><span class="p">)</span>
+            <span class="c1">#notes.append(&#39;Document (%s) scale conversion = %2.4f&#39; % (self.document.getroot().find(inkex.addNS(&#39;namedview&#39;, &#39;sodipodi&#39;)).get(inkex.addNS(&#39;document-units&#39;, &#39;inkscape&#39;)), unit_factor))</span>
+            <span class="n">notes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;Teeth: </span><span class="si">%d</span><span class="s1">   CP: </span><span class="si">%2.4f</span><span class="s1">(</span><span class="si">%s</span><span class="s1">) &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">teeth</span><span class="p">,</span> <span class="n">pitch</span> <span class="o">/</span> <span class="n">unit_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">units</span><span class="p">),</span>
+                          <span class="s1">&#39;DP: </span><span class="si">%2.3f</span><span class="s1"> Module: </span><span class="si">%2.4f</span><span class="s1">(mm)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">25.4</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="n">pitch</span><span class="p">,</span> <span class="n">pitch</span><span class="p">),</span>
+                          <span class="s1">&#39;Pressure Angle: </span><span class="si">%2.2f</span><span class="s1"> degrees&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">angle</span><span class="p">),</span>
+                          <span class="s1">&#39;Pitch diameter: </span><span class="si">%2.3f</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pitch_radius</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">unit_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">units</span><span class="p">),</span>
+                          <span class="s1">&#39;Outer diameter: </span><span class="si">%2.3f</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">outer_dia</span> <span class="o">/</span> <span class="n">unit_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">units</span><span class="p">),</span>
+                          <span class="s1">&#39;Base diameter:  </span><span class="si">%2.3f</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">base_radius</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">unit_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">units</span><span class="p">)</span><span class="c1">#,</span>
+                          <span class="c1">#&#39;Addendum:      %2.4f %s&#39;  % (addendum / unit_factor, self.options.units),</span>
+                          <span class="c1">#&#39;Dedendum:      %2.4f %s&#39;  % (dedendum / unit_factor, self.options.units)</span>
+                          <span class="p">])</span>
+            <span class="c1"># text height relative to gear size.</span>
+            <span class="c1"># ranges from 10 to 22 over outer radius size 60 to 360</span>
+            <span class="n">text_height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">10</span><span class="o">+</span><span class="p">(</span><span class="n">outer_dia</span><span class="o">-</span><span class="mi">60</span><span class="p">)</span><span class="o">/</span><span class="mi">24</span><span class="p">,</span> <span class="mi">22</span><span class="p">))</span>
+            <span class="c1"># position above</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="o">-</span> <span class="n">outer_radius</span> <span class="o">-</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">notes</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">text_height</span> <span class="o">*</span> <span class="mf">1.2</span>
+
+            <span class="k">for</span> <span class="n">note</span> <span class="ow">in</span> <span class="n">notes</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">note</span><span class="p">,</span> <span class="o">-</span><span class="n">outer_radius</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="n">y</span> <span class="o">+=</span> <span class="n">text_height</span> <span class="o">*</span> <span class="mf">1.2</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">teeth_only</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">Gears</span><span class="p">()</span>
+    <span class="n">e</span><span class="o">.</span><span class="n">affect</span><span class="p">()</span>
+
+<span class="c1"># Notes</span>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../boxes.html" >boxes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.gears</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

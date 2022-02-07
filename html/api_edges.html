@@ -1,0 +1,670 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Edges &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Drawing commands" href="api_drawing.html" />
+    <link rel="prev" title="Existing Parts" href="api_existing_parts.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_drawing.html" title="Drawing commands"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api_existing_parts.html" title="Existing Parts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" accesskey="U">Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Edges</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="edges">
+<h1>Edges<a class="headerlink" href="#edges" title="Permalink to this headline">¶</a></h1>
+<p>Edges are what makes Boxes.py work. They draw a – more or less – straight
+border to the current piece. They are part of the turtle graphics part
+of Boxes.py. This means they start at the current position and current
+direction and move the current position to the end of the edge.</p>
+<p>Edge instances have a Settings object associated with them that keeps
+the details about how the edge should look like. Edges that are
+supposed to work together share the same Settings object to ensure
+they fit together - assuming they have the same length. Most edges are
+symetrical to unsure they fit together even when drawn from different
+directions. Although there are a few exception - mainly edges that
+provide special features like hinges.</p>
+<p>As edges started out as methods of the main Boxes class they still are
+callables. It turned out that the edges need to provide a bit more
+information to allow the surrounding code to handle them
+properly. When drawing an Edge there is a virtual straight line that
+is the border the shape of the part (e.g. an rectangle). But the
+actual Edge has often to be drawn elsewhere. Best example if probably
+the <code class="docutils literal notranslate"><span class="pre">F</span></code> Edge that matches the normal finger joints. It has to start
+one material thickness outside of the virual border of the part so the
+cutouts for the opposing fingers just touch the border. The Edge
+classes have a number of methods to deal with these kind of offsets.</p>
+<p>A set of instances are kept the <code class="docutils literal notranslate"><span class="pre">.edges</span></code> attribute of the
+<code class="docutils literal notranslate"><span class="pre">Boxes</span></code> class. It is a dict with strings of length one as keys:</p>
+<ul class="simple">
+<li><p>d : DoveTailJoint</p></li>
+<li><p>D : DoveTailJointCounterPart</p></li>
+<li><p>e : Edge</p></li>
+<li><p>E : OutSetEdge</p></li>
+<li><p>f : FingerJointEdge</p></li>
+<li><p>F : FingerJointEdgeCounterPart</p></li>
+<li><p>g : GrippingEdge</p></li>
+<li><p>h : FingerHoleEdge</p></li>
+<li><p>ijk : Hinge (start, end, both sides)</p></li>
+<li><p>IJK : HingePin (start, end, both sides)</p></li>
+<li><p>s : StackableEdge</p></li>
+<li><p>S : StackableEdgeTop</p></li>
+</ul>
+<section id="edge-base-class">
+<h2>Edge base class<a class="headerlink" href="#edge-base-class" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.BaseEdge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">BaseEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#BaseEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.BaseEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract base class for all Edges</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.BaseEdge.endAngle">
+<span class="sig-name descname"><span class="pre">endAngle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#BaseEdge.endAngle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.BaseEdge.endAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not yet supported</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.BaseEdge.margin">
+<span class="sig-name descname"><span class="pre">margin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#BaseEdge.margin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.BaseEdge.margin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Space needed right of the starting point</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.BaseEdge.spacing">
+<span class="sig-name descname"><span class="pre">spacing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#BaseEdge.spacing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.BaseEdge.spacing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Space the edge needs outside of the inner space of the part</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.BaseEdge.startAngle">
+<span class="sig-name descname"><span class="pre">startAngle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#BaseEdge.startAngle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.BaseEdge.startAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not yet supported</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.BaseEdge.startwidth">
+<span class="sig-name descname"><span class="pre">startwidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#BaseEdge.startwidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.BaseEdge.startwidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Amount of space the beginning of the edge is set below the inner space of the part</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.BaseEdge.__call__">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">BaseEdge.</span></span><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#BaseEdge.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.BaseEdge.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call self as a function.</p>
+</dd></dl>
+
+</section>
+<section id="settings-class">
+<h2>Settings Class<a class="headerlink" href="#settings-class" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.Settings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">Settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#Settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.Settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic Settings class</p>
+<p>Used by different other classes to store messurements and details.
+Supports absolute values and settings that grow with the thickness
+of the material used.</p>
+<p>Overload the absolute_params and relative_params class attributes with
+the suported keys and default values. The values are available via
+attribute access.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.Settings.checkValues">
+<span class="sig-name descname"><span class="pre">checkValues</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#Settings.checkValues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.Settings.checkValues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if all values are in the right range. Raise ValueError if needed</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.Settings.edgeObjects">
+<span class="sig-name descname"><span class="pre">edgeObjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#Settings.edgeObjects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.Settings.edgeObjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate Edge objects using this kind of settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boxes</strong> – Boxes object</p></li>
+<li><p><strong>chars</strong> – sequence of chars to be used by Edge objects</p></li>
+<li><p><strong>add</strong> – add the resulting Edge objects to the Boxes object’s edges</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.Settings.setValues">
+<span class="sig-name descname"><span class="pre">setValues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#Settings.setValues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.Settings.setValues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>thickness</strong> – thickness of the material used</p></li>
+<li><p><strong>relative</strong> – (Default value = True) Do scale by thickness</p></li>
+<li><p><strong>**kw</strong> – parameters to set</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="straight-edges">
+<h2>Straight Edges<a class="headerlink" href="#straight-edges" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.Edge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">Edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#Edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.Edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Straight edge</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.OutSetEdge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">OutSetEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#OutSetEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.OutSetEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Straight edge out set by one thickness</p>
+</dd></dl>
+
+</section>
+<section id="grip">
+<h2>Grip<a class="headerlink" href="#grip" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.GripSettings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">GripSettings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#GripSettings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.GripSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings for GrippingEdge
+Values:</p>
+<ul class="simple">
+<li><p>absolute_params</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>style : “wave : “wave” or “bumps”</p></li>
+<li><p>outset : True : extend outward the straight edge</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>relative (in multiples of thickness)</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>depth : 0.3 : depth of the grooves</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.GrippingEdge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">GrippingEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#GrippingEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.GrippingEdge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="stackable-edges">
+<h2>Stackable Edges<a class="headerlink" href="#stackable-edges" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.StackableEdge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">StackableEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fingerjointsettings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#StackableEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.StackableEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edge for having stackable Boxes. The Edge creates feet on the bottom
+and has matching recesses on the top corners.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.StackableEdgeTop">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">StackableEdgeTop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fingerjointsettings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#StackableEdgeTop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.StackableEdgeTop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<section id="stackable-edge-settings">
+<h3>Stackable Edge Settings<a class="headerlink" href="#stackable-edge-settings" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.StackableSettings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">StackableSettings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#StackableSettings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.StackableSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings for Stackable Edges</p>
+<p>Values:</p>
+<ul class="simple">
+<li><p>absolute_params</p>
+<ul>
+<li><p>angle : 60 : inside angle of the feet</p></li>
+</ul>
+</li>
+<li><p>relative (in multiples of thickness)</p>
+<ul>
+<li><p>height : 2.0 : height of the feet (multiples of thickness)</p></li>
+<li><p>width  : 4.0 : width of the feet (multiples of thickness)</p></li>
+<li><p>holedistance : 1.0 : distance from finger holes to bottom edge (multiples of thickness)</p></li>
+</ul>
+</li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.StackableSettings.checkValues">
+<span class="sig-name descname"><span class="pre">checkValues</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#StackableSettings.checkValues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.StackableSettings.checkValues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if all values are in the right range. Raise ValueError if needed</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.StackableSettings.edgeObjects">
+<span class="sig-name descname"><span class="pre">edgeObjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sSš'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fingersettings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#StackableSettings.edgeObjects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.StackableSettings.edgeObjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate Edge objects using this kind of settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boxes</strong> – Boxes object</p></li>
+<li><p><strong>chars</strong> – sequence of chars to be used by Edge objects</p></li>
+<li><p><strong>add</strong> – add the resulting Edge objects to the Boxes object’s edges</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+<section id="finger-joints">
+<h2>Finger joints<a class="headerlink" href="#finger-joints" title="Permalink to this headline">¶</a></h2>
+<p>Finger joints are a simple way of joining two sheets (e.g. of plywood). They
+work best at an 90° angle. There are two different sides matching each
+other. As a third alternative there are holes that the fingers of one
+sheet can plug into. This allows stable T connections especially
+useful for inner walls.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.FingerJointEdge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">FingerJointEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#FingerJointEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.FingerJointEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finger joint edge</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.FingerJointEdgeCounterPart">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">FingerJointEdgeCounterPart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#FingerJointEdgeCounterPart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.FingerJointEdgeCounterPart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finger joint edge - other side</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.FingerHoleEdge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">FingerHoleEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fingerHoles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#FingerHoleEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.FingerHoleEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edge with holes for a parallel finger joint</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.CrossingFingerHoleEdge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">CrossingFingerHoleEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fingerHoles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#CrossingFingerHoleEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.CrossingFingerHoleEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edge with holes for finger joints 90° above</p>
+</dd></dl>
+
+<p>In addition there is</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.FingerHoles">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">FingerHoles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#FingerHoles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.FingerHoles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hole matching a finger joint edge</p>
+</dd></dl>
+
+<p>which is no Edge but fits <code class="docutils literal notranslate"><span class="pre">FingerJointEdge</span></code>.</p>
+<p>An instance of is accessible as <strong>Boxes.fingerHolesAt</strong>.</p>
+<section id="finger-joint-settings">
+<h3>Finger Joint Settings<a class="headerlink" href="#finger-joint-settings" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.FingerJointSettings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">FingerJointSettings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#FingerJointSettings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.FingerJointSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings for Finger Joints</p>
+<p>Values:</p>
+<ul class="simple">
+<li><p>absolute
+* style : “rectangular” : style of the fingers
+* surroundingspaces : 2 : manimal space at the start and end in multiple of normal spaces
+* angle: 90 : Angle of the walls meeting</p></li>
+<li><p>relative (in multiples of thickness)</p>
+<ul>
+<li><p>space : 2.0 : space between fingers (multiples of thickness)</p></li>
+<li><p>finger : 2.0 : width of the fingers (multiples of thickness)</p></li>
+<li><p>width : 1.0 : width of finger holes (multiples of thickness)</p></li>
+<li><p>edge_width : 1.0 : space below holes of FingerHoleEdge (multiples of thickness)</p></li>
+<li><p>play : 0.0 : extra space to allow finger move in and out (multiples of thickness)</p></li>
+<li><p>extra_length : 0.0 : extra material to grind away burn marks (multiples of thickness)</p></li>
+</ul>
+</li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.FingerJointSettings.checkValues">
+<span class="sig-name descname"><span class="pre">checkValues</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#FingerJointSettings.checkValues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.FingerJointSettings.checkValues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if all values are in the right range. Raise ValueError if needed</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.FingerJointSettings.edgeObjects">
+<span class="sig-name descname"><span class="pre">edgeObjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fFh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#FingerJointSettings.edgeObjects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.FingerJointSettings.edgeObjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate Edge objects using this kind of settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boxes</strong> – Boxes object</p></li>
+<li><p><strong>chars</strong> – sequence of chars to be used by Edge objects</p></li>
+<li><p><strong>add</strong> – add the resulting Edge objects to the Boxes object’s edges</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="bed-bolts">
+<h3>Bed Bolts<a class="headerlink" href="#bed-bolts" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.BoltPolicy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">BoltPolicy</span></span><a class="reference internal" href="_modules/boxes/edges.html#BoltPolicy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.BoltPolicy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract class</p>
+<p>Distributes (bed) bolts on a number of segments
+(fingers of a finger joint)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.Bolts">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">Bolts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bolts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#Bolts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.Bolts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute a fixed number of bolts evenly</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="dove-tail-joints">
+<h2>Dove Tail Joints<a class="headerlink" href="#dove-tail-joints" title="Permalink to this headline">¶</a></h2>
+<p>Dovetails joints can only be used to join two pieces flatly. This
+limits their use to closing some round form created with flex areas or
+for joining several parts to a bigger one. For this use case they are
+much stronger than simple finger joints and can also bare pulling forces.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.DoveTailJoint">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">DoveTailJoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#DoveTailJoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.DoveTailJoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edge with dove tail joints</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.DoveTailJointCounterPart">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">DoveTailJointCounterPart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#DoveTailJointCounterPart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.DoveTailJointCounterPart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edge for other side of dove joints</p>
+</dd></dl>
+
+<section id="dove-tail-settings">
+<h3>Dove Tail Settings<a class="headerlink" href="#dove-tail-settings" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.DoveTailSettings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">DoveTailSettings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#DoveTailSettings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.DoveTailSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings for Dove Tail Joints</p>
+<p>Values:</p>
+<ul class="simple">
+<li><p>absolute</p>
+<ul>
+<li><p>angle : 50 : how much should fingers widen (-80 to 80)</p></li>
+</ul>
+</li>
+<li><p>relative (in multiples of thickness)</p>
+<ul>
+<li><p>size : 3 : from one middle of a dove tail to another (multiples of thickness)</p></li>
+<li><p>depth : 1.5 : how far the dove tails stick out of/into the edge (multiples of thickness)</p></li>
+<li><p>radius : 0.2 : radius used on all four corners (multiples of thickness)</p></li>
+</ul>
+</li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.DoveTailSettings.edgeObjects">
+<span class="sig-name descname"><span class="pre">edgeObjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#DoveTailSettings.edgeObjects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.DoveTailSettings.edgeObjects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate Edge objects using this kind of settings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boxes</strong> – Boxes object</p></li>
+<li><p><strong>chars</strong> – sequence of chars to be used by Edge objects</p></li>
+<li><p><strong>add</strong> – add the resulting Edge objects to the Boxes object’s edges</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+<section id="flex">
+<h2>Flex<a class="headerlink" href="#flex" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.FlexEdge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">FlexEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#FlexEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.FlexEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edge with flex cuts - use straight edge for the opposing side</p>
+</dd></dl>
+
+<section id="flex-settings">
+<h3>Flex Settings<a class="headerlink" href="#flex-settings" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.FlexSettings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">FlexSettings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#FlexSettings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.FlexSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings for Flex</p>
+<p>Values:</p>
+<ul class="simple">
+<li><p>absolute</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>stretch : 1.05 : Hint of how much the flex part should be shortend</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>relative (in multiples of thickness)</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>distance : 0.5 : width of the pattern perpendicular to the cuts (multiples of thickness)</p></li>
+<li><p>connection : 1.0 : width of the gaps in the cuts (multiples of thickness)</p></li>
+<li><p>width : 5.0 : width of the pattern in direction of the cuts (multiples of thickness)</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+</section>
+</section>
+<section id="slots">
+<h2>Slots<a class="headerlink" href="#slots" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.Slot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">Slot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#Slot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.Slot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edge with an slot to slid another pice through</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.SlottedEdge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">SlottedEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sections</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#SlottedEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.SlottedEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edge with multiple slots</p>
+</dd></dl>
+
+</section>
+<section id="compoundedge">
+<h2>CompoundEdge<a class="headerlink" href="#compoundedge" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.CompoundEdge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">CompoundEdge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lengths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#CompoundEdge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.CompoundEdge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edge composed of multiple different Edges</p>
+</dd></dl>
+
+</section>
+<section id="hinges">
+<h2>Hinges<a class="headerlink" href="#hinges" title="Permalink to this headline">¶</a></h2>
+<section id="hinge-settings">
+<h3>Hinge Settings<a class="headerlink" href="#hinge-settings" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.HingeSettings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">HingeSettings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thickness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#HingeSettings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.HingeSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings for Hinges and HingePins
+Values:</p>
+<ul class="simple">
+<li><p>absolute_params</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>style : “outset” : “outset” or “flush”</p></li>
+<li><p>outset : False : have lid overlap at the sides (similar to OutSetEdge)</p></li>
+<li><p>pinwidth : 1.0 : set to lower value to get disks surrounding the pins</p></li>
+<li><p>grip_percentage” : 0 : percentage of the lid that should get grips</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p>relative (in multiples of thickness)</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>hingestrength : 1 : thickness of the arc holding the pin in place (multiples of thickness)</p></li>
+<li><p>axle : 2 : diameter of the pin hole (multiples of thickness)</p></li>
+<li><p>grip_length : 0 : fixed length of the grips on he lids (multiples of thickness)</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="hinge">
+<h3>Hinge<a class="headerlink" href="#hinge" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.Hinge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">Hinge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#Hinge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.Hinge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="hingepin">
+<h3>HingePin<a class="headerlink" href="#hingepin" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.edges.HingePin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">HingePin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#HingePin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.HingePin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Edges</a><ul>
+<li><a class="reference internal" href="#edge-base-class">Edge base class</a></li>
+<li><a class="reference internal" href="#settings-class">Settings Class</a></li>
+<li><a class="reference internal" href="#straight-edges">Straight Edges</a></li>
+<li><a class="reference internal" href="#grip">Grip</a></li>
+<li><a class="reference internal" href="#stackable-edges">Stackable Edges</a><ul>
+<li><a class="reference internal" href="#stackable-edge-settings">Stackable Edge Settings</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#finger-joints">Finger joints</a><ul>
+<li><a class="reference internal" href="#finger-joint-settings">Finger Joint Settings</a></li>
+<li><a class="reference internal" href="#bed-bolts">Bed Bolts</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dove-tail-joints">Dove Tail Joints</a><ul>
+<li><a class="reference internal" href="#dove-tail-settings">Dove Tail Settings</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#flex">Flex</a><ul>
+<li><a class="reference internal" href="#flex-settings">Flex Settings</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#slots">Slots</a></li>
+<li><a class="reference internal" href="#compoundedge">CompoundEdge</a></li>
+<li><a class="reference internal" href="#hinges">Hinges</a><ul>
+<li><a class="reference internal" href="#hinge-settings">Hinge Settings</a></li>
+<li><a class="reference internal" href="#hinge">Hinge</a></li>
+<li><a class="reference internal" href="#hingepin">HingePin</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="api_existing_parts.html"
+                          title="previous chapter">Existing Parts</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="api_drawing.html"
+                          title="next chapter">Drawing commands</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api_edges.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_drawing.html" title="Drawing commands"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api_existing_parts.html" title="Existing Parts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" >Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Edges</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

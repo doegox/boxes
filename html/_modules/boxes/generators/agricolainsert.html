@@ -1,0 +1,1022 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.generators.agricolainsert &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nature.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" accesskey="U">boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.agricolainsert</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.generators.agricolainsert</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Copyright (C) 2020 Guillaume Collic</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is free software: you can redistribute it and/or modify</span>
+<span class="c1">#   it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#   the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#   (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is distributed in the hope that it will be useful,</span>
+<span class="c1">#   but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#   GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#   You should have received a copy of the GNU General Public License</span>
+<span class="c1">#   along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">boxes</span> <span class="kn">import</span> <span class="n">Boxes</span><span class="p">,</span> <span class="n">edges</span>
+<span class="kn">from</span> <span class="nn">.dividertray</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SlotDescriptionsGenerator</span><span class="p">,</span>
+    <span class="n">DividerSlotsEdge</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="AgricolaInsert"><a class="viewcode-back" href="../../../generators.html#boxes.generators.agricolainsert.AgricolaInsert">[docs]</a><span class="k">class</span> <span class="nc">AgricolaInsert</span><span class="p">(</span><span class="n">Boxes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Agricola Revised Edition game box insert, including some expansions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ui_group</span> <span class="o">=</span> <span class="s2">&quot;Misc&quot;</span>
+
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">This insert was designed with 3 mm plywood in mind, and should work fine with</span>
+<span class="s2">materials around this thickness.</span>
+
+<span class="s2">This is an insert for the [Agricola Revised Edition](https://boardgamegeek.com/boardgame/200680/agricola-revised-edition)</span>
+<span class="s2">board game. It is specifically designed around the [Farmers Of The Moor expansion](https://boardgamegeek.com/boardgameexpansion/257344/agricola-farmers-moor),</span>
+<span class="s2">and should also store the [5-6 players expansion](https://boardgamegeek.com/boardgameexpansion/210625/agricola-expansion-5-and-6-players)</span>
+<span class="s2">(not tested, but I tried to take everything into account for it, please inform</span>
+<span class="s2">us if you tested it).</span>
+
+<span class="s2">It can be stored inside the original game box, including the 2 expansions,</span>
+<span class="s2">with the lid slightly raised.</span>
+
+<span class="s2">The parts of a given element are mostly generated next to each other vertically.</span>
+<span class="s2">It should be straightforward to match them.</span>
+
+<span class="s2">Here are the different elements, from left to right in the generated file.</span>
+
+<span class="s2">#### Card tray</span>
+
+<span class="s2">The cards are all kept in a tray, with paper dividers to sort them easily. When</span>
+<span class="s2">the tray is not full of cards, wood dividers slides in slots in order to keep</span>
+<span class="s2">the cards from falling into the empty space.</span>
+
+<span class="s2">There should be enough space for the main game, Farmers Of The Moor, and the 5-6</span>
+<span class="s2">player expansion, but not much more than that.</span>
+
+<span class="s2">To keep a lower profile, the cards are at a slight angle, and the paper dividers</span>
+<span class="s2">tabs are horizontal instead of vertical.</span>
+<span class="s2">A small wall keeps the card against one side while the tabs protrude on the</span>
+<span class="s2">other side, above the small wall.</span>
+
+<span class="s2">The wall with the big hole is the sloped one. It goes between the two</span>
+<span class="s2">&quot;comb-like&quot; walls first, with its two small holes at the bottom. Then there is a</span>
+<span class="s2">low-height long wall with a sloped edge which should go from the sloped wall to</span>
+<span class="s2">the other side. You can finish the tray with the last wall at the end.</span>
+
+<span class="s2">#### Upper level trays</span>
+
+<span class="s2">4 trays with movable walls are used to store resources. They were designed to</span>
+<span class="s2">store them in this order:</span>
+
+<span class="s2">* Stone / Vegetable / Pig / Cow</span>
+<span class="s2">* Reed / Grain / Sheep</span>
+<span class="s2">* Wood / Clay</span>
+<span class="s2">* Food / Fire</span>
+
+<span class="s2">The wall would probably be better if fixed instead of movable, but I would like</span>
+<span class="s2">to test with the 5-6 player expansion to be sure their positions are correct</span>
+<span class="s2">with it too.</span>
+
+<span class="s2">The little feet of the movable wall should be glued. The triangles are put</span>
+<span class="s2">horizontally, with their bases towards the sides.</span>
+
+<span class="s2">#### Lower level tray</span>
+
+<span class="s2">The lower level tray is used to store the horses.</span>
+
+<span class="s2">#### Room/Field tiles</span>
+
+<span class="s2">Two boxes are generated to store the room/field tiles. One for the wood/field,</span>
+<span class="s2">the other for the clay/stone. They are stored with the main opening upside, but</span>
+<span class="s2">I prefer to use them during play with this face on the side.</span>
+
+<span class="s2">#### Moor/Forest and miscellaneous tiles</span>
+
+<span class="s2">A box is generated to store the Moor/Forest tiles, and some other tiles such as</span>
+<span class="s2">the &quot;multiple resources&quot; cardboard tokens.</span>
+
+<span class="s2">The Moor/Forest tiles are at the same height as the Room/Field, and the upper</span>
+<span class="s2">level trays are directly on them. The horse box and player box are slightly</span>
+<span class="s2">lower. This Moor/Forest box have a lowered corner (the one for the miscellaneous</span>
+<span class="s2">tiles). Two cardboard pieces can be stored between the smaller boxes and the</span>
+<span class="s2">upper level trays (as seen on the picture).</span>
+
+<span class="s2">Be sure to match the pieces so that the walls with smaller heights are next to</span>
+<span class="s2">each other.</span>
+
+<span class="s2">#### Players bit boxes</span>
+
+<span class="s2">Each player has its own box where the bits of his color are stored.</span>
+<span class="s2">The cardboard bed from Farmers Of The Moor is central to this box.</span>
+
+<span class="s2">* The fences are stored inside the bed</span>
+<span class="s2">* The bed is placed in the box, with holes to keep it there (and to take less</span>
+<span class="s2">  height)</span>
+<span class="s2">* The stables are stored in the two corners</span>
+<span class="s2">* The five farmers are stored between the bed and the three walls, alternatively</span>
+<span class="s2">  head up and head down.</span>
+
+<span class="s2">During assembly, the small bars are put in the middle holes. The two bigger</span>
+<span class="s2">holes at the ends are used for the bed feet. The bar keeps the bed from</span>
+<span class="s2">protruding underneath.</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Boxes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addSettingsArgs</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">FingerJointSettings</span><span class="p">,</span> <span class="n">surroundingspaces</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">player_box_height</span> <span class="o">=</span> <span class="mf">34.5</span>
+        <span class="n">player_box_inner_width</span> <span class="o">=</span> <span class="mf">50.5</span>
+        <span class="n">bigger_box_inner_height</span> <span class="o">=</span> <span class="mf">36.7</span>
+        <span class="n">row_width</span> <span class="o">=</span> <span class="mf">37.2</span>
+        <span class="n">tray_inner_height</span> <span class="o">=</span> <span class="mi">17</span>
+        <span class="n">box_width</span> <span class="o">=</span> <span class="mi">218</span>
+        <span class="n">card_tray_height</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">tray_inner_height</span> <span class="o">+</span> <span class="n">bigger_box_inner_height</span>
+        <span class="p">)</span>
+        <span class="n">card_tray_width</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mf">305.35</span> <span class="o">-</span> <span class="n">player_box_inner_width</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">row_width</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">9</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_card_divider_tray</span><span class="p">(</span><span class="n">card_tray_height</span><span class="p">,</span> <span class="n">box_width</span><span class="p">,</span> <span class="n">card_tray_width</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_upper_token_trays</span><span class="p">(</span><span class="n">tray_inner_height</span><span class="p">,</span> <span class="n">box_width</span><span class="p">)</span>
+        <span class="n">wood_room_box_width</span> <span class="o">=</span> <span class="mf">39.8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_room_box</span><span class="p">(</span><span class="n">wood_room_box_width</span><span class="p">,</span> <span class="n">bigger_box_inner_height</span><span class="p">,</span> <span class="n">row_width</span><span class="p">)</span>
+        <span class="n">stone_room_box_width</span> <span class="o">=</span> <span class="mf">26.7</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_room_box</span><span class="p">(</span><span class="n">stone_room_box_width</span><span class="p">,</span> <span class="n">bigger_box_inner_height</span><span class="p">,</span> <span class="n">row_width</span><span class="p">)</span>
+        <span class="n">moor_box_length</span> <span class="o">=</span> <span class="mf">84.6</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_moor_box</span><span class="p">(</span>
+            <span class="n">bigger_box_inner_height</span><span class="p">,</span> <span class="n">player_box_height</span><span class="p">,</span> <span class="n">row_width</span><span class="p">,</span> <span class="n">moor_box_length</span>
+        <span class="p">)</span>
+        <span class="n">horse_box_margin</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">horse_box_length</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">box_width</span>
+            <span class="o">-</span> <span class="n">wood_room_box_width</span>
+            <span class="o">-</span> <span class="n">stone_room_box_width</span>
+            <span class="o">-</span> <span class="n">moor_box_length</span>
+            <span class="o">-</span> <span class="mi">6</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+            <span class="o">-</span> <span class="n">horse_box_margin</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_horse_box</span><span class="p">(</span><span class="n">player_box_height</span><span class="p">,</span> <span class="n">row_width</span><span class="p">,</span> <span class="n">horse_box_length</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">render_player_box</span><span class="p">(</span><span class="n">player_box_height</span><span class="p">,</span> <span class="n">player_box_inner_width</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_card_divider_tray</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">card_tray_height</span><span class="p">,</span> <span class="n">card_tray_length</span><span class="p">,</span> <span class="n">card_tray_width</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The whole tray which contains the cards, including its dividers.</span>
+<span class="sd">        Cards are at an angle, to save height.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="n">tray_inner_length</span> <span class="o">=</span> <span class="n">card_tray_length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">margin_for_score_sheet</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 3 if you want more space for score sheet</span>
+        <span class="n">sleeved_cards_width</span> <span class="o">=</span> <span class="mi">62</span> <span class="o">+</span> <span class="n">margin_for_score_sheet</span>
+
+        <span class="n">rad</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">card_tray_height</span> <span class="o">/</span> <span class="n">sleeved_cards_width</span><span class="p">)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span>
+        <span class="n">cos</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span>
+        <span class="n">tan</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span>
+        <span class="n">sin</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span>
+
+        <span class="n">slots_number</span> <span class="o">=</span> <span class="mi">19</span>
+        <span class="n">slot_depth</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="n">slot_descriptions</span> <span class="o">=</span> <span class="n">SlotDescriptionsGenerator</span><span class="p">()</span><span class="o">.</span><span class="n">generate_all_same_angles</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">tray_inner_length</span> <span class="o">/</span> <span class="n">slots_number</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">slots_number</span><span class="p">)],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span>
+            <span class="mf">0.2</span><span class="p">,</span>
+            <span class="n">slot_depth</span><span class="p">,</span>
+            <span class="n">card_tray_height</span><span class="p">,</span>
+            <span class="n">angle</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">slot_descriptions</span><span class="o">.</span><span class="n">adjust_to_target_length</span><span class="p">(</span><span class="n">tray_inner_length</span><span class="p">)</span>
+
+        <span class="n">sloped_wall_height</span> <span class="o">=</span> <span class="n">sleeved_cards_width</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">*</span> <span class="p">(</span><span class="n">tan</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">tan</span><span class="p">)</span>
+        <span class="n">sloped_wall_posx_at_y0</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">tray_inner_length</span> <span class="o">-</span> <span class="n">sloped_wall_height</span> <span class="o">*</span> <span class="n">tan</span> <span class="o">-</span> <span class="n">cos</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="p">)</span>
+        <span class="n">sloped_wall_posx</span> <span class="o">=</span> <span class="n">sloped_wall_posx_at_y0</span> <span class="o">+</span> <span class="n">cos</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">sloped_wall_posy</span> <span class="o">=</span> <span class="n">sin</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="n">dse</span> <span class="o">=</span> <span class="n">DividerSlotsEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slot_descriptions</span><span class="o">.</span><span class="n">descriptions</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+                <span class="n">tray_inner_length</span><span class="p">,</span>
+                <span class="n">card_tray_height</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span> <span class="n">dse</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">],</span>
+                <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+                <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+                    <span class="n">partial</span><span class="p">(</span>
+                        <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span>
+                            <span class="n">sloped_wall_posx</span><span class="p">,</span>
+                            <span class="n">sloped_wall_posy</span><span class="p">,</span>
+                            <span class="n">sloped_wall_height</span><span class="p">,</span>
+                            <span class="n">angle</span><span class="o">=</span><span class="mi">90</span> <span class="o">-</span> <span class="n">angle</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="c1"># generate spacer</span>
+        <span class="n">spacer_height</span> <span class="o">=</span> <span class="n">card_tray_height</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">spacer_spacing</span> <span class="o">=</span> <span class="n">card_tray_width</span><span class="o">-</span><span class="mf">99.8</span>
+        <span class="n">spacer_upper_width</span> <span class="o">=</span> <span class="n">sloped_wall_posx_at_y0</span> <span class="o">+</span> <span class="n">spacer_height</span> <span class="o">*</span> <span class="n">tan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trapezoidWall</span><span class="p">(</span>
+            <span class="n">spacer_height</span><span class="p">,</span>
+            <span class="n">spacer_upper_width</span><span class="p">,</span>
+            <span class="n">sloped_wall_posx_at_y0</span><span class="p">,</span>
+            <span class="s2">&quot;fefe&quot;</span><span class="p">,</span>
+            <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up rotated&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+            <span class="n">card_tray_width</span><span class="p">,</span>
+            <span class="n">card_tray_height</span><span class="p">,</span>
+            <span class="s2">&quot;eFeF&quot;</span><span class="p">,</span>
+            <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+            <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">partial</span><span class="p">(</span>
+                    <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span>
+                        <span class="n">spacer_spacing</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">spacer_height</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+            <span class="n">card_tray_width</span><span class="p">,</span>
+            <span class="n">sloped_wall_height</span><span class="p">,</span>
+            <span class="s2">&quot;efef&quot;</span><span class="p">,</span>
+            <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+            <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">partial</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">generate_card_tray_sloped_wall_holes</span><span class="p">,</span>
+                    <span class="n">card_tray_width</span><span class="p">,</span>
+                    <span class="n">sloped_wall_height</span><span class="p">,</span>
+                    <span class="n">spacer_height</span><span class="p">,</span>
+                    <span class="n">spacer_spacing</span><span class="p">,</span>
+                    <span class="n">rad</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">card_tray_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;FFFF&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right only&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="n">divider_height</span> <span class="o">=</span> <span class="n">sleeved_cards_width</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">*</span> <span class="n">tan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_divider</span><span class="p">(</span>
+            <span class="n">card_tray_width</span><span class="p">,</span> <span class="n">divider_height</span><span class="p">,</span> <span class="n">slot_depth</span><span class="p">,</span> <span class="n">spacer_spacing</span><span class="p">,</span> <span class="s2">&quot;up&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;Wood divider&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Hard separation to keep the card&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;from slipping in empty space left.&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Takes more space, but won&#39;t move.&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Duplicate as much as you want&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;(I use 2).&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">card_tray_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right only&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_paper_divider</span><span class="p">(</span>
+            <span class="n">card_tray_width</span><span class="p">,</span> <span class="n">sleeved_cards_width</span><span class="p">,</span> <span class="n">slot_depth</span><span class="p">,</span> <span class="n">spacer_spacing</span><span class="p">,</span> <span class="s2">&quot;up&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="s2">&quot;Paper divider&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Soft separation to search easily&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;the card group you need&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;(by expansion, number of player,&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;etc.).&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Duplicate as much as you want&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;(I use 7).&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">card_tray_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right only&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strings</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">strings</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+            <span class="n">align</span><span class="o">=</span><span class="s2">&quot;bottom left&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate_sloped_wall_holes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">side_wall_length</span><span class="p">,</span> <span class="n">rad</span><span class="p">,</span> <span class="n">sloped_wall_height</span><span class="p">):</span>
+        <span class="n">cos</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span>
+        <span class="n">tan</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span>
+        <span class="n">sin</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rad</span><span class="p">)</span>
+        <span class="n">posx_at_y0</span> <span class="o">=</span> <span class="n">side_wall_length</span> <span class="o">-</span> <span class="n">sloped_wall_height</span> <span class="o">*</span> <span class="n">tan</span>
+        <span class="n">posx</span> <span class="o">=</span> <span class="n">posx_at_y0</span> <span class="o">-</span> <span class="n">cos</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">posy</span> <span class="o">=</span> <span class="n">sin</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="n">posx</span><span class="p">,</span> <span class="n">posy</span><span class="p">,</span> <span class="n">sloped_wall_height</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">90</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">rad</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">generate_card_tray_sloped_wall_holes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">side_wall_length</span><span class="p">,</span> <span class="n">sloped_wall_height</span><span class="p">,</span> <span class="n">spacer_height</span><span class="p">,</span> <span class="n">spacer_spacing</span><span class="p">,</span> <span class="n">rad</span>
+    <span class="p">):</span>
+        <span class="c1"># Spacer finger holes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span>
+            <span class="n">side_wall_length</span> <span class="o">-</span> <span class="p">(</span><span class="n">spacer_spacing</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="c1"># the sloped wall doesn&#39;t exactly touch the bottom of the spacer</span>
+            <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">rad</span><span class="p">),</span>
+            <span class="n">spacer_height</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rad</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Big hole to access &quot;lost&quot; space behind sloped wall</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">radius</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">radius</span> <span class="o">+</span> <span class="n">padding</span><span class="p">,</span> <span class="n">padding</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+            <span class="n">side_wall_length</span> <span class="o">-</span> <span class="n">total_loss</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+            <span class="n">sloped_wall_height</span> <span class="o">-</span> <span class="n">total_loss</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+            <span class="n">side_wall_length</span> <span class="o">-</span> <span class="n">total_loss</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+            <span class="n">sloped_wall_height</span> <span class="o">-</span> <span class="n">total_loss</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate_paper_divider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">slot_depth</span><span class="p">,</span> <span class="n">spacer_spacing</span><span class="p">,</span> <span class="n">move</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A card separation made of paper, which moves freely in the card tray.</span>
+<span class="sd">        Takes less space and easy to manipulate, but won&#39;t block cards in place.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">margin</span> <span class="o">=</span> <span class="mf">0.5</span>
+        <span class="n">actual_width</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="n">margin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+            <span class="n">actual_width</span> <span class="o">-</span> <span class="n">spacer_spacing</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">height</span> <span class="o">-</span> <span class="n">slot_depth</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">spacer_spacing</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">slot_depth</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">actual_width</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">height</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Move for next piece</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate_divider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">slot_depth</span><span class="p">,</span> <span class="n">spacer_spacing</span><span class="p">,</span> <span class="n">move</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A card separation made of wood which slides in the side slots.</span>
+<span class="sd">        Can be useful to do hard separations, but takes more space and</span>
+<span class="sd">        less movable than the paper ones.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">total_width</span> <span class="o">=</span> <span class="n">width</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">total_width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">radius</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="n">divider_notch_depth</span> <span class="o">=</span> <span class="mi">35</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="n">spacer_spacing</span> <span class="o">+</span> <span class="n">padding</span> <span class="o">-</span> <span class="n">radius</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+            <span class="n">divider_notch_depth</span> <span class="o">-</span> <span class="n">radius</span> <span class="o">-</span> <span class="n">radius</span><span class="p">,</span>
+            <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+            <span class="n">width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">radius</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padding</span> <span class="o">-</span> <span class="n">spacer_spacing</span><span class="p">,</span>
+            <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+            <span class="n">divider_notch_depth</span> <span class="o">-</span> <span class="n">radius</span> <span class="o">-</span> <span class="n">radius</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="n">padding</span> <span class="o">-</span> <span class="n">radius</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">slot_depth</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">height</span> <span class="o">-</span> <span class="n">slot_depth</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">width</span> <span class="o">-</span> <span class="n">spacer_spacing</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">height</span> <span class="o">-</span> <span class="n">slot_depth</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="n">spacer_spacing</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">slot_depth</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Move for next piece</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">total_width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_horse_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_box_height</span><span class="p">,</span> <span class="n">row_width</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Box for the horses on lower level. Same height as player boxes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">row_width</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_simple_tray</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">player_box_height</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_moor_box</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">bigger_box_inner_height</span><span class="p">,</span> <span class="n">player_box_height</span><span class="p">,</span> <span class="n">row_width</span><span class="p">,</span> <span class="n">length</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Box for the moor/forest tiles, and the cardboard tokens with multiple</span>
+<span class="sd">        units of resources.</span>
+<span class="sd">        A corner is lowered (the one for the tokens) at the same height as player boxes</span>
+<span class="sd">        to store 2 levels of small boards there.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">bigger_box_inner_height</span>
+        <span class="n">lowered_height</span> <span class="o">=</span> <span class="n">player_box_height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">lowered_corner_height</span> <span class="o">=</span> <span class="n">height</span> <span class="o">-</span> <span class="n">lowered_height</span>
+        <span class="n">corner_length</span> <span class="o">=</span> <span class="mf">53.5</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+            <span class="n">length</span><span class="p">,</span>
+            <span class="mi">2</span> <span class="o">*</span> <span class="n">row_width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span>
+            <span class="s2">&quot;FfFf&quot;</span><span class="p">,</span>
+            <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+            <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">partial</span><span class="p">(</span>
+                    <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span>
+                        <span class="mi">0</span><span class="p">,</span> <span class="n">row_width</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="mi">0</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+                <span class="n">length</span><span class="p">,</span>
+                <span class="n">lowered_height</span><span class="p">,</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;f&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;f&quot;</span><span class="p">,</span>
+                    <span class="n">MoorBoxSideEdge</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="p">,</span> <span class="n">corner_length</span><span class="p">,</span> <span class="n">lowered_corner_height</span><span class="p">,</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span>
+                    <span class="p">),</span>
+                    <span class="s2">&quot;f&quot;</span><span class="p">,</span>
+                <span class="p">],</span>
+                <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;ffef&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+                <span class="mi">2</span> <span class="o">*</span> <span class="n">row_width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span>
+                <span class="n">lowered_height</span><span class="p">,</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;F&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;F&quot;</span><span class="p">,</span>
+                    <span class="n">MoorBoxHoleEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">lowered_corner_height</span><span class="p">,</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="s2">&quot;F&quot;</span><span class="p">,</span>
+                <span class="p">],</span>
+                <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+                <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+                    <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_side_finger_holes</span><span class="p">,</span> <span class="n">row_width</span><span class="p">,</span> <span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                <span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;FFFF&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right only&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate_side_finger_holes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="n">row_width</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_room_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">row_width</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A box in which storing room/field tiles.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">border_height</span> <span class="o">=</span> <span class="mi">12</span>
+        <span class="n">room_box_length</span> <span class="o">=</span> <span class="n">row_width</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+            <span class="n">room_box_length</span><span class="p">,</span>
+            <span class="n">height</span><span class="p">,</span>
+            <span class="s2">&quot;eFfF&quot;</span><span class="p">,</span>
+            <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+            <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_side_finger_holes</span><span class="p">,</span> <span class="n">row_width</span><span class="p">,</span> <span class="n">height</span><span class="p">)],</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+            <span class="n">room_box_length</span><span class="p">,</span>
+            <span class="n">width</span><span class="p">,</span>
+            <span class="s2">&quot;FFfF&quot;</span><span class="p">,</span>
+            <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+            <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_side_finger_holes</span><span class="p">,</span> <span class="n">row_width</span><span class="p">,</span> <span class="n">width</span><span class="p">)],</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+            <span class="n">room_box_length</span><span class="p">,</span>
+            <span class="n">border_height</span><span class="p">,</span>
+            <span class="s2">&quot;FFeF&quot;</span><span class="p">,</span>
+            <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+            <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_side_finger_holes</span><span class="p">,</span> <span class="n">row_width</span><span class="p">,</span> <span class="n">border_height</span><span class="p">)</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trapezoidWall</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">border_height</span><span class="p">,</span> <span class="s2">&quot;ffef&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">room_box_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;FFFF&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right only&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_player_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_box_height</span><span class="p">,</span> <span class="n">player_box_inner_width</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A box in which storing all the bits of a single player,</span>
+<span class="sd">        including (and designed for) the cardboard bed from Farmers Of The Moor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">bed_inner_height</span> <span class="o">=</span> <span class="n">player_box_height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">bed_inner_length</span> <span class="o">=</span> <span class="mf">66.75</span>
+        <span class="n">bed_inner_width</span> <span class="o">=</span> <span class="n">player_box_inner_width</span>
+        <span class="n">cardboard_bed_foot_height</span> <span class="o">=</span> <span class="mf">6.5</span>
+        <span class="n">cardboard_bed_hole_margin</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">cardboard_bed_hole_length</span> <span class="o">=</span> <span class="mi">12</span>
+        <span class="n">bed_head_length</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="n">bed_foot_height</span> <span class="o">=</span> <span class="mi">18</span>
+        <span class="n">support_length</span> <span class="o">=</span> <span class="mi">38</span>
+
+        <span class="n">bed_edge</span> <span class="o">=</span> <span class="n">Bed2SidesEdge</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">bed_inner_length</span><span class="p">,</span> <span class="n">bed_head_length</span><span class="p">,</span> <span class="n">bed_foot_height</span>
+        <span class="p">)</span>
+        <span class="n">noop_edge</span> <span class="o">=</span> <span class="n">NoopEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">optim_180_x</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">bed_inner_length</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="n">bed_head_length</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span>
+        <span class="p">)</span>
+        <span class="n">optim_180_y</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">bed_foot_height</span> <span class="o">-</span> <span class="n">player_box_height</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+                <span class="n">bed_inner_length</span><span class="p">,</span>
+                <span class="n">bed_inner_height</span><span class="p">,</span>
+                <span class="p">[</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="n">bed_edge</span><span class="p">,</span> <span class="n">noop_edge</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">],</span>
+                <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">optim_180_x</span><span class="p">,</span> <span class="n">optim_180_y</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">bed_inner_height</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span> <span class="o">+</span> <span class="n">optim_180_y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+            <span class="n">bed_inner_length</span><span class="p">,</span>
+            <span class="n">bed_inner_width</span><span class="p">,</span>
+            <span class="s2">&quot;feff&quot;</span><span class="p">,</span>
+            <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+            <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">partial</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">generate_bed_holes</span><span class="p">,</span>
+                    <span class="n">bed_inner_width</span><span class="p">,</span>
+                    <span class="n">cardboard_bed_hole_margin</span><span class="p">,</span>
+                    <span class="n">cardboard_bed_hole_length</span><span class="p">,</span>
+                    <span class="n">support_length</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+            <span class="n">bed_inner_width</span><span class="p">,</span>
+            <span class="n">bed_inner_height</span><span class="p">,</span>
+            <span class="p">[</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="n">BedHeadEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bed_inner_height</span> <span class="o">-</span> <span class="mi">15</span><span class="p">),</span> <span class="s2">&quot;f&quot;</span><span class="p">],</span>
+            <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+                <span class="n">cardboard_bed_foot_height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span>
+                <span class="n">support_length</span><span class="p">,</span>
+                <span class="s2">&quot;efee&quot;</span><span class="p">,</span>
+                <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+            <span class="n">bed_inner_width</span><span class="p">,</span>
+            <span class="n">bed_inner_height</span><span class="p">,</span>
+            <span class="s2">&quot;Ffef&quot;</span><span class="p">,</span>
+            <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up only&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+            <span class="n">bed_inner_length</span> <span class="o">+</span> <span class="n">bed_head_length</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;FFFF&quot;</span><span class="p">,</span>
+            <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right only&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate_bed_holes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">margin</span><span class="p">,</span> <span class="n">hole_length</span><span class="p">,</span> <span class="n">support_length</span><span class="p">):</span>
+        <span class="n">support_start</span> <span class="o">=</span> <span class="n">margin</span> <span class="o">+</span> <span class="n">hole_length</span>
+
+        <span class="n">bed_width</span> <span class="o">=</span> <span class="mf">29.5</span>
+        <span class="n">bed_space_to_wall</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="n">bed_width</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">bed_feet_width</span> <span class="o">=</span> <span class="mi">3</span>
+
+        <span class="n">posy_1</span> <span class="o">=</span> <span class="n">bed_space_to_wall</span>
+        <span class="n">posy_2</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="n">bed_space_to_wall</span>
+
+        <span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">direction</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">posy_1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">posy_2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]:</span>
+            <span class="n">bed_feet_middle_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">direction</span> <span class="o">*</span> <span class="n">bed_feet_width</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">support_middle_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">direction</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularHole</span><span class="p">(</span>
+                <span class="n">margin</span><span class="p">,</span>
+                <span class="n">bed_feet_middle_y</span><span class="p">,</span>
+                <span class="n">hole_length</span><span class="p">,</span>
+                <span class="n">bed_feet_width</span><span class="p">,</span>
+                <span class="n">center_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="n">support_start</span><span class="p">,</span> <span class="n">support_middle_y</span><span class="p">,</span> <span class="n">support_length</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularHole</span><span class="p">(</span>
+                <span class="n">support_start</span> <span class="o">+</span> <span class="n">support_length</span><span class="p">,</span>
+                <span class="n">bed_feet_middle_y</span><span class="p">,</span>
+                <span class="n">hole_length</span><span class="p">,</span>
+                <span class="n">bed_feet_width</span><span class="p">,</span>
+                <span class="n">center_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_upper_token_trays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tray_inner_height</span><span class="p">,</span> <span class="n">box_width</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Upper level : multiple trays for each ressource</span>
+<span class="sd">        (beside horses which are on the lower level)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tray_height</span> <span class="o">=</span> <span class="n">tray_inner_height</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">upper_level_width</span> <span class="o">=</span> <span class="mi">196</span>
+        <span class="n">upper_level_length</span> <span class="o">=</span> <span class="n">box_width</span>
+        <span class="n">row_width</span> <span class="o">=</span> <span class="n">upper_level_width</span> <span class="o">/</span> <span class="mi">3</span>
+
+        <span class="c1"># Stone / Vegetable / Pig / Cow</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_simple_tray</span><span class="p">(</span><span class="n">row_width</span><span class="p">,</span> <span class="n">upper_level_length</span><span class="p">,</span> <span class="n">tray_height</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="c1"># Reed / Grain / Sheep</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_simple_tray</span><span class="p">(</span><span class="n">row_width</span><span class="p">,</span> <span class="n">upper_level_length</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">tray_height</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># Wood / Clay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_simple_tray</span><span class="p">(</span><span class="n">row_width</span><span class="p">,</span> <span class="n">upper_level_length</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">tray_height</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Food / Fire</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_simple_tray</span><span class="p">(</span><span class="n">upper_level_length</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">row_width</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">tray_height</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_simple_tray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outer_width</span><span class="p">,</span> <span class="n">outer_length</span><span class="p">,</span> <span class="n">outer_height</span><span class="p">,</span> <span class="n">dividers</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        One of the upper level trays, with movable dividers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">outer_width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">outer_length</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">outer_height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="s2">&quot;FFFF&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="s2">&quot;ffef&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="s2">&quot;FFFF&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right only&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="s2">&quot;FfFe&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dividers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dividers</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">render_simple_tray_divider</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="s2">&quot;up&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">render_simple_tray_divider</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="s2">&quot;right only&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_simple_tray_divider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Simple movable divider. A wall with small feet for a little more stability.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+            <span class="n">height</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">t</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">height</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">width</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_simple_tray_divider_feet</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render_simple_tray_divider_feet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">):</span>
+        <span class="n">sqr2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">divider_foot_width</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">t</span>
+        <span class="n">full_width</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">divider_foot_width</span>
+        <span class="n">move_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span> <span class="o">+</span> <span class="n">full_width</span> <span class="o">/</span> <span class="n">sqr2</span>
+        <span class="n">move_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="n">full_width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">move_width</span><span class="p">,</span> <span class="n">move_length</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+            <span class="n">sqr2</span> <span class="o">*</span> <span class="n">divider_foot_width</span><span class="p">,</span>
+            <span class="mi">135</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="mi">135</span><span class="p">,</span>
+            <span class="n">sqr2</span> <span class="o">*</span> <span class="n">divider_foot_width</span><span class="p">,</span>
+            <span class="mi">135</span><span class="p">,</span>
+            <span class="n">full_width</span><span class="p">,</span>
+            <span class="mi">135</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">burn</span> <span class="o">/</span> <span class="n">sqr2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">burn</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sqr2</span><span class="p">),</span> <span class="mi">45</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">full_width</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">135</span><span class="p">,</span>
+            <span class="n">sqr2</span> <span class="o">*</span> <span class="n">divider_foot_width</span><span class="p">,</span>
+            <span class="mi">135</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">t</span><span class="p">,</span>
+            <span class="mi">135</span><span class="p">,</span>
+            <span class="n">sqr2</span> <span class="o">*</span> <span class="n">divider_foot_width</span><span class="p">,</span>
+            <span class="mi">135</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">move_width</span><span class="p">,</span> <span class="n">move_length</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">MoorBoxSideEdge</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">BaseEdge</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Edge for the sides of the moor tiles box</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">corner_length</span><span class="p">,</span> <span class="n">corner_height</span><span class="p">,</span> <span class="n">lower_corner</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MoorBoxSideEdge</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_height</span> <span class="o">=</span> <span class="n">corner_height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lower_corner</span> <span class="o">=</span> <span class="n">lower_corner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_length</span> <span class="o">=</span> <span class="n">corner_length</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">corner_height</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_corner</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+                <span class="n">length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">corner_height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">corner_length</span><span class="p">,</span>
+                <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+                <span class="mi">0</span><span class="p">,</span>
+                <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">corner_length</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">startwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">corner_height</span>
+
+    <span class="k">def</span> <span class="nf">endwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_corner</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">corner_height</span>
+
+
+<span class="k">class</span> <span class="nc">MoorBoxHoleEdge</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">BaseEdge</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Edge which does the notches for the moor tiles box</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">corner_height</span><span class="p">,</span> <span class="n">lower_corner</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MoorBoxHoleEdge</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner_height</span> <span class="o">=</span> <span class="n">corner_height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lower_corner</span> <span class="o">=</span> <span class="n">lower_corner</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">one_side_width</span> <span class="o">=</span> <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">notch_width</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="mi">6</span>
+        <span class="n">upper_edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">one_side_width</span> <span class="o">-</span> <span class="n">notch_width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">radius</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">hole_start</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">lowered_hole_start</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">hole_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">radius</span>
+        <span class="n">lower_edge</span> <span class="o">=</span> <span class="n">notch_width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">radius</span>
+
+        <span class="n">one_side_polyline</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">margin1</span><span class="p">,</span> <span class="n">margin2</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">upper_edge</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+            <span class="n">hole_depth</span> <span class="o">-</span> <span class="n">margin1</span><span class="p">,</span>
+            <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+            <span class="n">lower_edge</span><span class="p">,</span>
+            <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+            <span class="n">hole_depth</span> <span class="o">-</span> <span class="n">margin2</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">radius</span><span class="p">),</span>
+            <span class="n">upper_edge</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="n">normal_side_polyline</span> <span class="o">=</span> <span class="n">one_side_polyline</span><span class="p">(</span><span class="n">hole_start</span><span class="p">,</span> <span class="n">hole_start</span><span class="p">)</span>
+        <span class="n">corner_side_polyline</span> <span class="o">=</span> <span class="n">one_side_polyline</span><span class="p">(</span>
+            <span class="n">lowered_hole_start</span><span class="p">,</span> <span class="n">lowered_hole_start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">corner_height</span>
+        <span class="p">)</span>
+
+        <span class="n">full_polyline</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">normal_side_polyline</span>
+            <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="o">+</span> <span class="p">(</span><span class="n">corner_side_polyline</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_corner</span> <span class="k">else</span> <span class="n">normal_side_polyline</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span><span class="o">*</span><span class="n">full_polyline</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">startwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">corner_height</span>
+
+    <span class="k">def</span> <span class="nf">endwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_corner</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">corner_height</span>
+
+
+<span class="k">class</span> <span class="nc">BedHeadEdge</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">BaseEdge</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Edge which does the head side of the Agricola player box</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">hole_depth</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BedHeadEdge</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hole_depth</span> <span class="o">=</span> <span class="n">hole_depth</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">hole_length</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="n">upper_corner</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">lower_corner</span> <span class="o">=</span> <span class="mi">6</span>
+        <span class="n">depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_depth</span> <span class="o">-</span> <span class="n">upper_corner</span> <span class="o">-</span> <span class="n">lower_corner</span>
+        <span class="n">upper_edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="n">hole_length</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">upper_corner</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">lower_edge</span> <span class="o">=</span> <span class="n">hole_length</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">lower_corner</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+            <span class="n">upper_edge</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">upper_corner</span><span class="p">),</span>
+            <span class="n">depth</span><span class="p">,</span>
+            <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">lower_corner</span><span class="p">),</span>
+            <span class="n">lower_edge</span><span class="p">,</span>
+            <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">lower_corner</span><span class="p">),</span>
+            <span class="n">depth</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">upper_corner</span><span class="p">),</span>
+            <span class="n">upper_edge</span><span class="p">,</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Bed2SidesEdge</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">BaseEdge</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Edge which does a bed like shape, skipping the next corner.</span>
+<span class="sd">    The next edge should be a NoopEdge</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">bed_length</span><span class="p">,</span> <span class="n">full_head_length</span><span class="p">,</span> <span class="n">full_foot_height</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Bed2SidesEdge</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bed_length</span> <span class="o">=</span> <span class="n">bed_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_head_length</span> <span class="o">=</span> <span class="n">full_head_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_foot_height</span> <span class="o">=</span> <span class="n">full_foot_height</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bed_height</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">foot_corner</span> <span class="o">=</span> <span class="mi">6</span>
+        <span class="n">middle_corner</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">head_corner</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">foot_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_foot_height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">-</span> <span class="n">foot_corner</span>
+        <span class="n">head_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_head_length</span> <span class="o">-</span> <span class="n">head_corner</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">corners</span> <span class="o">=</span> <span class="n">foot_corner</span> <span class="o">+</span> <span class="n">middle_corner</span> <span class="o">+</span> <span class="n">head_corner</span>
+        <span class="n">head_height</span> <span class="o">=</span> <span class="n">bed_height</span> <span class="o">-</span> <span class="n">foot_height</span> <span class="o">-</span> <span class="n">corners</span>
+        <span class="n">middle_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bed_length</span> <span class="o">-</span> <span class="n">head_length</span> <span class="o">-</span> <span class="n">corners</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+            <span class="n">foot_height</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">foot_corner</span><span class="p">),</span>
+            <span class="n">middle_length</span><span class="p">,</span>
+            <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">middle_corner</span><span class="p">),</span>
+            <span class="n">head_height</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">head_corner</span><span class="p">),</span>
+            <span class="n">head_length</span><span class="p">,</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">NoopEdge</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">BaseEdge</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Edge which does nothing, not even turn or move.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NoopEdge</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="c1"># cancel turn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" >boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.agricolainsert</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

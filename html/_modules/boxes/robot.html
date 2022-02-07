@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.robot &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nature.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../boxes.html" accesskey="U">boxes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.robot</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.robot</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">boxes</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;RobotArg&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RobotArmMM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RobotArmMm&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RobotArmUU&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RobotArmUu&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RobotArmMu&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<div class="viewcode-block" id="RobotArg"><a class="viewcode-back" href="../../boxes.html#boxes.robot.RobotArg">[docs]</a><span class="k">class</span> <span class="nc">RobotArg</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">includenone</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">robotarms</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">globals</span><span class="p">()[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">[</span><span class="mi">23</span><span class="p">:])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">__all__</span>
+            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;RobotArm&quot;</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">includenone</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">robotarms</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RobotArg.choices"><a class="viewcode-back" href="../../boxes.html#boxes.robot.RobotArg.choices">[docs]</a>    <span class="k">def</span> <span class="nf">choices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">descr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">robotarms</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="RobotArg.html"><a class="viewcode-back" href="../../boxes.html#boxes.robot.RobotArg.html">[docs]</a>    <span class="k">def</span> <span class="nf">html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">translate</span><span class="p">):</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;&quot;&quot;&lt;option value=&quot;</span><span class="si">%s</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&gt;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&lt;/option&gt;&quot;&quot;&quot;</span> <span class="o">%</span>
+             <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39; selected=&quot;selected&quot;&#39;</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="n">default</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+              <span class="n">name</span><span class="p">,</span> <span class="n">descr</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">descr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">robotarms</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;&quot;&lt;select name=&quot;</span><span class="si">%s</span><span class="s2">&quot; size=&quot;1&quot;&gt;</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&lt;/select&gt;</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">_RobotArm</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">servo</span><span class="p">,</span> <span class="n">servo2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span> <span class="o">=</span> <span class="n">boxes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">servo</span> <span class="o">=</span> <span class="n">servo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">servo2</span> <span class="o">=</span> <span class="n">servo2</span> <span class="ow">or</span> <span class="n">servo</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Hack for easy access of Boxes methods&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RobotArmMM"><a class="viewcode-back" href="../../boxes.html#boxes.robot.RobotArmMM">[docs]</a><span class="k">class</span> <span class="nc">RobotArmMM</span><span class="p">(</span><span class="n">_RobotArm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Robot arm segment with two parallel servos&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">height</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">length</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">axle_pos</span><span class="p">)</span>
+
+        <span class="n">th</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">t</span> <span class="o">+</span> <span class="n">l</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">w</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">t</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span><span class="p">)</span>
+        <span class="n">tw</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">th</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="s2">&quot;FfFf&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="s2">&quot;FfFf&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">bottom</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">bottom</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="s2">&quot;FFFF&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="s2">&quot;FFFF&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">front</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">front</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">th</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RobotArmMm"><a class="viewcode-back" href="../../boxes.html#boxes.robot.RobotArmMm">[docs]</a><span class="k">class</span> <span class="nc">RobotArmMm</span><span class="p">(</span><span class="n">_RobotArm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Robot arm segment with two orthogonal servos&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">height</span>
+        <span class="n">w2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo2</span><span class="o">.</span><span class="n">height</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">length</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">length</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">axle_pos</span><span class="p">)</span>
+
+        <span class="n">th</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="n">l</span><span class="p">,</span> <span class="n">w</span> <span class="o">+</span> <span class="n">w2</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">t</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span><span class="p">)</span>
+        <span class="n">tw</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">w2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">th</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="s2">&quot;FfFf&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="n">w2</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="s2">&quot;FfFf&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">bottom</span><span class="p">(</span><span class="n">w2</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="s2">&quot;FFFF&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo2</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="s2">&quot;FFFF&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo2</span><span class="o">.</span><span class="n">bottom</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">front</span><span class="p">(</span><span class="n">w2</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo2</span><span class="o">.</span><span class="n">front</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">th</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RobotArmUU"><a class="viewcode-back" href="../../boxes.html#boxes.robot.RobotArmUU">[docs]</a><span class="k">class</span> <span class="nc">RobotArmUU</span><span class="p">(</span><span class="n">_RobotArm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Robot arm segment with two parallel sets of hinge knuckles&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">hinge_width</span><span class="p">()</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span> <span class="n">length</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">t</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="n">th</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">_edges</span><span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">spacing</span><span class="p">()</span> <span class="o">+</span> <span class="n">l</span><span class="p">,</span>
+                 <span class="mi">2</span><span class="o">*</span><span class="n">w</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">t</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span><span class="p">)</span>
+        <span class="n">tw</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">th</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">iw</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">edges</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">e</span><span class="p">(</span><span class="s2">&quot;mFmF&quot;</span><span class="p">),</span> <span class="n">ignore_widths</span><span class="o">=</span><span class="n">iw</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">e</span><span class="p">(</span><span class="s2">&quot;MFMF&quot;</span><span class="p">),</span> <span class="n">ignore_widths</span><span class="o">=</span><span class="n">iw</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="s2">&quot;FfFf&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="s2">&quot;FfFf&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">th</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RobotArmUu"><a class="viewcode-back" href="../../boxes.html#boxes.robot.RobotArmUu">[docs]</a><span class="k">class</span> <span class="nc">RobotArmUu</span><span class="p">(</span><span class="n">_RobotArm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Robot arm segment with two orthogonal sets of hinge knuckles&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">hinge_width</span><span class="p">()</span>
+        <span class="n">w2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo2</span><span class="o">.</span><span class="n">hinge_width</span><span class="p">()</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span> <span class="n">length</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">t</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="n">th</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">_edges</span><span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">spacing</span><span class="p">()</span> <span class="o">+</span> <span class="n">l</span><span class="p">,</span>
+                 <span class="mi">2</span><span class="o">*</span><span class="n">w</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="s2">&quot;f&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">spacing</span><span class="p">())</span>
+        <span class="n">tw</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">th</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="n">iw</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">edges</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">e</span><span class="p">(</span><span class="s2">&quot;nfFf&quot;</span><span class="p">),</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">e</span><span class="p">(</span><span class="s2">&quot;NfFf&quot;</span><span class="p">),</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">e</span><span class="p">(</span><span class="s2">&quot;FFmF&quot;</span><span class="p">),</span> <span class="n">ignore_widths</span><span class="o">=</span><span class="n">iw</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">e</span><span class="p">(</span><span class="s2">&quot;FFMF&quot;</span><span class="p">),</span> <span class="n">ignore_widths</span><span class="o">=</span><span class="n">iw</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+                        <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="n">w2</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+                        <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="n">w2</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">th</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RobotArmMu"><a class="viewcode-back" href="../../boxes.html#boxes.robot.RobotArmMu">[docs]</a><span class="k">class</span> <span class="nc">RobotArmMu</span><span class="p">(</span><span class="n">_RobotArm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Robot arm segment with a servo and an orthogonal sets of hinge knuckles&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">height</span>
+        <span class="n">w2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo2</span><span class="o">.</span><span class="n">hinge_width</span><span class="p">()</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">length</span><span class="p">,</span> <span class="n">length</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">axle_pos</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span>
+
+        <span class="n">th</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">l</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo2</span><span class="o">.</span><span class="n">_edges</span><span class="p">[</span><span class="s2">&quot;m&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">spacing</span><span class="p">(),</span>
+                 <span class="n">w</span> <span class="o">+</span> <span class="n">w2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="s2">&quot;f&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">spacing</span><span class="p">())</span>
+        <span class="n">tw</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">th</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">servo2</span><span class="o">.</span><span class="n">edges</span>
+        <span class="n">iw</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="s2">&quot;FfFf&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="n">w2</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="s2">&quot;FfFf&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">bottom</span><span class="p">(</span><span class="n">w2</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">e</span><span class="p">(</span><span class="s2">&quot;FFmF&quot;</span><span class="p">),</span> <span class="n">ignore_widths</span><span class="o">=</span><span class="n">iw</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">e</span><span class="p">(</span><span class="s2">&quot;FFMF&quot;</span><span class="p">),</span> <span class="n">ignore_widths</span><span class="o">=</span><span class="n">iw</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">servo</span><span class="o">.</span><span class="n">front</span><span class="p">(</span><span class="n">w2</span><span class="o">/</span><span class="mi">2</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">w2</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="n">w2</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">tw</span><span class="p">,</span> <span class="n">th</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span></div>
+
+<span class="c1"># class RobotArmMU(_RobotArm):</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../boxes.html" >boxes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.robot</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

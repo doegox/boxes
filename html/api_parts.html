@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Parts &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Existing Parts" href="api_existing_parts.html" />
+    <link rel="prev" title="Navigation" href="api_navigation.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_existing_parts.html" title="Existing Parts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api_navigation.html" title="Navigation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" accesskey="U">Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Parts</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="parts">
+<h1>Parts<a class="headerlink" href="#parts" title="Permalink to this headline">¶</a></h1>
+<p>There are a few parameter shared by many of those parts:</p>
+<section id="the-callback-parameter">
+<h2>The callback parameter<a class="headerlink" href="#the-callback-parameter" title="Permalink to this headline">¶</a></h2>
+<p>The callback parameter can take on of the following forms:</p>
+<ul class="simple">
+<li><p>A function (or bound method) that expects one parameter: the number of the side the callback is currently called for.</p></li>
+<li><p>A dict with some of the numbers of the sides as keys and functions without parameters as values.</p></li>
+<li><p>A list of functions without parameters. The list may contain None as place holder and be shorter than the number of sides.</p></li>
+</ul>
+<p>The callback functions are called with the side of the part at the
+positive x and y axis. If the edge uses up space this space is below
+the x axis. You do not have to restore the coordinate settings in the
+callback.</p>
+<p>Instead of functions it can be handy to use a lambda expression
+calling the one building block function you need (e.g. fingerHolesAt).</p>
+<p>For your own parts you can use this helper function:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.cc">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">cc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.cc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.cc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call callback from edge of a part</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>callback</strong> – callback (callable or list of callables)</p></li>
+<li><p><strong>number</strong> – number of the callback</p></li>
+<li><p><strong>x</strong> – (Default value = 0.0) x position to be call on</p></li>
+<li><p><strong>y</strong> – (Default value = None) y position to be called on (default does burn correction)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>For finding the right piece to the <em>callback</em> parameter this function is used:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.getEntry">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">getEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.getEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.getEntry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get entry from list or items itself</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param</strong> – list or item</p></li>
+<li><p><strong>idx</strong> – index in list</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="the-move-parameter">
+<h2>The move parameter<a class="headerlink" href="#the-move-parameter" title="Permalink to this headline">¶</a></h2>
+<p>For placing the parts the <code class="docutils literal notranslate"><span class="pre">move</span></code> parameter can be used. It is string
+with space separated words - at most one of each of those options:</p>
+<ul class="simple">
+<li><p>left / right</p></li>
+<li><p>up / down</p></li>
+<li><p>only</p></li>
+</ul>
+<p>If “only” is given the part is not drawn but only the move is
+done. This can be useful to go in one direction after having placed
+multiple parts in the other and have returned with <code class="docutils literal notranslate"><span class="pre">.ctx.restore()</span></code>.</p>
+<p>For implementing parts the following helper function can be used to
+implement a <code class="docutils literal notranslate"><span class="pre">move</span></code> parameter:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.move">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">before</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intended to be used by parts
+where can be combinations of “up” or “down”, “left” or “right”, “only”,
+“mirror” and “rotated”
+when “only” is included the move is only done when before is True
+“mirror” will flip the part along the y axis
+“rotated” draws the parts rotated 90 counter clockwise
+The function returns whether actual drawing of the part
+should be ommited.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – width of part</p></li>
+<li><p><strong>y</strong> – height of part</p></li>
+<li><p><strong>where</strong> – which direction to move</p></li>
+<li><p><strong>before</strong> – (Default value = False) called before or after part being drawn</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>It needs to be called before and after drawing the actual part with
+the proper <code class="docutils literal notranslate"><span class="pre">before</span></code> parameter set.</p>
+</section>
+<section id="the-edges-parameter">
+<h2>The edges parameter<a class="headerlink" href="#the-edges-parameter" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">edges</span></code> parameter needs to be an iterable of Edge instances to be
+used as edges of the part. Instead of instances it is possible to pass
+a single character that is looked up in the <code class="docutils literal notranslate"><span class="pre">.edges</span></code> dict. This
+allows to pass a string with the desired characters per edge. By
+default the following character are supported:</p>
+<ul class="simple">
+<li><p>e : straight edge</p></li>
+<li><p>E : as above but extended outside by one thickness</p></li>
+<li><p>f, F : finger joints</p></li>
+<li><p>h : edge with holes for finger joints</p></li>
+<li><p>d, D : dove tail joints</p></li>
+</ul>
+<p>Generators can register their own Edges by putting them into the
+<code class="docutils literal notranslate"><span class="pre">.edges</span></code> dictionary.</p>
+<p>Same applies to the parameters of <code class="docutils literal notranslate"><span class="pre">.surroundingWall</span></code> although they
+denominate single edge (types) only.</p>
+</section>
+<section id="partsmatrix">
+<h2>PartsMatrix<a class="headerlink" href="#partsmatrix" title="Permalink to this headline">¶</a></h2>
+<p>To place many of the same part partMatrix can used:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.partsMatrix">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">partsMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">part</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">l</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.partsMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.partsMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>place many of the same part</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> – number of parts</p></li>
+<li><p><strong>width</strong> – number of parts in a row (0 for same as n)</p></li>
+<li><p><strong>move</strong> – (Default value = None)</p></li>
+<li><p><strong>part</strong> – callable that draws a part and knows move param</p></li>
+<li><p><strong>*l</strong> – params for part</p></li>
+<li><p><strong>**kw</strong> – keyword params for part</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>It creates one big block of parts. The move param treat this block like on big
+part.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Parts</a><ul>
+<li><a class="reference internal" href="#the-callback-parameter">The callback parameter</a></li>
+<li><a class="reference internal" href="#the-move-parameter">The move parameter</a></li>
+<li><a class="reference internal" href="#the-edges-parameter">The edges parameter</a></li>
+<li><a class="reference internal" href="#partsmatrix">PartsMatrix</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="api_navigation.html"
+                          title="previous chapter">Navigation</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="api_existing_parts.html"
+                          title="next chapter">Existing Parts</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api_parts.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_existing_parts.html" title="Existing Parts"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api_navigation.html" title="Navigation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" >Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Parts</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

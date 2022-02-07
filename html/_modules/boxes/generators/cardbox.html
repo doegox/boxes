@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.generators.cardbox &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nature.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" accesskey="U">boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.cardbox</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.generators.cardbox</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># Copyright (C) 2013-2014 Florian Festi</span>
+<span class="c1"># Copyright (C) 2018 jens persson &lt;jens@persson.cx&gt;</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is free software: you can redistribute it and/or modify</span>
+<span class="c1">#   it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#   the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#   (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is distributed in the hope that it will be useful,</span>
+<span class="c1">#   but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#   GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#   You should have received a copy of the GNU General Public License</span>
+<span class="c1">#   along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">from</span> <span class="nn">boxes</span> <span class="kn">import</span> <span class="n">edges</span><span class="p">,</span> <span class="n">Boxes</span>
+
+
+<span class="k">class</span> <span class="nc">InsetEdgeSettings</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">Settings</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Settings for InsetEdge&quot;&quot;&quot;</span>
+    <span class="n">absolute_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;thickness&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="k">class</span> <span class="nc">InsetEdge</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">BaseEdge</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An edge with space to slide in a lid&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">tabs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">tabs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">tabs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">FingerHoleEdgeSettings</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">Settings</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Settings for FingerHoleEdge&quot;&quot;&quot;</span>
+    <span class="n">absolute_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;wallheight&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="k">class</span> <span class="nc">FingerHoleEdge</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">BaseEdge</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An edge with room to get your fingers around cards&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">wallheight</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="o">-</span><span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="n">length</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="n">tabs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="n">depth</span><span class="p">,</span> <span class="n">tabs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="n">depth</span><span class="p">,</span> <span class="n">tabs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corner</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="n">length</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="n">tabs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CardBox"><a class="viewcode-back" href="../../../generators.html#boxes.generators.cardbox.CardBox">[docs]</a><span class="k">class</span> <span class="nc">CardBox</span><span class="p">(</span><span class="n">Boxes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Box for storage of playing cards&quot;&quot;&quot;</span>
+    <span class="n">ui_group</span> <span class="o">=</span> <span class="s2">&quot;Box&quot;</span>
+
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">#### Building instructions</span>
+
+<span class="s2">Place inner walls on floor first (if any). Then add the outer walls. Glue the two walls without finger joins to the inside of the side walls. Make sure there is no squeeze out on top, as this is going to form the rail for the lid.</span>
+
+<span class="s2">Add the top of the rails to the sides and the grip rail to the lid.</span>
+
+<span class="s2">Details of the lid and rails</span>
+
+<span class="s2">![Details](static/samples/CardBox-detail.jpg)</span>
+
+<span class="s2">Whole box (early version still missing grip rail on the lid):</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Boxes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addSettingsArgs</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">FingerJointSettings</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buildArgParser</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--cardwidth&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">65</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Width of the cards&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--cardheight&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Height of the cards&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--num&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;number of compartments&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">boxwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cardwidth</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+
+    <span class="k">def</span> <span class="nf">divider_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cardwidth</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cardheight</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">t</span> <span class="o">+</span> <span class="p">(</span><span class="n">c</span><span class="o">+</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">divider_back_and_front</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cardwidth</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">t</span> <span class="o">+</span> <span class="p">(</span><span class="n">c</span><span class="o">+</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boxwidth</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cardheight</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">InsetEdgeSettings</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">InsetEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">char</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addPart</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">FingerHoleEdgeSettings</span><span class="p">(</span><span class="n">thickness</span><span class="o">=</span><span class="n">t</span><span class="p">,</span> <span class="n">wallheight</span><span class="o">=</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">FingerHoleEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">char</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addPart</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_context</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">t</span><span class="o">*</span><span class="mf">.2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;eeFe&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Lid&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">divider_bottom</span><span class="p">],</span>
+                                 <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Bottom&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;eEEE&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up only&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">t</span><span class="o">*</span><span class="mf">.2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="s2">&quot;fEeE&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Lid Lip&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_context</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="o">+</span><span class="n">t</span><span class="p">,</span> <span class="s2">&quot;FFEF&quot;</span><span class="p">,</span>
+                                 <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">divider_back_and_front</span><span class="p">],</span>
+                                 <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span>
+                                 <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Back&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="o">+</span><span class="n">t</span><span class="p">,</span> <span class="s2">&quot;FFaF&quot;</span><span class="p">,</span>
+                                 <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">divider_back_and_front</span><span class="p">],</span>
+                                 <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> 
+                                 <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Front&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="o">+</span><span class="n">t</span><span class="p">,</span> <span class="s2">&quot;EEEE&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up only&quot;</span><span class="p">)</span>
+
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_context</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">h</span><span class="o">+</span><span class="n">t</span><span class="p">,</span> <span class="s2">&quot;FfFf&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Outer Side Left&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">h</span><span class="o">+</span><span class="n">t</span><span class="p">,</span> <span class="s2">&quot;FfFf&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Outer Side Right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">h</span><span class="o">+</span><span class="n">t</span><span class="p">,</span> <span class="s2">&quot;fFfF&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up only&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_context</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="s2">&quot;Aeee&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Inner Side Left&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="s2">&quot;Aeee&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Inner Side Right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="s2">&quot;eAee&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up only&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_context</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="s2">&quot;eefe&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Lip Left&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="s2">&quot;feee&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Lip Right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">t</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;efee&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up only&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;fAff&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Divider&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" >boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.cardbox</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

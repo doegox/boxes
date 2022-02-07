@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.generators.organpipe &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nature.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" accesskey="U">boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.organpipe</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.generators.organpipe</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Copyright (C) 2013-2018 Florian Festi</span>
+<span class="c1">#</span>
+<span class="c1"># Based on pipecalc by Christian F. Coors</span>
+<span class="c1"># https://github.com/ccoors/pipecalc</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is free software: you can redistribute it and/or modify</span>
+<span class="c1">#   it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#   the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#   (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is distributed in the hope that it will be useful,</span>
+<span class="c1">#   but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#   GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#   You should have received a copy of the GNU General Public License</span>
+<span class="c1">#   along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">from</span> <span class="nn">boxes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span>  <span class="nn">math</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">pitches</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;c#&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;d#&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;f#&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;g#&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a#&#39;</span> <span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+
+<span class="n">pressure_units</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;Pa&#39;</span> <span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                   <span class="s1">&#39;mBar&#39;</span> <span class="p">:</span> <span class="mf">100.</span><span class="p">,</span>
+                   <span class="s1">&#39;mmHg&#39;</span> <span class="p">:</span> <span class="mf">133.322</span><span class="p">,</span>
+                   <span class="s1">&#39;mmH2O&#39;</span> <span class="p">:</span> <span class="mf">9.80665</span><span class="p">,</span>
+<span class="p">}</span>
+
+<div class="viewcode-block" id="OrganPipe"><a class="viewcode-back" href="../../../generators.html#boxes.generators.organpipe.OrganPipe">[docs]</a><span class="k">class</span> <span class="nc">OrganPipe</span><span class="p">(</span><span class="n">Boxes</span><span class="p">):</span> <span class="c1"># Change class name!</span>
+    <span class="sd">&quot;&quot;&quot;Rectangular organ pipe based on pipecalc&quot;&quot;&quot;</span>
+
+    <span class="n">ui_group</span> <span class="o">=</span> <span class="s2">&quot;Unstable&quot;</span> <span class="c1"># see ./__init__.py for names</span>
+
+    <span class="k">def</span> <span class="nf">getFrequency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pitch</span><span class="p">,</span> <span class="n">octave</span><span class="p">,</span> <span class="n">base_freq</span><span class="o">=</span><span class="mi">440</span><span class="p">):</span>
+        <span class="n">steps</span> <span class="o">=</span> <span class="n">pitches</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pitch</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">octave</span><span class="o">-</span><span class="mi">4</span><span class="p">)</span><span class="o">*</span><span class="mi">12</span> <span class="o">-</span> <span class="mi">9</span>
+        <span class="k">return</span> <span class="n">base_freq</span> <span class="o">*</span> <span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">steps</span><span class="o">/</span><span class="mf">12.</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getRadius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pitch</span><span class="p">,</span> <span class="n">octave</span><span class="p">,</span> <span class="n">intonation</span><span class="p">):</span>
+        <span class="n">steps</span> <span class="o">=</span> <span class="n">pitches</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pitch</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">octave</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="mi">12</span> <span class="o">+</span> <span class="n">intonation</span>
+        <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="mf">0.15555</span> <span class="o">*</span> <span class="mf">0.957458</span><span class="o">**</span><span class="n">steps</span>
+    
+    <span class="k">def</span> <span class="nf">getAirSpeed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wind_pressure</span><span class="p">,</span> <span class="n">air_density</span><span class="o">=</span><span class="mf">1.2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">wind_pressure</span> <span class="o">/</span> <span class="n">air_density</span><span class="p">))</span><span class="o">**</span><span class="mf">.5</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Boxes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">addSettingsArgs</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">FingerJointSettings</span><span class="p">,</span> <span class="n">finger</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+                             <span class="n">surroundingspaces</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+        
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    air_temperature: f64,</span>
+<span class="sd">&quot;&quot;&quot;</span>
+        <span class="c1"># Add non default cli params if needed (see argparse std lib)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--pitch&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;c&quot;</span><span class="p">,</span>
+            <span class="n">choices</span><span class="o">=</span><span class="n">pitches</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;pitch&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--octave&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Octave in International Pitch Notation (2 == C)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--intonation&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Intonation Number. 2 for max. efficiency, 3 max.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--mouthratio&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;mouth to circumference ratio (0.1 to 0.45). Determines the width to depth ratio&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--cutup&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Cutup to mouth ratio&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--mensur&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="sa">u</span><span class="s2">&quot;Distance in halftones in the Normalmensur by Töpfer&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--windpressure&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">588.4</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;uses unit selected below&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--windpressure_units&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Pa&#39;</span><span class="p">,</span>
+            <span class="n">choices</span><span class="o">=</span><span class="n">pressure_units</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;in Pa&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--stopped&quot;</span><span class="p">,</span>  <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">boolarg</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;pipe is closed at the top&quot;</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFrequency</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">octave</span><span class="p">,</span> <span class="mi">440</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">windpressure</span> <span class="o">*=</span> <span class="n">pressure_units</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">windpressure_units</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        
+        <span class="n">speed_of_sound</span> <span class="o">=</span> <span class="mf">343.6</span> <span class="c1"># XXX util::speed_of_sound(self.air_temperature); // in m/s</span>
+        <span class="n">air_density</span> <span class="o">=</span> <span class="mf">1.2</span>
+        <span class="n">air_speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAirSpeed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">windpressure</span><span class="p">,</span> <span class="n">air_density</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intonation</span><span class="p">;</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRadius</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">octave</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+        <span class="n">cross_section</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">radius</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">circumference</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">radius</span> <span class="o">*</span> <span class="mf">2.0</span>
+        <span class="n">mouth_width</span> <span class="o">=</span> <span class="n">circumference</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mouthratio</span>
+        <span class="n">mouth_height</span> <span class="o">=</span> <span class="n">mouth_width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutup</span>
+        <span class="n">mouth_area</span> <span class="o">=</span> <span class="n">mouth_height</span> <span class="o">*</span> <span class="n">mouth_width</span>
+        <span class="n">pipe_depth</span> <span class="o">=</span> <span class="n">cross_section</span> <span class="o">/</span> <span class="n">mouth_width</span>
+        <span class="n">base_length</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mouth_width</span><span class="p">,</span> <span class="n">pipe_depth</span><span class="p">)</span>
+
+        <span class="n">jet_thickness</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">.01</span> <span class="o">*</span> <span class="n">mouth_height</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="n">air_speed</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">sound_power</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.001</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">air_density</span> <span class="o">/</span> <span class="n">speed_of_sound</span><span class="p">)</span> <span class="o">*</span> <span class="n">f</span><span class="o">**</span><span class="mi">2</span>
+                       <span class="o">*</span> <span class="p">(</span><span class="mf">1.7</span> <span class="o">*</span> <span class="p">(</span><span class="n">jet_thickness</span> <span class="o">*</span> <span class="n">speed_of_sound</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">mouth_area</span> <span class="o">*</span> <span class="n">mouth_area</span><span class="o">**</span><span class="mf">.5</span><span class="p">)</span><span class="o">**</span><span class="mf">.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">air_consumption_rate</span> <span class="o">=</span> <span class="n">air_speed</span> <span class="o">*</span> <span class="n">mouth_width</span> <span class="o">*</span> <span class="n">jet_thickness</span> <span class="o">*</span> <span class="mf">1E6</span><span class="p">;</span>
+
+        <span class="n">wavelength</span> <span class="o">=</span> <span class="n">speed_of_sound</span> <span class="o">/</span> <span class="n">f</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopped</span><span class="p">:</span>
+            <span class="n">theoretical_resonator_length</span> <span class="o">=</span> <span class="n">wavelength</span> <span class="o">/</span> <span class="mf">4.0</span>
+            <span class="n">resonator_length</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.73</span> <span class="o">*</span> <span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">cross_section</span> <span class="o">*</span><span class="mf">1E-6</span> <span class="o">-</span> <span class="mf">0.342466</span> <span class="o">*</span> <span class="n">speed_of_sound</span> <span class="o">*</span> <span class="n">mouth_area</span><span class="o">**</span><span class="mf">.5</span> <span class="o">*</span> <span class="mf">1E-3</span><span class="p">)</span>
+            <span class="o">/</span> <span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">mouth_area</span><span class="o">**</span><span class="mf">.5</span> <span class="o">*</span> <span class="mf">1E-3</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">theoretical_resonator_length</span> <span class="o">=</span> <span class="n">wavelength</span> <span class="o">/</span> <span class="mf">2.0</span>
+            <span class="n">resonator_length</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.73</span> <span class="o">*</span> <span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">cross_section</span> <span class="o">*</span> <span class="mf">1E-6</span> <span class="o">+</span> <span class="mf">0.465753</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">mouth_area</span><span class="o">**</span><span class="mf">.5</span> <span class="o">*</span> <span class="n">cross_section</span><span class="o">**</span><span class="mf">.5</span> <span class="o">*</span> <span class="mf">1E-6</span> <span class="o">-</span> <span class="mf">0.684932</span> <span class="o">*</span> <span class="n">speed_of_sound</span> <span class="o">*</span> <span class="n">mouth_area</span><span class="o">**</span><span class="mf">.5</span> <span class="o">*</span> <span class="mf">1E-3</span><span class="p">)</span>
+                <span class="o">/</span> <span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="n">mouth_area</span><span class="o">**</span><span class="mf">.5</span> <span class="o">*</span> <span class="mf">1E-3</span><span class="p">))</span> <span class="o">*</span> <span class="mf">1E3</span>
+        <span class="n">air_hole_diameter</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">((</span><span class="n">mouth_width</span> <span class="o">*</span> <span class="n">jet_thickness</span> <span class="o">*</span> <span class="mf">10.0</span><span class="p">)</span><span class="o">**</span><span class="mf">.5</span> <span class="o">/</span> <span class="n">pi</span><span class="p">)</span>
+
+        <span class="n">total_length</span> <span class="o">=</span> <span class="n">resonator_length</span> <span class="o">+</span> <span class="n">base_length</span>
+        
+
+        <span class="n">e</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span>
+             <span class="n">edges</span><span class="o">.</span><span class="n">CompoundEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fef&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">resonator_length</span> <span class="o">-</span> <span class="n">mouth_height</span> <span class="o">-</span> <span class="mi">10</span><span class="o">*</span><span class="n">t</span><span class="p">,</span> <span class="n">mouth_height</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="n">t</span><span class="p">,</span> <span class="n">base_length</span><span class="p">)),</span> <span class="s2">&quot;f&quot;</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">total_length</span><span class="p">,</span> <span class="n">pipe_depth</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="n">base_length</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pipe_depth</span><span class="o">-</span><span class="n">jet_thickness</span><span class="p">)],</span>
+                             <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">total_length</span><span class="p">,</span> <span class="n">pipe_depth</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="n">base_length</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pipe_depth</span><span class="o">-</span><span class="n">jet_thickness</span><span class="p">)],</span>
+                             <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">total_length</span><span class="p">,</span> <span class="n">mouth_width</span><span class="p">,</span> <span class="s2">&quot;FeFF&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="n">base_length</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mouth_width</span><span class="p">)],</span>
+                             <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="p">[</span><span class="n">edges</span><span class="o">.</span><span class="n">CompoundEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;EF&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span> <span class="n">resonator_length</span> <span class="o">-</span> <span class="n">mouth_height</span> <span class="o">-</span> <span class="n">t</span><span class="o">*</span><span class="mi">10</span><span class="p">)),</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span>
+             <span class="n">edges</span><span class="o">.</span><span class="n">CompoundEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;FE&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">resonator_length</span> <span class="o">-</span> <span class="n">mouth_height</span> <span class="o">-</span> <span class="n">t</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span> <span class="n">t</span><span class="o">*</span><span class="mi">10</span><span class="p">)),</span> <span class="s1">&#39;e&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">resonator_length</span> <span class="o">-</span> <span class="n">mouth_height</span><span class="p">,</span> <span class="n">mouth_width</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">base_length</span><span class="p">,</span> <span class="n">mouth_width</span><span class="p">,</span> <span class="s2">&quot;FeFF&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">mouth_width</span><span class="p">,</span> <span class="n">pipe_depth</span><span class="p">,</span> <span class="s2">&quot;fFfF&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span>
+            <span class="k">lambda</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="n">mouth_width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">pipe_depth</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">air_hole_diameter</span><span class="p">)],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">mouth_width</span><span class="p">,</span> <span class="n">pipe_depth</span> <span class="o">-</span> <span class="n">jet_thickness</span><span class="p">,</span> <span class="s2">&quot;ffef&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" >boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.organpipe</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

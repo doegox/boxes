@@ -1,0 +1,481 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Drawing commands &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Burn correction" href="api_burn.html" />
+    <link rel="prev" title="Edges" href="api_edges.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_burn.html" title="Burn correction"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api_edges.html" title="Edges"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" accesskey="U">Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Drawing commands</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="drawing-commands">
+<h1>Drawing commands<a class="headerlink" href="#drawing-commands" title="Permalink to this headline">¶</a></h1>
+<section id="turtle-graphics-commands">
+<h2>Turtle Graphics commands<a class="headerlink" href="#turtle-graphics-commands" title="Permalink to this headline">¶</a></h2>
+<p>These commands all move the coordinate system with them.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.edge">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tabs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple line
+:param length: length in mm</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.corner">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">corner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degrees</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tabs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.corner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.corner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a corner</p>
+<p>This is what does the burn corrections</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>degrees</strong> – angle</p></li>
+<li><p><strong>radius</strong> – (Default value = 0)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.curveTo">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">curveTo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.curveTo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.curveTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>control point 1, control point 2, end point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> – </p></li>
+<li><p><strong>y1</strong> – </p></li>
+<li><p><strong>x2</strong> – </p></li>
+<li><p><strong>y2</strong> – </p></li>
+<li><p><strong>x3</strong> – </p></li>
+<li><p><strong>y3</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.polyline">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">polyline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.polyline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.polyline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw multiple connected lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*args</strong> – Alternating length in mm and angle in degrees.</p>
+</dd>
+</dl>
+<p>lengths may be a tuple (length, #tabs)
+angles may be tuple (angle, radius)</p>
+</dd></dl>
+
+<section id="special-functions">
+<h3>Special Functions<a class="headerlink" href="#special-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.bedBoltHole">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">bedBoltHole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bedBoltSettings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tabs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.bedBoltHole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.bedBoltHole" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw an edge with slot for a bed bolt</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length</strong> – length of the edge in mm</p></li>
+<li><p><strong>bedBoltSettings</strong> – (Default value = None) Dimmensions of the slot</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="latch-and-grip">
+<h3>Latch and Grip<a class="headerlink" href="#latch-and-grip" title="Permalink to this headline">¶</a></h3>
+<p>These should probably be Edge classes. But right now they are still functions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.grip">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">grip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.grip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.grip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Corrugated edge useful as an gipping area</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length</strong> – length</p></li>
+<li><p><strong>depth</strong> – depth of the grooves</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.latch">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">latch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.latch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.latch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Latch to fix a flex box door to the box</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length</strong> – length in mm</p></li>
+<li><p><strong>positive</strong> – (Default value = True) False: Door side; True: Box side</p></li>
+<li><p><strong>reverse</strong> – (Default value = False) True when running away from the latch</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.handle">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an Edge with a handle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – width in mm</p></li>
+<li><p><strong>h</strong> – height in mm</p></li>
+<li><p><strong>hl</strong> – height if th grip hole</p></li>
+<li><p><strong>r</strong> – (Default value = 30) radius of the corners</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="tab-support">
+<h3>Tab support<a class="headerlink" href="#tab-support" title="Permalink to this headline">¶</a></h3>
+<p>Tabs are small interuptions in the border of a part to keep it in
+place. They are enabled with the <strong>tabs</strong> parameter. All
+<strong>Edges</strong> automatically create about two tabs. So parts like
+<a class="reference internal" href="boxes.html#boxes.Boxes.rectangularWall" title="boxes.Boxes.rectangularWall"><code class="xref py py-meth docutils literal notranslate"><span class="pre">boxes.Boxes.rectangularWall()</span></code></a> will have 8 tabs holding them
+in place. Because of this developers often don’t need to be concerned
+about tabs. But some part may be completely drawn by low level Turtle
+Graphics commands. For those both <a class="reference internal" href="boxes.html#boxes.Boxes.edge" title="boxes.Boxes.edge"><code class="xref py py-meth docutils literal notranslate"><span class="pre">boxes.Boxes.edge()</span></code></a> and
+<a class="reference internal" href="boxes.html#boxes.Boxes.corner" title="boxes.Boxes.corner"><code class="xref py py-meth docutils literal notranslate"><span class="pre">boxes.Boxes.corner()</span></code></a> do support a <strong>tabs</strong> parameter. In
+addition the length of the line segments in <a class="reference internal" href="boxes.html#boxes.Boxes.polyline" title="boxes.Boxes.polyline"><code class="xref py py-meth docutils literal notranslate"><span class="pre">boxes.Boxes.polyline()</span></code></a> can
+be given as a tuple <strong>(length, tabs)</strong>.</p>
+</section>
+</section>
+<section id="draw-commands">
+<h2>Draw Commands<a class="headerlink" href="#draw-commands" title="Permalink to this headline">¶</a></h2>
+<p>These commands do not change the coordinate system but get the
+coordinates passed as parameters. All of them are either som sort of
+hole or text. These artifacts are placed somewhere independently of
+some continuous outline of the part their on.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.hole">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">hole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tabs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.hole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.hole" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a round hole</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – position</p></li>
+<li><p><strong>y</strong> – postion</p></li>
+<li><p><strong>r</strong> – radius</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.rectangularHole">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">rectangularHole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.rectangularHole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.rectangularHole" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a rectangular hole</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – position</p></li>
+<li><p><strong>y</strong> – position</p></li>
+<li><p><strong>dx</strong> – width</p></li>
+<li><p><strong>dy</strong> – height</p></li>
+<li><p><strong>r</strong> – (Default value = 0) radius of the corners</p></li>
+<li><p><strong>center_x</strong> – (Default value = True) if True, x position is the center, else the start</p></li>
+<li><p><strong>center_y</strong> – (Default value = True) if True, y position is the center, else the start</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.dHole">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">dHole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.dHole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.dHole" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.flatHole">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">flatHole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.flatHole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.flatHole" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.text">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw text</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – text to render</p></li>
+<li><p><strong>x</strong> – (Default value = 0)</p></li>
+<li><p><strong>y</strong> – (Default value = 0)</p></li>
+<li><p><strong>angle</strong> – (Default value = 0)</p></li>
+<li><p><strong>align</strong> – (Default value = “”) string with combinations of (top|middle|bottom) and (left|center|right) separated by a space</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.NEMA">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">NEMA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screwholes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.NEMA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.NEMA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw holes for mounting a NEMA stepper motor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – Nominal size in tenths of inches</p></li>
+<li><p><strong>x</strong> – (Default value = 0)</p></li>
+<li><p><strong>y</strong> – (Default value = 0)</p></li>
+<li><p><strong>angle</strong> – (Default value = 0)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.TX">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">TX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.TX"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.TX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a star pattern</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – 1 to 100</p></li>
+<li><p><strong>x</strong> – (Default value = 0)</p></li>
+<li><p><strong>y</strong> – (Default value = 0)</p></li>
+<li><p><strong>angle</strong> – (Default value = 0)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.flex2D">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">flex2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.flex2D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.flex2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill a rectangle with a pattern allowing bending in both axis</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – width</p></li>
+<li><p><strong>y</strong> – height</p></li>
+<li><p><strong>width</strong> – width between the lines of the pattern in multiples of thickness</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="NutHole">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NutHole</span></span><a class="headerlink" href="#NutHole" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>An instance is available as <strong>boxes.Boxes.nutHole()</strong></p>
+<p>An instance of</p>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.edges.</span></span><span class="sig-name descname"><span class="pre">FingerHoles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#FingerHoles"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Hole matching a finger joint edge</p>
+</dd></dl>
+
+<p>is accessible as <strong>Boxes.fingerHolesAt</strong>.</p>
+<section id="hexagonal-hole-patterns">
+<h3>Hexagonal Hole patterns<a class="headerlink" href="#hexagonal-hole-patterns" title="Permalink to this headline">¶</a></h3>
+<p>Hexagonal hole patterns are one way to have some ventilation for
+housings made with Boxes.py. Right now both <code class="docutils literal notranslate"><span class="pre">.rectangularWall()</span></code>
+and <code class="docutils literal notranslate"><span class="pre">.roundedPlate()</span></code> do supports this pattern directly by passing
+the parameters to the calls. For other use cases these more low level
+methods can be used.</p>
+<p>For now this is the only supported pattern for ventilation slots. More
+may be added in the future.</p>
+<p>There is a global Boxes.hexHolesSettings object that is used if no settings are
+passed. It currently is just a tuple of (r, dist, style) defaulting to
+(5, 3, ‘circle’) but might be replace by a Settings instance in the future.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.hexHolesRectangle">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">hexHolesRectangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.hexHolesRectangle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.hexHolesRectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fills a rectangle with holes in a hex pattern.</p>
+<p>Settings have:
+r : radius of holes
+b : space between holes
+style : what types of holes (not yet implemented)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – width</p></li>
+<li><p><strong>y</strong> – height</p></li>
+<li><p><strong>settings</strong> – (Default value = None)</p></li>
+<li><p><strong>skip</strong> – (Default value = None) function to check if hole should be present
+gets x, y, r, b, posx, posy</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.hexHolesCircle">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">hexHolesCircle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.hexHolesCircle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.hexHolesCircle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill circle with holes in a hex pattern</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d</strong> – diameter of the circle</p></li>
+<li><p><strong>settings</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.hexHolesPlate">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">hexHolesPlate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.hexHolesPlate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.hexHolesPlate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill a plate with holes in a hex pattern</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – width</p></li>
+<li><p><strong>y</strong> – height</p></li>
+<li><p><strong>rc</strong> – radius of the corners</p></li>
+<li><p><strong>settings</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.hexHolesHex">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">hexHolesHex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.hexHolesHex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.hexHolesHex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill a hexagon with holes in a hex pattern</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>h</strong> – height</p></li>
+<li><p><strong>settings</strong> – (Default value = None)</p></li>
+<li><p><strong>grow</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Drawing commands</a><ul>
+<li><a class="reference internal" href="#turtle-graphics-commands">Turtle Graphics commands</a><ul>
+<li><a class="reference internal" href="#special-functions">Special Functions</a></li>
+<li><a class="reference internal" href="#latch-and-grip">Latch and Grip</a></li>
+<li><a class="reference internal" href="#tab-support">Tab support</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#draw-commands">Draw Commands</a><ul>
+<li><a class="reference internal" href="#hexagonal-hole-patterns">Hexagonal Hole patterns</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="api_edges.html"
+                          title="previous chapter">Edges</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="api_burn.html"
+                          title="next chapter">Burn correction</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api_drawing.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_burn.html" title="Burn correction"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api_edges.html" title="Edges"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" >Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Drawing commands</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Windows &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Using Boxes.py" href="../usermanual.html" />
+    <link rel="prev" title="macOS" href="macos.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../usermanual.html" title="Using Boxes.py"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="macos.html" title="macOS"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../install.html" accesskey="U">Installation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Windows</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="windows">
+<h1>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h1>
+<p>Getting the Inkscape plugins to run will likely need manual
+installation (see above). Note that Inkscape may come with its own
+Python. If you run into trouble or have better installation
+instructions please open a ticket on GitHub.</p>
+<section id="native">
+<h2>Native<a class="headerlink" href="#native" title="Permalink to this headline">¶</a></h2>
+<p>Following steps are known to work under Windows 10 (64-bit):</p>
+<ol class="arabic">
+<li><p>Go to <a class="reference external" href="https://www.python.org/downloads/windows/">https://www.python.org/downloads/windows/</a>
+and download the “Windows x86-64 executable installer” for Python 3.7</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/windows_browser_download_python.png"><img alt="Screenshot of python.org with download of Python 3.7 (64-bit)" src="../_images/windows_browser_download_python.png" style="width: 512.0px; height: 384.0px;" /></a>
+</figure>
+</li>
+<li><p>Install Python 3.7 and make sure to check “Add Python 3.7 to PATH”
+while doing so</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/windows_install_python_path.png"><img alt="Screenshot of Python 3.7 (64-bit) installer with PATH checked" src="../_images/windows_install_python_path.png" style="width: 512.0px; height: 384.0px;" /></a>
+</figure>
+</li>
+<li><p>Run the command <code class="code docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">Markdown</span> <span class="pre">affine</span></code>
+(Note: If the command pip is not found, you probably forgot to add the
+Python installation to the PATH environment variable in step 2)</p></li>
+<li><p>Download Boxes.py as ZIP archive from GitHub</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/windows_browser_download_boxespy.png"><img alt="Screenshot of download from Boxes.py project on GitHub" src="../_images/windows_browser_download_boxespy.png" style="width: 512.0px; height: 384.0px;" /></a>
+</figure>
+</li>
+<li><p>Extract the ZIP archive
+(e.g. via the built-in Windows feature or other tools like 7-Zip)</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/windows_boxespy_zip_extract.png"><img alt="Screenshot of Windows tools to extract the ZIP archive" src="../_images/windows_boxespy_zip_extract.png" style="width: 512.0px; height: 384.0px;" /></a>
+</figure>
+</li>
+<li><dl class="simple">
+<dt>Change into the folder for Boxes.py,</dt><dd><p>e.g. with the command <code class="code docutils literal notranslate"><span class="pre">cd</span> <span class="pre">\Users\[USERNAME]\Downloads\boxes-master</span></code></p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>Run the development server with the command</dt><dd><p><code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts\boxesserver</span></code>
+Note: You likely will be notified by your firewall that it blocked network
+access. If you want to use boxesserver you need to allow connections.</p>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/windows_cmd_python_boxesserver_firewall.png"><img alt="Screenshot of command for running boxesserver and firewall notice" src="../_images/windows_cmd_python_boxesserver_firewall.png" style="width: 512.0px; height: 384.0px;" /></a>
+</figure>
+</dd>
+</dl>
+</li>
+<li><p>Open the address <a class="reference external" href="http://localhost:8000/">http://localhost:8000/</a> in your browser and have fun :)</p>
+<blockquote>
+<div><figure class="align-center">
+<a class="reference internal image-reference" href="../_images/windows_browser_boxespy.png"><img alt="Screenshot of a browser window running Boxes.py locally" src="../_images/windows_browser_boxespy.png" style="width: 512.0px; height: 384.0px;" /></a>
+</figure>
+</div></blockquote>
+</li>
+</ol>
+<p>Additionally the command line version of Boxes.py can be used with
+the command <code class="code docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts\boxes</span></code>.</p>
+</section>
+<section id="windows-subsystem-for-linux">
+<h2>Windows Subsystem for Linux<a class="headerlink" href="#windows-subsystem-for-linux" title="Permalink to this headline">¶</a></h2>
+<p>Another way of installing Boxes.py on Windows is to use the Windows Subsystem
+for Linux (WSL). This requires newer versions of Windows 10. Once it is
+installed (e.g. via the Ubuntu App from the Microsoft Store), the installation
+is identical to the installation on Linux systems.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Windows</a><ul>
+<li><a class="reference internal" href="#native">Native</a></li>
+<li><a class="reference internal" href="#windows-subsystem-for-linux">Windows Subsystem for Linux</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="macos.html"
+                          title="previous chapter">macOS</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../usermanual.html"
+                          title="next chapter">Using Boxes.py</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/install/windows.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../usermanual.html" title="Using Boxes.py"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="macos.html" title="macOS"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../install.html" >Installation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Windows</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

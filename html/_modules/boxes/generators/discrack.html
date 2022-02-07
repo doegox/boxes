@@ -1,0 +1,365 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.generators.discrack &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nature.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" accesskey="U">boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.discrack</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.generators.discrack</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># coding: utf-8</span>
+<span class="c1"># Copyright (C) 2019 chrysn &lt;chrysn@fsfe.org&gt;</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is free software: you can redistribute it and/or modify</span>
+<span class="c1">#   it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#   the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#   (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is distributed in the hope that it will be useful,</span>
+<span class="c1">#   but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#   GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#   You should have received a copy of the GNU General Public License</span>
+<span class="c1">#   along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">unicode_literals</span>
+
+<span class="kn">from</span> <span class="nn">boxes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span>
+
+<span class="k">def</span> <span class="nf">offset_radius_in_square</span><span class="p">(</span><span class="n">squareside</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">outset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;From the centre of a square, rotate by an angle relative to the</span>
+<span class="sd">    vertical, move away from the center (down if angle = 0), and then in a</span>
+<span class="sd">    right angle until the border of the square. Return the length of that last</span>
+<span class="sd">    segment.</span>
+
+<span class="sd">    Note that for consistency with other boxes.py methods, angle is given in</span>
+<span class="sd">    degree.</span>
+
+<span class="sd">    &gt;&gt;&gt; # Without rotation, it&#39;s always half the square length</span>
+<span class="sd">    &gt;&gt;&gt; offset_radius_in_square(20, 0, 0)</span>
+<span class="sd">    10.0</span>
+<span class="sd">    &gt;&gt;&gt; offset_radius_in_square(20, 0, 5)</span>
+<span class="sd">    10.0</span>
+<span class="sd">    &gt;&gt;&gt; # Without offset, it&#39;s half squre length divided by cos(angle) -- at</span>
+<span class="sd">    &gt;&gt;&gt; # least before it hits the next wall</span>
+<span class="sd">    &gt;&gt;&gt; offset_radius_in_square(20, 15, 0) # doctest:+ELLIPSIS</span>
+<span class="sd">    10.35276...</span>
+<span class="sd">    &gt;&gt;&gt; offset_radius_in_square(20, 45, 0) # doctest:+ELLIPSIS</span>
+<span class="sd">    14.1421...</span>
+<span class="sd">    &gt;&gt;&gt; # Positive angles make the segment initially shorter...</span>
+<span class="sd">    &gt;&gt;&gt; offset_radius_in_square(20, 5, 10) &lt; 10</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; # ... while negative angles make it longer.</span>
+<span class="sd">    &gt;&gt;&gt; offset_radius_in_square(20, -5, 10) &gt; 10</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">angle</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">90</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">offset_radius_in_square</span><span class="p">(</span><span class="n">squareside</span><span class="p">,</span> <span class="n">angle</span> <span class="o">+</span> <span class="mi">180</span><span class="p">,</span> <span class="n">outset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;</span> <span class="mi">90</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">offset_radius_in_square</span><span class="p">(</span><span class="n">squareside</span><span class="p">,</span> <span class="n">angle</span> <span class="o">-</span> <span class="mi">180</span><span class="p">,</span> <span class="n">outset</span><span class="p">)</span>
+
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">pi</span>
+
+    <span class="n">step_right</span> <span class="o">=</span> <span class="n">outset</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+    <span class="n">step_down</span> <span class="o">=</span> <span class="n">outset</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">len_right</span> <span class="o">=</span> <span class="p">(</span><span class="n">squareside</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">step_right</span><span class="p">)</span> <span class="o">/</span> <span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">squareside</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="k">if</span> <span class="n">angle</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">len_right</span>
+    <span class="k">if</span> <span class="n">angle</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">len_up</span> <span class="o">=</span> <span class="p">(</span><span class="n">squareside</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">step_down</span><span class="p">)</span> <span class="o">/</span> <span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">len_up</span><span class="p">,</span> <span class="n">len_right</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># angle &lt; 0</span>
+        <span class="n">len_down</span> <span class="o">=</span> <span class="o">-</span> <span class="p">(</span><span class="n">squareside</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">step_down</span><span class="p">)</span> <span class="o">/</span> <span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">len_down</span><span class="p">,</span> <span class="n">len_right</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DiscRack"><a class="viewcode-back" href="../../../generators.html#boxes.generators.discrack.DiscRack">[docs]</a><span class="k">class</span> <span class="nc">DiscRack</span><span class="p">(</span><span class="n">Boxes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A rack for storing disk-shaped objects vertically next to each other&quot;&quot;&quot;</span>
+
+    <span class="n">ui_group</span> <span class="o">=</span> <span class="s2">&quot;Shelf&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Boxes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">buildArgParser</span><span class="p">(</span><span class="n">sx</span><span class="o">=</span><span class="s2">&quot;20*10&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--disc_diameter&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">150.0</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Disc diameter in mm&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--disc_thickness&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Thickness of the discs in mm&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--lower_factor&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Position of the lower rack grids along the radius&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--rear_factor&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Position of the rear rack grids along the radius&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--disc_outset&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Additional space kept between the disks and the outbox of the rack&quot;</span><span class="p">)</span>
+
+        <span class="c1"># These can be parameterized, but the default value of pulling them up</span>
+        <span class="c1"># to the box front is good enough for so many cases it&#39;d only clutter</span>
+        <span class="c1"># the user interface.</span>
+        <span class="c1">#</span>
+        <span class="c1"># The parameters can be resurfaced when there is something like rare or</span>
+        <span class="c1"># advanced settings.</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        self.argparser.add_argument(</span>
+<span class="sd">            &quot;--lower_outset&quot;, action=&quot;store&quot;, type=float, default=0.0,</span>
+<span class="sd">            help=&quot;Space in front of the disk slits (0: automatic)&quot;)</span>
+<span class="sd">        self.argparser.add_argument(</span>
+<span class="sd">            &quot;--rear_outset&quot;, action=&quot;store&quot;, type=float, default=0.0,</span>
+<span class="sd">            help=&quot;Space above the disk slits (0: automatic)&quot;)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--angle&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Backwards slant of the rack&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addSettingsArgs</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">FingerJointSettings</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">parseArgs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">Boxes</span><span class="o">.</span><span class="n">parseArgs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lower_outset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_outset</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">calculate</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">disc_diameter</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">disc_outset</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">disc_diameter</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="c1"># distance between radius line and front (or rear) end of the slit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lower_halfslit</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_factor</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rear_halfslit</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_factor</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="kc">True</span><span class="p">:</span> <span class="c1"># self.lower_outset == 0: # when lower_outset parameter is re-enabled</span>
+            <span class="n">toplim</span> <span class="o">=</span> <span class="n">offset_radius_in_square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_factor</span><span class="p">)</span>
+            <span class="c1"># With typical positive angles, the lower surface of board will be limiting</span>
+            <span class="n">bottomlim</span> <span class="o">=</span> <span class="n">offset_radius_in_square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_factor</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lower_outset</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">toplim</span><span class="p">,</span> <span class="n">bottomlim</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_halfslit</span>
+
+        <span class="k">if</span> <span class="kc">True</span><span class="p">:</span> <span class="c1"># self.rear_outset == 0: # when rear_outset parameter is re-enabled</span>
+            <span class="c1"># With typical positive angles, the upper surface of board will be limiting</span>
+            <span class="n">toplim</span> <span class="o">=</span> <span class="n">offset_radius_in_square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_factor</span><span class="p">)</span>
+            <span class="n">bottomlim</span> <span class="o">=</span> <span class="n">offset_radius_in_square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_factor</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rear_outset</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">toplim</span><span class="p">,</span> <span class="n">bottomlim</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_halfslit</span>
+
+        <span class="c1"># front outset, space to radius, space to rear part, plus nothing as fingers extend out</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lower_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_outset</span> <span class="o">+</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">lower_halfslit</span> <span class="o">+</span> \
+                <span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_factor</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rear_size</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_factor</span> <span class="o">+</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">rear_halfslit</span> <span class="o">+</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">rear_outset</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">warn_on_demand</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">warn_on_demand</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">warnings</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Are the discs supported on the outer ends?</span>
+
+        <span class="k">def</span> <span class="nf">word_thickness</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;very thin (</span><span class="si">%.2g</span><span class="s2"> mm at a thickness of </span><span class="si">%.2g</span><span class="s2"> mm)&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;absent&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_outset</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Rear upper constraint is </span><span class="si">%s</span><span class="s2">. Consider increasing&quot;</span>
+                    <span class="s2">&quot; the disc outset parameter, or move the angle away from 45°.&quot;</span>
+                    <span class="o">%</span> <span class="n">word_thickness</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rear_outset</span><span class="p">)</span>
+                    <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_outset</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Lower front constraint is </span><span class="si">%s</span><span class="s2">. Consider increasing&quot;</span>
+                    <span class="s2">&quot; the disc outset parameter, or move the angle away from 45°.&quot;</span>
+                    <span class="o">%</span> <span class="n">word_thickness</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lower_outset</span><span class="p">))</span>
+
+        <span class="c1"># Are the discs supported where the grids meet?</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">disc_diameter</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">inner_lowerdistance</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_factor</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_halfslit</span>
+        <span class="n">inner_reardistance</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_factor</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_halfslit</span>
+
+        <span class="k">if</span> <span class="n">inner_lowerdistance</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">inner_reardistance</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Corner is inside the disc radios, discs would not&quot;</span>
+                    <span class="s2">&quot; be supported. Consider increasing the factor parameters.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Won&#39;t the type-H edge on the rear side make the whole contraption</span>
+        <span class="c1"># wiggle?</span>
+
+        <span class="n">max_slitlengthplush</span> <span class="o">=</span> <span class="n">offset_radius_in_square</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span> <span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_factor</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">)</span>
+        <span class="n">slitlengthplush</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_halfslit</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">*</span> <span class="p">(</span> <span class="mi">1</span> <span class="o">+</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">edgesettings</span><span class="p">[</span><span class="s1">&#39;FingerJoint&#39;</span><span class="p">][</span><span class="s1">&#39;edge_width&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">slitlengthplush</span> <span class="o">&gt;</span> <span class="n">max_slitlengthplush</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Joint would protrude from lower box edge. Consider&quot;</span>
+                    <span class="s2">&quot; increasing the the disc outset parameter, or move the&quot;</span>
+                    <span class="s2">&quot; angle away from 45°.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Can the discs be removed at all?</span>
+        <span class="c1"># Does not need explicit checking, for Thales&#39; theorem tells us that at</span>
+        <span class="c1"># the point wher there is barely support in the corner, three contact</span>
+        <span class="c1"># points on the circle form just a demicircle and the discs can be</span>
+        <span class="c1"># inserted/removed. When we keep the other contact points and move the</span>
+        <span class="c1"># slits away from the corner, the disc gets smaller and thus will fit</span>
+        <span class="c1"># through the opening that is as wide as the diameter of the largest</span>
+        <span class="c1"># possible circle.</span>
+
+        <span class="c1"># Act on warnings</span>
+
+        <span class="k">if</span> <span class="n">warnings</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">warnings</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">sidewall_holes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">disc_diameter</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">)</span>
+        <span class="c1"># can now move down to paint horizontal lower part, or right to paint</span>
+        <span class="c1"># vertical rear part</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_context</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span>
+                    <span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_factor</span><span class="p">,</span>
+                    <span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_factor</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="mi">90</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_size</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">saved_context</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span>
+                    <span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_factor</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_factor</span><span class="p">,</span>
+                    <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_size</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">disc_diameter</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_draw_slits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inset</span><span class="p">,</span> <span class="n">halfslit</span><span class="p">):</span>
+        <span class="n">total_x</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sx</span><span class="p">:</span>
+            <span class="n">center_x</span> <span class="o">=</span> <span class="n">total_x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span>
+
+            <span class="n">total_x</span> <span class="o">+=</span> <span class="n">x</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularHole</span><span class="p">(</span><span class="n">inset</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">halfslit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">disc_thickness</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">inset</span> <span class="o">-</span> <span class="n">halfslit</span><span class="p">,</span> <span class="n">center_x</span> <span class="o">-</span> <span class="n">x</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">halfslit</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">lower_holes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">disc_diameter</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">inset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_outset</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_halfslit</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_slits</span><span class="p">(</span><span class="n">inset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_halfslit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">rear_holes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">disc_diameter</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">inset</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_factor</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw_slits</span><span class="p">(</span><span class="n">inset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rear_halfslit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">o</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lower_factor</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lower_factor</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rear_factor</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rear_factor</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="s2">&quot;eeee&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sidewall_holes</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="s2">&quot;eeee&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right mirror&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sidewall_holes</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lower_size</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sx</span><span class="p">),</span> <span class="s2">&quot;fffe&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lower_holes</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rear_size</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sx</span><span class="p">),</span> <span class="s2">&quot;fefh&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rear_holes</span><span class="p">])</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" >boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.discrack</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

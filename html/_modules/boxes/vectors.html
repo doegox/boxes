@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.vectors &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nature.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../boxes.html" accesskey="U">boxes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.vectors</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.vectors</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (C) 2013-2014 Florian Festi</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is free software: you can redistribute it and/or modify</span>
+<span class="c1">#   it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#   the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#   (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is distributed in the hope that it will be useful,</span>
+<span class="c1">#   but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#   GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#   You should have received a copy of the GNU General Public License</span>
+<span class="c1">#   along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="normalize"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.normalize">[docs]</a><span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="s2">&quot;set lenght of vector to one&quot;</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+    <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">l</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">l</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="vlength"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.vlength">[docs]</a><span class="k">def</span> <span class="nf">vlength</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span></div>
+
+
+<div class="viewcode-block" id="vclip"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.vclip">[docs]</a><span class="k">def</span> <span class="nf">vclip</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">vlength</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="n">length</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">vscalmul</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">length</span> <span class="o">/</span> <span class="n">l</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">v</span></div>
+
+
+<div class="viewcode-block" id="vdiff"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.vdiff">[docs]</a><span class="k">def</span> <span class="nf">vdiff</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
+    <span class="s2">&quot;vector from point1 to point2&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">p1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="vadd"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.vadd">[docs]</a><span class="k">def</span> <span class="nf">vadd</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+    <span class="s2">&quot;Sum of two vectors&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">v1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="vorthogonal"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.vorthogonal">[docs]</a><span class="k">def</span> <span class="nf">vorthogonal</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="s2">&quot;orthogonal vector&quot;</span>
+    <span class="s2">&quot;Orthogonal vector&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="vscalmul"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.vscalmul">[docs]</a><span class="k">def</span> <span class="nf">vscalmul</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+    <span class="s2">&quot;scale vector by a&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">a</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="dotproduct"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.dotproduct">[docs]</a><span class="k">def</span> <span class="nf">dotproduct</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+    <span class="s2">&quot;Dot product&quot;</span>
+    <span class="k">return</span> <span class="n">v1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="circlepoint"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.circlepoint">[docs]</a><span class="k">def</span> <span class="nf">circlepoint</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="tangent"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.tangent">[docs]</a><span class="k">def</span> <span class="nf">tangent</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="s2">&quot;angle and length of a tangent to a circle at x,y with raduis r&quot;</span>
+    <span class="n">l1</span> <span class="o">=</span> <span class="n">vlength</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+    <span class="n">a1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">a2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="n">l1</span><span class="p">)</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span> <span class="o">*</span> <span class="n">l1</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">a1</span><span class="o">+</span><span class="n">a2</span><span class="p">,</span> <span class="n">l2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="rotm"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.rotm">[docs]</a><span class="k">def</span> <span class="nf">rotm</span><span class="p">(</span><span class="n">angle</span><span class="p">):</span>
+    <span class="s2">&quot;Rotation matrix&quot;</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="mi">0</span><span class="p">]]</span></div>
+
+
+<div class="viewcode-block" id="vtransl"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.vtransl">[docs]</a><span class="k">def</span> <span class="nf">vtransl</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+    <span class="n">m0</span><span class="p">,</span> <span class="n">m1</span> <span class="o">=</span> <span class="n">m</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">m0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">m0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">m0</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">m1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">m1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">m1</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span></div>
+
+
+<div class="viewcode-block" id="mmul"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.mmul">[docs]</a><span class="k">def</span> <span class="nf">mmul</span><span class="p">(</span><span class="n">m0</span><span class="p">,</span> <span class="n">m1</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">m0</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m0</span><span class="p">))]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m0</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m0</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m0</span><span class="p">)):</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">m0</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">m1</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="kerf"><a class="viewcode-back" href="../../boxes.html#boxes.vectors.kerf">[docs]</a><span class="k">def</span> <span class="nf">kerf</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Outset points by k</span>
+<span class="sd">    Assumes a closed loop of points</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">lp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)):</span>
+        <span class="c1"># get normalized orthogonals of both segments</span>
+        <span class="n">v1</span> <span class="o">=</span> <span class="n">vorthogonal</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">vdiff</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">i</span><span class="p">])))</span>
+        <span class="n">v2</span> <span class="o">=</span> <span class="n">vorthogonal</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">vdiff</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">points</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">lp</span><span class="p">])))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">closed</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">v1</span> <span class="o">=</span> <span class="n">v2</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">lp</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">v2</span> <span class="o">=</span> <span class="n">v1</span>
+        <span class="c1"># direction the point has to move</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">normalize</span><span class="p">(</span><span class="n">vadd</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">))</span>
+        <span class="c1"># cos of the half the angle between the segments</span>
+        <span class="n">cos_alpha</span> <span class="o">=</span> <span class="n">dotproduct</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vadd</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">vscalmul</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="o">-</span><span class="n">k</span> <span class="o">/</span> <span class="n">cos_alpha</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../boxes.html" >boxes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.vectors</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

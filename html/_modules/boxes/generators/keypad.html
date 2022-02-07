@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.generators.keypad &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nature.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" accesskey="U">boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.keypad</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.generators.keypad</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Generator for keypads with mechanical switches.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">from</span> <span class="nn">boxes</span> <span class="kn">import</span> <span class="n">Boxes</span><span class="p">,</span> <span class="n">boolarg</span>
+<span class="kn">from</span> <span class="nn">boxes.edges</span> <span class="kn">import</span> <span class="n">FingerJointSettings</span>
+<span class="kn">from</span> <span class="nn">.keyboard</span> <span class="kn">import</span> <span class="n">Keyboard</span>
+
+
+<div class="viewcode-block" id="Keypad"><a class="viewcode-back" href="../../../generators.html#boxes.generators.keypad.Keypad">[docs]</a><span class="k">class</span> <span class="nc">Keypad</span><span class="p">(</span><span class="n">Boxes</span><span class="p">,</span> <span class="n">Keyboard</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generator for keypads with mechanical switches.&quot;&quot;&quot;</span>
+    <span class="n">ui_group</span> <span class="o">=</span> <span class="s1">&#39;Box&#39;</span>
+    <span class="n">btn_size</span> <span class="o">=</span> <span class="mf">15.6</span>
+    <span class="n">space_between_btn</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">box_padding</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">triangle</span> <span class="o">=</span> <span class="mf">25.0</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--h&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;height of the box&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--top1_thickness&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;thickness of the button hold layer, cherry like switches &#39;</span>
+                  <span class="s1">&#39;need 1.5mm or smaller to snap in&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--top2_enable&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">boolarg</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;enables another top layer that can hold CPG151101S11 &#39;</span>
+                  <span class="s1">&#39;hotswap sockets&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--top2_thickness&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;thickness of the hotplug layer, CPG151101S11 hotswap &#39;</span>
+                  <span class="s1">&#39;sockets need 1.2mm to 1.5mm&#39;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Add parameter common with other keyboard projects</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_common_keyboard_parameters</span><span class="p">(</span>
+            <span class="c1"># Hotswap already depends on top2_enable setting, a second parameter</span>
+            <span class="c1"># for it would be useless</span>
+            <span class="n">add_hotswap_parameter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="c1"># By default, 3 columns of 4 rows</span>
+            <span class="n">default_columns_definition</span><span class="o">=</span><span class="s2">&quot;4x3&quot;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">addSettingsArgs</span><span class="p">(</span><span class="n">FingerJointSettings</span><span class="p">,</span> <span class="n">surroundingspaces</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_x_y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the keypad&#39;s size based on the number of buttons.&quot;&quot;&quot;</span>
+        <span class="n">spacing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">btn_size</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">space_between_btn</span>
+        <span class="n">border</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">box_padding</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">space_between_btn</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns_definition</span><span class="p">)</span> <span class="o">*</span> <span class="n">spacing</span> <span class="o">+</span> <span class="n">border</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">offset</span> <span class="o">+</span> <span class="n">keys</span> <span class="o">*</span> <span class="n">spacing</span> <span class="k">for</span> <span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns_definition</span><span class="p">)</span> <span class="o">+</span> <span class="n">border</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Renders the keypad.&quot;&quot;&quot;</span>
+        <span class="c1"># deeper edge for top to add multiple layers</span>
+        <span class="n">deep_edge</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">settings</span><span class="p">)</span>
+        <span class="n">deep_edge</span><span class="o">.</span><span class="n">thickness</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">top1_thickness</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">top2_enable</span><span class="p">:</span>
+            <span class="n">deep_edge</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top2_thickness</span>
+        <span class="n">deep_edge</span><span class="o">.</span><span class="n">edgeObjects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;gGH&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span> <span class="o">=</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_x_y</span><span class="p">()</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span>
+
+        <span class="c1"># box sides</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="s2">&quot;GFEF&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">wallx_cb</span><span class="p">],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="s2">&quot;GfEf&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">wally_cb</span><span class="p">],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="s2">&quot;GfEf&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">wally_cb</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="s2">&quot;GFEF&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">wallx_cb</span><span class="p">],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;left up&quot;</span><span class="p">)</span>
+
+        <span class="c1"># keypad lids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">to_grid_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">support_hole</span><span class="p">),</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">to_grid_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key_hole</span><span class="p">),</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">top2_enable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">to_grid_callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hotplug</span><span class="p">))</span>
+
+        <span class="c1"># screwable</span>
+        <span class="n">tr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangle</span>
+        <span class="n">trh</span> <span class="o">=</span> <span class="n">tr</span> <span class="o">/</span> <span class="mi">3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+            <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="n">trh</span><span class="p">,</span> <span class="n">trh</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">d2</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="n">move</span><span class="o">=</span><span class="s1">&#39;left up&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularTriangle</span><span class="p">(</span>
+            <span class="n">tr</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="s2">&quot;ffe&quot;</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="n">trh</span><span class="p">,</span> <span class="n">trh</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">d1</span><span class="p">)]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">to_grid_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inner_callback</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">callback</span><span class="p">():</span>
+            <span class="c1"># move to first key center</span>
+            <span class="n">key_margin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box_padding</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">btn_size</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">key_margin</span><span class="p">,</span> <span class="n">key_margin</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">apply_callback_on_columns</span><span class="p">(</span>
+                <span class="n">inner_callback</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns_definition</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">btn_size</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">space_between_btn</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">callback</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">hotplug</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Callback for the key stabelizers.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pcb_holes</span><span class="p">(</span>
+            <span class="n">with_pcb_mount</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pcb_mount_enable</span><span class="p">,</span>
+            <span class="n">with_diode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">diode_enable</span><span class="p">,</span>
+            <span class="n">with_led</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">led_enable</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">support_hole</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configured_plate_cutout</span><span class="p">(</span><span class="n">support</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">key_hole</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configured_plate_cutout</span><span class="p">()</span>
+
+    <span class="c1"># stolen form electronics-box</span>
+    <span class="k">def</span> <span class="nf">wallx_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Callback for triangle holes on x-side.&quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_x_y</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangle</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangle</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
+
+    <span class="c1"># stolen form electronics-box</span>
+    <span class="k">def</span> <span class="nf">wally_cb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Callback for triangle holes on y-side.&quot;&quot;&quot;</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_x_y</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangle</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">-</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangle</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" >boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.keypad</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.generators.atreus21 &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nature.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" accesskey="U">boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.atreus21</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.generators.atreus21</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Generator for a split atreus keyboard.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">from</span> <span class="nn">boxes</span> <span class="kn">import</span> <span class="n">Boxes</span><span class="p">,</span> <span class="n">Color</span><span class="p">,</span> <span class="n">holeCol</span><span class="p">,</span> <span class="n">restore</span><span class="p">,</span> <span class="n">boolarg</span>
+<span class="kn">from</span> <span class="nn">boxes.edges</span> <span class="kn">import</span> <span class="n">FingerJointSettings</span>
+<span class="kn">from</span> <span class="nn">.keyboard</span> <span class="kn">import</span> <span class="n">Keyboard</span>
+
+
+<div class="viewcode-block" id="Atreus21"><a class="viewcode-back" href="../../../generators.html#boxes.generators.atreus21.Atreus21">[docs]</a><span class="k">class</span> <span class="nc">Atreus21</span><span class="p">(</span><span class="n">Boxes</span><span class="p">,</span> <span class="n">Keyboard</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generator for a split atreus keyboard.&quot;&quot;&quot;</span>
+    <span class="n">ui_group</span> <span class="o">=</span> <span class="s1">&#39;Misc&#39;</span>
+    <span class="n">btn_size</span> <span class="o">=</span> <span class="mf">15.6</span>
+    <span class="n">half_btn</span> <span class="o">=</span> <span class="n">btn_size</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">border</span> <span class="o">=</span> <span class="mi">6</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_common_keyboard_parameters</span><span class="p">(</span>
+            <span class="c1"># By default, columns from Atreus 21</span>
+            <span class="n">default_columns_definition</span><span class="o">=</span><span class="s1">&#39;4@3/4@6/4@11/4@5/4@0/1@</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_size</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Renders the keyboard.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+        <span class="n">case_x</span><span class="p">,</span> <span class="n">case_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_x_y</span><span class="p">()</span>
+
+        <span class="n">margin</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">reverse</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]:</span>
+            <span class="c1"># keyholder</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="n">reverse</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">case_x</span> <span class="o">+</span> <span class="n">margin</span><span class="p">)</span>
+
+            <span class="c1"># support</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">support</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="n">reverse</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="o">-</span><span class="n">case_x</span> <span class="o">-</span> <span class="n">margin</span><span class="p">,</span> <span class="n">case_y</span> <span class="o">+</span> <span class="n">margin</span><span class="p">)</span>
+
+            <span class="c1"># hotplug</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">half</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hotplug</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="n">reverse</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">case_x</span> <span class="o">+</span> <span class="n">margin</span><span class="p">)</span>
+
+            <span class="c1"># border</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outer</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rim</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">holes</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="o">-</span><span class="n">case_x</span> <span class="o">-</span> <span class="n">margin</span><span class="p">,</span> <span class="n">case_y</span> <span class="o">+</span> <span class="n">margin</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">holes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diameter</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mf">1.5</span><span class="p">):</span>
+        <span class="n">case_x</span><span class="p">,</span> <span class="n">case_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_x_y</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="n">margin</span><span class="p">,</span> <span class="n">case_x</span> <span class="o">+</span> <span class="n">margin</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="n">margin</span><span class="p">,</span> <span class="n">case_y</span> <span class="o">+</span> <span class="n">margin</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">hole</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">diameter</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">micro</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">17.9</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">33</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span>
+        <span class="n">case_x</span><span class="p">,</span> <span class="n">case_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_x_y</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularHole</span><span class="p">(</span>
+            <span class="n">x</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.5</span> <span class="o">+</span> <span class="n">case_x</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="mf">.5</span><span class="p">,</span>
+            <span class="n">y</span> <span class="o">*</span> <span class="o">-</span><span class="mf">.5</span> <span class="o">+</span> <span class="n">case_y</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="mf">.5</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+        <span class="p">)</span>
+
+    <span class="nd">@restore</span>
+    <span class="k">def</span> <span class="nf">rim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_x_y</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="mf">.5</span><span class="p">,</span> <span class="n">y</span> <span class="o">*</span> <span class="mf">.5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularHole</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+    <span class="nd">@restore</span>
+    <span class="k">def</span> <span class="nf">outer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_case_x_y</span><span class="p">()</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">corner</span> <span class="o">=</span> <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="n">b</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span><span class="o">*</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">corner</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">corner</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="nd">@restore</span>
+    <span class="k">def</span> <span class="nf">half</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hole_cb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">hole_cb</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hole_cb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">half_btn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">half_btn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_callback_on_columns</span><span class="p">(</span>
+            <span class="n">hole_cb</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">columns_definition</span><span class="p">,</span>
+            <span class="n">reverse</span><span class="o">=</span><span class="n">reverse</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">support</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configured_plate_cutout</span><span class="p">(</span><span class="n">support</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">hotplug</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pcb_holes</span><span class="p">(</span>
+            <span class="n">with_hotswap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hotswap_enable</span><span class="p">,</span>
+            <span class="n">with_pcb_mount</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pcb_mount_enable</span><span class="p">,</span>
+            <span class="n">with_diode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">diode_enable</span><span class="p">,</span>
+            <span class="n">with_led</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">led_enable</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configured_plate_cutout</span><span class="p">()</span>
+
+    <span class="c1"># get case sizes</span>
+    <span class="k">def</span> <span class="nf">_case_x_y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">spacing</span> <span class="o">=</span> <span class="n">Keyboard</span><span class="o">.</span><span class="n">STANDARD_KEY_SPACING</span>
+        <span class="n">margin</span> <span class="o">=</span> <span class="n">spacing</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">btn_size</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns_definition</span><span class="p">)</span> <span class="o">*</span> <span class="n">spacing</span> <span class="o">-</span> <span class="n">margin</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">offset</span> <span class="o">+</span> <span class="n">keys</span> <span class="o">*</span> <span class="n">spacing</span> <span class="k">for</span> <span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns_definition</span><span class="p">)</span> <span class="o">-</span> <span class="n">margin</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" >boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.atreus21</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

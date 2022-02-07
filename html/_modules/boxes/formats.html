@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.formats &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nature.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../boxes.html" accesskey="U">boxes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.formats</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.formats</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># Copyright (C) 2013-2014 Florian Festi</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is free software: you can redistribute it and/or modify</span>
+<span class="c1">#   it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#   the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#   (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is distributed in the hope that it will be useful,</span>
+<span class="c1">#   but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#   GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#   You should have received a copy of the GNU General Public License</span>
+<span class="c1">#   along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">boxes.drawing</span> <span class="kn">import</span> <span class="n">SVGSurface</span><span class="p">,</span> <span class="n">PSSurface</span><span class="p">,</span> <span class="n">Context</span>
+
+<div class="viewcode-block" id="Formats"><a class="viewcode-back" href="../../boxes.html#boxes.formats.Formats">[docs]</a><span class="k">class</span> <span class="nc">Formats</span><span class="p">:</span>
+
+    <span class="n">pstoedit_candidates</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;/usr/bin/pstoedit&quot;</span><span class="p">,</span> <span class="s2">&quot;pstoedit&quot;</span><span class="p">,</span> <span class="s2">&quot;pstoedit.exe&quot;</span><span class="p">]</span>
+
+    <span class="n">_BASE_FORMATS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;svg&#39;</span><span class="p">,</span> <span class="s1">&#39;svg_Ponoko&#39;</span><span class="p">,</span> <span class="s1">&#39;ps&#39;</span><span class="p">]</span>
+
+    <span class="n">formats</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;svg&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;svg_Ponoko&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;ps&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;dxf&quot;</span><span class="p">:</span> <span class="s2">&quot;-flat 0.1 -f dxf:-mm&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;gcode&quot;</span><span class="p">:</span> <span class="s2">&quot;-f gcode&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;plt&quot;</span><span class="p">:</span> <span class="s2">&quot;-f plot-hpgl&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;ai&quot;</span><span class="p">:</span> <span class="s2">&quot;-f ps2ai&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+        <span class="s2">&quot;pdf&quot;</span><span class="p">:</span> <span class="s2">&quot;-f pdf&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+    <span class="p">}</span>
+
+    <span class="n">http_headers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;svg&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;image/svg+xml; charset=utf-8&#39;</span><span class="p">)],</span>
+        <span class="s2">&quot;svg_Ponoko&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;image/svg+xml; charset=utf-8&#39;</span><span class="p">)],</span>
+        <span class="s2">&quot;ps&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/postscript&#39;</span><span class="p">)],</span>
+        <span class="s2">&quot;dxf&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;image/vnd.dxf&#39;</span><span class="p">)],</span>
+        <span class="s2">&quot;plt&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39; application/vnd.hp-hpgl&#39;</span><span class="p">)],</span>
+        <span class="s2">&quot;gcode&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain; charset=utf-8&#39;</span><span class="p">)],</span>
+
+        <span class="c1"># &quot;&quot; : [(&#39;Content-type&#39;, &#39;&#39;)],</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pstoedit_candidates</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pstoedit</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pstoedit</span><span class="p">:</span>
+                <span class="k">break</span>
+
+<div class="viewcode-block" id="Formats.getFormats"><a class="viewcode-back" href="../../boxes.html#boxes.formats.Formats.getFormats">[docs]</a>    <span class="k">def</span> <span class="nf">getFormats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pstoedit</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_BASE_FORMATS</span></div>
+
+<div class="viewcode-block" id="Formats.getSurface"><a class="viewcode-back" href="../../boxes.html#boxes.formats.Formats.getSurface">[docs]</a>    <span class="k">def</span> <span class="nf">getSurface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">,</span> <span class="s2">&quot;svg_Ponoko&quot;</span><span class="p">):</span>
+            <span class="n">surface</span> <span class="o">=</span> <span class="n">SVGSurface</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">surface</span> <span class="o">=</span> <span class="n">PSSurface</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="n">ctx</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">surface</span><span class="p">,</span> <span class="n">ctx</span></div>
+
+<div class="viewcode-block" id="Formats.convert"><a class="viewcode-back" href="../../boxes.html#boxes.formats.Formats.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_BASE_FORMATS</span><span class="p">:</span>
+            <span class="n">fd</span><span class="p">,</span> <span class="n">tmpfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">pstoedit</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">formats</span><span class="p">[</span><span class="n">fmt</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">filename</span><span class="p">,</span> <span class="n">tmpfile</span><span class="p">]</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">err</span><span class="p">:</span>
+                <span class="c1"># XXX show stderr output</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Conversion failed. pstoedit returned </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">err</span><span class="p">)</span>
+
+            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../boxes.html" >boxes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.formats</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

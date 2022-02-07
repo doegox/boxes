@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Contributing to Boxes.py &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using the Boxes.py API" href="apidoc.html" />
+    <link rel="prev" title="Using Boxes.py" href="usermanual.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="apidoc.html" title="Using the Boxes.py API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="usermanual.html" title="Using Boxes.py"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Contributing to Boxes.py</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="contributing-to-boxes-py">
+<h1>Contributing to Boxes.py<a class="headerlink" href="#contributing-to-boxes-py" title="Permalink to this headline">¶</a></h1>
+<p>You are thinking about contributing to Boxes.py? That’s great!
+Boxes.py is designed to be re-used and extended.</p>
+<p>This document gives you some guidelines how your contribution is most
+likely to impact the development and your changes are most likely to
+be merged into the upstream repository.</p>
+<p>Most of them should be just general best practises and not be
+surprising. Don’t worry if you find them too complicated. It is OK
+leave the final touch to someone else.</p>
+<section id="writing-code-for-boxes-py">
+<h2>Writing code for Boxes.py<a class="headerlink" href="#writing-code-for-boxes-py" title="Permalink to this headline">¶</a></h2>
+<p>You will often be compelled to just do a quick thing that will solve
+your immediate needs. That’s fine. But nevertheless it is often worth
+doing things the right way and be able to submit your changes
+upstream. For one to give something back to the community. But also
+for purely selfish reasons like getting the code maintained. Also
+Boxes.py is designed to make doing things properly the easy way.</p>
+<p>Here are some guidelines that make this easier. Depending on what you
+are up to they may apply to a varying degree. It’s ok to submit
+patches that are not quite ready yet. But please state in the pull
+request message what you think the status is and whether you want help
+or are going to finish it on your own.</p>
+<ul class="simple">
+<li><p>Please fork the repository at GitHub before getting started</p></li>
+<li><p>Start with creating separate branches for each of your new  generators or features</p>
+<ul>
+<li><p>You can merge them into your master branch to have them all in one place</p></li>
+<li><p>Please continue your work in the branches and repeatedly merge them to master</p></li>
+</ul>
+</li>
+<li><p>Before submitting a pull request intended to go upstream have clean patches that are self contained and error free</p>
+<ul>
+<li><p>Re-order and squash patches with <em>git rebase -i</em></p></li>
+<li><p>The patches should containing meaningful changes and not (necessarily) reflect how the code was created</p></li>
+<li><p>Rebase your branch to the current master branch</p></li>
+<li><p>Be prepared that your code may get reworked before being merged upstream</p></li>
+</ul>
+</li>
+<li><p>Submit a pull request in GitHub based on your feature branch</p>
+<ul>
+<li><p>Describe the status of the patch set and your intentions with it in the pull request message</p></li>
+</ul>
+</li>
+</ul>
+<p>If you want to discuss your idea open a ticket describing it and ask
+questions there. This is encouraged even if you think you know what
+you want to do. There are many short cuts in Boxes.py and pointing you
+in the right direction may save you a lot of work.</p>
+<p>If you want feed back on you code feel free to open a PR. State that
+this is work in progress in the PR message. It’s OK if it does not
+follow the guidelines (yet).</p>
+<section id="writing-new-generators">
+<h3>Writing new Generators<a class="headerlink" href="#writing-new-generators" title="Permalink to this headline">¶</a></h3>
+<p>Writing new generators is the most straight forward thing to do with
+Boxes.py. Here are some guidelines that make it easier to get them added:</p>
+<ul class="simple">
+<li><p>Start with a copy of another generator or <em>boxes/generators/_template.py</em></p></li>
+<li><p>Commit changes to the library in separate patches</p></li>
+<li><p>Use parameters with sane defaults instead of hard coding dimensions</p></li>
+<li><p>Simple generators can end up as one single commit</p></li>
+<li><p>For more complicated generators there can be multiple patches -
+each adding another feature</p></li>
+</ul>
+</section>
+</section>
+<section id="improving-the-documentation">
+<h2>Improving the Documentation<a class="headerlink" href="#improving-the-documentation" title="Permalink to this headline">¶</a></h2>
+<p>Boxes.py comes with Sphinx based documentation that is in large parts
+generated from the doc strings in the code. Nevertheless documentation
+has a tendency to get outdated. If you encounter outdated pieces of
+documentation feel free to submit a pull request or open a ticket
+pointing out what should be changed or even suggesting a better text.</p>
+<p>To check your changes docs need to be build with <em>make html</em> in
+<em>documentation/src</em>. This places the compiled documentation in
+<em>documentation/build/html</em>. You need to have <em>sphinx</em> installed for
+this to work.</p>
+<p>The online documentation gets build and updated automatically by the Travis CI
+as soon as the changes makes it into the GitHub master branch.</p>
+</section>
+<section id="provide-photos-for-generators">
+<h2>Provide photos for generators<a class="headerlink" href="#provide-photos-for-generators" title="Permalink to this headline">¶</a></h2>
+<p>Many generators still come without an example photo. If you are
+creating such an item consider donating a good picture. You can
+simply attach it to <a class="reference external" href="https://github.com/florianfesti/boxes/issues/140">ticket #140</a>. If you want you can
+also create a proper pull request instead:</p>
+<ul class="simple">
+<li><p>Make sure you have sh, convert (ImageMagick), sed and sha256sum installed</p></li>
+<li><p>The picture needs to be an jpg file with the name of the generator
+(This is case sensitive. Use CamelCase.)</p></li>
+<li><p>The picture should be 1200 pixels wide and square or not too far
+from square (3:4 is fine).</p></li>
+<li><p>Place the file in <em>static/samples/</em></p></li>
+<li><p>Check if the picture shows up at the bottom of the settings page of
+the generator when running <em>scripts/boxesserver</em></p></li>
+<li><p>Change dir to <em>./scripts</em> and there execute <em>./gen_thumbnails.sh</em></p></li>
+<li><p>Check if the thumbnail is seen in the main page when hovering over
+the generator entry</p></li>
+<li><p>Create a commit including <em>static/samples/$GeneratorName*.jpg</em> and
+<em>static/samples/samples.sha256</em></p></li>
+<li><p>Create a pull request from that</p></li>
+</ul>
+</section>
+<section id="improving-the-user-interface">
+<h2>Improving the User Interface<a class="headerlink" href="#improving-the-user-interface" title="Permalink to this headline">¶</a></h2>
+<p>Coming up with good names and good descriptions is hard. Often writing
+a new generator is much easier than coming up with a good name for it
+and its arguments. If you think something deserves a better name or
+description and you can come up with one please don’t hesitate to open
+a ticket. It is this small things that make something like Boxes.py
+easy or hard to use.</p>
+<p>There is also an - often empty - space for a longer text for each
+generator that could house assembling instructions, instructions for
+use or just more detailed descriptions. If you are interested in
+writing some please open a ticket. Your text does not have to be
+perfect. We can work on it together.</p>
+</section>
+<section id="running-the-code">
+<h2>Running the Code<a class="headerlink" href="#running-the-code" title="Permalink to this headline">¶</a></h2>
+<p>To serve website, run <cite>scripts/boxesserver</cite> script</p>
+</section>
+<section id="reporting-bugs">
+<h2>Reporting bugs<a class="headerlink" href="#reporting-bugs" title="Permalink to this headline">¶</a></h2>
+<p>If you encounter issues with Boxes.py, please open a ticket at
+GitHub. Please provide all information necessary to reproduce the
+bug. Often this can be the URL of the broken result. If the issue is
+easy to spot it may be sufficient to just give a brief
+description. Otherwise it can be helpful to attach the resulting SVG,
+a screen shot or the error message. Add a “bug” tag to draw additional
+attention.</p>
+</section>
+<section id="suggesting-new-generators-or-features">
+<h2>Suggesting new generators or features<a class="headerlink" href="#suggesting-new-generators-or-features" title="Permalink to this headline">¶</a></h2>
+<p>If you have an idea for a new generator or feature please open a
+ticket. Give some short rational how or where you would use such a
+thing. Try to give a precise description how it should look like and
+which features and details are important. The less is left open the
+easier it is to implement. You can add an “enhancement” tag.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Contributing to Boxes.py</a><ul>
+<li><a class="reference internal" href="#writing-code-for-boxes-py">Writing code for Boxes.py</a><ul>
+<li><a class="reference internal" href="#writing-new-generators">Writing new Generators</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#improving-the-documentation">Improving the Documentation</a></li>
+<li><a class="reference internal" href="#provide-photos-for-generators">Provide photos for generators</a></li>
+<li><a class="reference internal" href="#improving-the-user-interface">Improving the User Interface</a></li>
+<li><a class="reference internal" href="#running-the-code">Running the Code</a></li>
+<li><a class="reference internal" href="#reporting-bugs">Reporting bugs</a></li>
+<li><a class="reference internal" href="#suggesting-new-generators-or-features">Suggesting new generators or features</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="usermanual.html"
+                          title="previous chapter">Using Boxes.py</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="apidoc.html"
+                          title="next chapter">Using the Boxes.py API</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/CONTRIBUTING.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="apidoc.html" title="Using the Boxes.py API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="usermanual.html" title="Using Boxes.py"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Contributing to Boxes.py</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

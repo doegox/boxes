@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Generators &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Generator Arguments" href="api_arguments.html" />
+    <link rel="prev" title="Architecture" href="api_architecture.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_arguments.html" title="Generator Arguments"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api_architecture.html" title="Architecture"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" accesskey="U">Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Generators</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="generators">
+<h1>Generators<a class="headerlink" href="#generators" title="Permalink to this headline">¶</a></h1>
+<p>Generators are sub classes of</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.Boxes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.</span></span><span class="sig-name descname"><span class="pre">Boxes</span></span><a class="reference internal" href="_modules/boxes.html#Boxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main class – Generator should sub class this</p>
+</dd></dl>
+
+<p>Most code is directly in this class. Sub class are supposed to over
+write the <code class="docutils literal notranslate"><span class="pre">.__init__()</span></code> and <code class="docutils literal notranslate"><span class="pre">.render()</span></code> method.</p>
+<p>The Boxes class keeps a canvas object (self.ctx) that all
+drawing is made on. In addition it keeps a couple of global settings
+used for various drawing operations. See the <code class="docutils literal notranslate"><span class="pre">.__init__()</span></code> method
+for the details.</p>
+<p>For implementing a new generator forking an existing one or using the
+<code class="docutils literal notranslate"><span class="pre">boxes/generators/_template.py</span></code> is probably easier than starting
+from scratch.</p>
+<p>Many methods and attributes are for use of the sub classes. These
+methods are the interface for the user interfaces to interact with the
+generators:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.__init__">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.parseArgs">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">parseArgs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.parseArgs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.parseArgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse command line parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – (Default value = None) parameters, None for using sys.argv</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.render">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement this method in your sub class.</p>
+<p>You will typically need to call .parseArgs() before calling this one</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.open">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare for rendering</p>
+<p>Create canvas and edge and other objects
+Call this before .render()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.close">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finish rendering</p>
+<p>Flush canvas to disk and convert output to requested format if needed.
+Call after .render()</p>
+</dd></dl>
+
+<section id="handling-generators">
+<h2>Handling Generators<a class="headerlink" href="#handling-generators" title="Permalink to this headline">¶</a></h2>
+<p>To handle the generators there is code in the <code class="docutils literal notranslate"><span class="pre">boxes.generators</span></code>
+package.</p>
+<span class="target" id="module-boxes.generators"></span><dl class="py class">
+<dt class="sig sig-object py" id="boxes.generators.UIGroup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.generators.</span></span><span class="sig-name descname"><span class="pre">UIGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/generators.html#UIGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.generators.UIGroup" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="boxes.generators.UIGroup.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/generators.html#UIGroup.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.generators.UIGroup.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="boxes.generators.UIGroup.image">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image</span></span><a class="headerlink" href="#boxes.generators.UIGroup.image" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="boxes.generators.UIGroup.thumbnail">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">thumbnail</span></span><a class="headerlink" href="#boxes.generators.UIGroup.thumbnail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="boxes.generators.getAllBoxGenerators">
+<span class="sig-prename descclassname"><span class="pre">boxes.generators.</span></span><span class="sig-name descname"><span class="pre">getAllBoxGenerators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/generators.html#getAllBoxGenerators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.generators.getAllBoxGenerators" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="boxes.generators.getAllGeneratorModules">
+<span class="sig-prename descclassname"><span class="pre">boxes.generators.</span></span><span class="sig-name descname"><span class="pre">getAllGeneratorModules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/generators.html#getAllGeneratorModules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.generators.getAllGeneratorModules" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>This adds generators to the user interfaces automatically. For this to
+work it is important that the class names are unique. So whenever you
+start a new generator please change the class name right away.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Generators</a><ul>
+<li><a class="reference internal" href="#handling-generators">Handling Generators</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="api_architecture.html"
+                          title="previous chapter">Architecture</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="api_arguments.html"
+                          title="next chapter">Generator Arguments</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api_generator.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_arguments.html" title="Generator Arguments"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api_architecture.html" title="Architecture"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" >Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Generators</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

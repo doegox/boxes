@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>macOS &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nature.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Windows" href="windows.html" />
+    <link rel="prev" title="Installation" href="../install.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="windows.html" title="Windows"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../install.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../install.html" accesskey="U">Installation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">macOS</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="macos">
+<h1>macOS<a class="headerlink" href="#macos" title="Permalink to this headline">¶</a></h1>
+<p>It is recommended to use Homebrew to install the dependencies for Boxes.py.
+See <a class="reference external" href="https://brew.sh">brew.sh</a> on how to install Homebrew.</p>
+<section id="general">
+<h2>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p>Install Python 3 and other dependencies:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">python3</span> <span class="n">git</span>
+</pre></div>
+</div>
+<p>Optional:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">pstoedit</span>
+</pre></div>
+</div>
+</li>
+<li><p>Install cairio:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">pkg</span><span class="o">-</span><span class="n">config</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic" start="3">
+<li><p>Install required Python modules:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">Markdown</span> <span class="n">affine</span>
+</pre></div>
+</div>
+</li>
+<li><p>Download Boxes.py via Git:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">florianfesti</span><span class="o">/</span><span class="n">boxes</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</li>
+<li><p>Run Boxes.py:</p>
+<p>Local web server on port 8000:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">scripts</span><span class="o">/</span><span class="n">boxesserver</span>
+</pre></div>
+</div>
+<p>Command line variant (CLI):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">scripts</span><span class="o">/</span><span class="n">boxes</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="system-wide-with-inkscape-extension">
+<h2>System-wide with Inkscape extension<a class="headerlink" href="#system-wide-with-inkscape-extension" title="Permalink to this headline">¶</a></h2>
+<p>To install Boxes.py system-wide with the Inkscape extension, following steps
+are required:</p>
+<ol class="arabic">
+<li><p>Install Inkscape with Homebrew Cask
+(requires <a class="reference external" href="https://www.xquartz.org/">XQuartz</a>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">inkscape</span>
+</pre></div>
+</div>
+</li>
+<li><p>From the root directory of the repository, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+</div>
+</li>
+<li><p>Now <code class="code docutils literal notranslate"><span class="pre">boxes</span></code> and <code class="code docutils literal notranslate"><span class="pre">boxesserver</span></code> can be executed like other commands
+and the Inkscape extension should be available.</p></li>
+</ol>
+<section id="troubleshooting">
+<h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h3>
+<p>When using the Inkscape extension something like the following error
+might occur:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">&quot;/Users/martin/.config/inkscape/extensions/boxes&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">107</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="n">main</span><span class="p">()</span>
+  <span class="n">File</span> <span class="s2">&quot;/Users/martin/.config/inkscape/extensions/boxes&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">47</span><span class="p">,</span> <span class="ow">in</span> <span class="n">main</span>
+    <span class="n">run_generator</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+  <span class="n">File</span> <span class="s2">&quot;/Users/martin/.config/inkscape/extensions/boxes&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">73</span><span class="p">,</span> <span class="ow">in</span> <span class="n">run_generator</span>
+    <span class="n">box</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+  <span class="n">File</span> <span class="s2">&quot;/usr/local/lib/python3.7/site-packages/boxes-0.1-py3.7.egg/boxes/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">594</span><span class="p">,</span> <span class="ow">in</span> <span class="n">close</span>
+    <span class="n">svgutil</span><span class="o">.</span><span class="n">svgMerge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inkscapefile</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+  <span class="n">File</span> <span class="s2">&quot;/usr/local/lib/python3.7/site-packages/boxes-0.1-py3.7.egg/boxes/svgutil.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">144</span><span class="p">,</span> <span class="ow">in</span> <span class="n">svgMerge</span>
+    <span class="kn">from</span> <span class="nn">lxml</span> <span class="kn">import</span> <span class="n">etree</span> <span class="k">as</span> <span class="n">et</span>
+<span class="ne">ImportError</span><span class="p">:</span> <span class="n">dlopen</span><span class="p">(</span><span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Inkscape</span><span class="o">.</span><span class="n">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Resources</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="mf">.7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">lxml</span><span class="o">/</span><span class="n">etree</span><span class="o">.</span><span class="n">so</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="n">Symbol</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span> <span class="n">_PyBaseString_Type</span>
+  <span class="n">Referenced</span> <span class="n">from</span><span class="p">:</span> <span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Inkscape</span><span class="o">.</span><span class="n">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Resources</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python2</span><span class="mf">.7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">lxml</span><span class="o">/</span><span class="n">etree</span><span class="o">.</span><span class="n">so</span>
+  <span class="n">Expected</span> <span class="ow">in</span><span class="p">:</span> <span class="n">flat</span> <span class="n">namespace</span>
+</pre></div>
+</div>
+<p>This is because Inkscape on macOS ships its own version of Python 2.7 where
+<code class="code docutils literal notranslate"><span class="pre">lxml</span></code> and other dependencies are missing.</p>
+<p>A workaround is to edit the file at
+<code class="code docutils literal notranslate"><span class="pre">/Applications/Inkscape.app/Contents/Resources/bin/inkscape</span></code>.
+At line 79 there should be following code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">PYTHONPATH</span><span class="o">=</span><span class="s2">&quot;$TOP/lib/python$PYTHON_VERS/site-packages/&quot;</span>
+</pre></div>
+</div>
+<p>which needs to be changed to</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#export PYTHONPATH=&quot;$TOP/lib/python$PYTHON_VERS/site-packages/&quot;</span>
+</pre></div>
+</div>
+<p>This forces Inkscape to use the Python version installed by Homebrew which
+has all the necessary dependencies installed.</p>
+<p>Note: This might break other extensions. In this case simply change the line
+back and restart Inkscape.</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">macOS</a><ul>
+<li><a class="reference internal" href="#general">General</a></li>
+<li><a class="reference internal" href="#system-wide-with-inkscape-extension">System-wide with Inkscape extension</a><ul>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../install.html"
+                          title="previous chapter">Installation</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="windows.html"
+                          title="next chapter">Windows</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/install/macos.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="windows.html" title="Windows"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../install.html" title="Installation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../install.html" >Installation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">macOS</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

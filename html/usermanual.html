@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Using Boxes.py &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing to Boxes.py" href="CONTRIBUTING.html" />
+    <link rel="prev" title="Windows" href="install/windows.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="CONTRIBUTING.html" title="Contributing to Boxes.py"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="install/windows.html" title="Windows"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Using Boxes.py</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="using-boxes-py">
+<h1>Using Boxes.py<a class="headerlink" href="#using-boxes-py" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>Boxes.py is made of a library that is not visible to the user and
+multiple generators – each having its own set of parameters and
+creating a drawing for it own type of object. These generators are
+divided up into different groups to make it easier to find them:</p>
+<ul class="simple">
+<li><p>Boxes</p></li>
+<li><p>Boxes with flex</p></li>
+<li><p>Trays and Drawer Inserts</p></li>
+<li><p>Shelves</p></li>
+<li><p>Parts and Samples</p></li>
+<li><p>Misc</p></li>
+<li><p>Unstable</p></li>
+</ul>
+<p>The parameters for each generators also come in groups.</p>
+<section id="units-of-meassurement">
+<h2>Units of meassurement<a class="headerlink" href="#units-of-meassurement" title="Permalink to this headline">¶</a></h2>
+<p>In general all measurements are in Millimeters (mm). There is no
+option to change the units of measurement and there is no plan to add
+such a option.</p>
+<p>A second way to define lengths is as multiple of the material
+thickness which is one of the standard parameters described
+below. This allows features to retain their proportions even if some
+parts depend on the material thickness.</p>
+<p>The description texts should state the unit of each argument  -
+please open a ticket if the units are missing somewhere.</p>
+</section>
+<section id="default-arguments">
+<span id="default-args"></span><h2>Default arguments<a class="headerlink" href="#default-arguments" title="Permalink to this headline">¶</a></h2>
+<p>In the web interface this is the bottom group right before the
+<code class="docutils literal notranslate"><span class="pre">Render</span></code> button. These are basically all technical settings that
+have little to do with the object being rendered but more with the
+material used and the way the drawing and the material is processed.</p>
+<p>The settings are</p>
+<section id="thickness">
+<h3>thickness<a class="headerlink" href="#thickness" title="Permalink to this headline">¶</a></h3>
+<p>The thickness of the material used. This value is used at many places
+to define the sizes of features like finger joints, hinges, … It is
+very important to get the value right - especially if there are
+fingers that need to fit into some holes. Be aware that many materials
+may differ from their nominal value. You should <strong>always measure the
+thickness</strong> for every sheet unless you have a very reliable supply
+that is known to stick very closely to specifications. For (ply) wood
+even a 100th of a millimeter makes a notable difference in how stiff
+the fit is. Harder more brittle materials may be even more picky.</p>
+</section>
+<section id="burn">
+<h3>burn<a class="headerlink" href="#burn" title="Permalink to this headline">¶</a></h3>
+<p>The burn correction aka kerf is the distance the laser has to keep
+from the edge of the parts. If the laser would cut right on the edge
+it would cut away the outside perimeter of the part. So the burn value is
+basically the radius of the laser - or half the width of the laser cut.</p>
+<p>The value of the burn parameter depends on your laser cutter, the
+material cut and the thickness of the material. In addition it depends
+on whether you want the parts to be over or under sized. Materials
+that are spongy like wood can be cut oversized (larger burn value) so
+they can be press fitted with some force and may be assembled without
+glue. Brittle materials (like Acrylic) need to be cut undersized to
+leave a gap for the glue.</p>
+<p><strong>Note:</strong> The way the burn param works is a bit counter intuitive. Bigger
+burn values make a tighter fit. Smaller values make a looser fit.</p>
+<p>Small changes in the burn param can make a notable difference. Typical
+steps for adjustment are 0.01 or even 0.005mm to choose between
+different amounts of force needed to press plywood together.</p>
+<p>To find the right burn value cut out a rectangle and then meassure how
+much smaller it is than its nominal size. The burn value should be
+around half of the difference. To test the fit for several values at
+once you can use the <strong>BurnTest</strong> generator in the “Parts and Samples” section.</p>
+</section>
+<section id="format">
+<h3>format<a class="headerlink" href="#format" title="Permalink to this headline">¶</a></h3>
+<p>Boxes.py is able to create multiple formats. For most of them it
+requires <code class="docutils literal notranslate"><span class="pre">ps2edit</span></code>. Without <code class="docutils literal notranslate"><span class="pre">ps2edit</span></code> only <code class="docutils literal notranslate"><span class="pre">SVG</span></code>
+and <code class="docutils literal notranslate"><span class="pre">postscript</span></code> (ps) is supported. Otherwise you can also
+select</p>
+<ul class="simple">
+<li><p>ai</p></li>
+<li><p>dxf</p></li>
+<li><p>gcode</p></li>
+<li><p>pdf</p></li>
+<li><p>plt</p></li>
+</ul>
+<p>Other formats supported by <code class="docutils literal notranslate"><span class="pre">ps2edit</span></code> can be added easily. Please
+open a ticket on GitHub if you need one.</p>
+</section>
+<section id="tabs">
+<h3>tabs<a class="headerlink" href="#tabs" title="Permalink to this headline">¶</a></h3>
+<p>Tabs are small bridges between the parts and surrounding material that
+keep the part from falling out. In theory their width should be
+affected by the burn parameter. But it is more practical to have both
+independent so you can tune them separately. Most parts and generators
+support this features but there may be some that don’t.</p>
+<p>For plywood values of 0.2 to 0.3mm still allow getting the parts out
+by hand (Depending on you laser cutter and the exact material). With
+little more you will need a knife to cut them loose.</p>
+</section>
+<section id="debug">
+<h3>debug<a class="headerlink" href="#debug" title="Permalink to this headline">¶</a></h3>
+<p>Most regular users won’t need this option.</p>
+<p>It adds some construction lines that are helpful for
+developing new generators. Only few pieces actually support the
+parameter. The most notable being finger holes that show the border of
+the piece they belong to. This helps checking whether the finger holes
+are placed correctly.</p>
+</section>
+<section id="reference">
+<h3>reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h3>
+<p>Converting vector graphics is error prone. Many formats have very
+weird ideas how their internal units translates to real world
+dimensions. If reference is set to non zero Boxes.py renders a rectangle of
+the given length. It can be used to check if the drawing is still at
+the right scale or may give clues on how to scale it back to the right
+proportions.</p>
+</section>
+</section>
+<section id="common-parameters-and-types">
+<h2>Common Parameters and Types<a class="headerlink" href="#common-parameters-and-types" title="Permalink to this headline">¶</a></h2>
+<section id="section-parameters">
+<h3>Section parameters<a class="headerlink" href="#section-parameters" title="Permalink to this headline">¶</a></h3>
+<p>Some generators support an arbitrary number of sections. This can be used for rows or columns of compartments, staggered heights or otherwise dividing some length in multiple sub sections. The standard parameter making use of this are <code class="docutils literal notranslate"><span class="pre">sx</span></code>, <code class="docutils literal notranslate"><span class="pre">sy</span></code> and <code class="docutils literal notranslate"><span class="pre">sh</span></code> (instead of <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">h</span></code>).</p>
+<p>Most generators will add walls between the comparments, so the total size might be larger depending on the number of compartments (and additional walls).</p>
+<p>The sizes of the sections are divided by a colon (<code class="docutils literal notranslate"><span class="pre">:</span></code>) e.g. <code class="docutils literal notranslate"><span class="pre">30:25.5:70</span></code>. Instead of repeating the same value they can be replaced by <code class="docutils literal notranslate"><span class="pre">value*numberofsections</span></code>  e.g. <code class="docutils literal notranslate"><span class="pre">50*3</span></code> meaning the same as <code class="docutils literal notranslate"><span class="pre">50:50:50</span></code>. To equally divide a length into several sections <code class="docutils literal notranslate"><span class="pre">overallwidth/numberofsections</span></code> can be used - e.g. <code class="docutils literal notranslate"><span class="pre">120/4</span></code> being the same as <code class="docutils literal notranslate"><span class="pre">30:30:30:30</span></code>. All these formats can be freely mixed.</p>
+</section>
+<section id="outside">
+<h3>outside<a class="headerlink" href="#outside" title="Permalink to this headline">¶</a></h3>
+<p>Most messurements are internal sizes. If a generator offers this parameter it will re-calculate the inner sizes to fit walls and outside features within the given dimmensions. This can be a bit surprising for edge types that have protrusions like hinge eyes, handles, feet, etc as those are typically also taken into account. If the dimmensions are not sufficient to accommendate these features the box may not work properly. Most generators do not have checks for such issues (like negative height) and it is left in the responsibility of the user to check if the result still is sane.</p>
+<p>For generators offering multiple compartments this will also fit-in the inner walls. It will sum up all sections then subtract the space needed for the walls and then scale all compartments so they will fill the remaining space.</p>
+</section>
+</section>
+<section id="edge-type-parameters">
+<h2>Edge Type parameters<a class="headerlink" href="#edge-type-parameters" title="Permalink to this headline">¶</a></h2>
+<p>All but the simplest edge types have a number of settings controlling
+how exactly they should look. Generators are encouraged to offer these
+settings to the user. In the web interface they are folded up. In the
+command line interface they are grouped together. Users should be
+aware that not all settings are practical to change. For now Boxes.py
+does not allow hiding some settings.</p>
+<section id="finger-joint-settings">
+<h3>Finger Joint Settings<a class="headerlink" href="#finger-joint-settings" title="Permalink to this headline">¶</a></h3>
+<dl class="glossary simple">
+<dt id="term-finger">finger<a class="headerlink" href="#term-finger" title="Permalink to this term">¶</a></dt><dd><p>width of the fingers in multiples of the thickness</p>
+</dd>
+<dt id="term-space">space<a class="headerlink" href="#term-space" title="Permalink to this term">¶</a></dt><dd><p>width of the spaces between fingers in multiples of the thickness</p>
+</dd>
+<dt id="term-surroundingspaces">surroundingspaces<a class="headerlink" href="#term-surroundingspaces" title="Permalink to this term">¶</a></dt><dd><p>minimal amount of space before the first and after the last finger. This is in multiples of regular space between fingers. Reduce this if there are no fingers fitting on short edges.</p>
+</dd>
+<dt id="term-style">style<a class="headerlink" href="#term-style" title="Permalink to this term">¶</a></dt><dd><p>how finger joints should look like. There may be more styles to choose from in the future.</p>
+</dd>
+<dt id="term-extra_length">extra_length<a class="headerlink" href="#term-extra_length" title="Permalink to this term">¶</a></dt><dd><p>Make the outset part of the finger joint longer to allow grinding off burn marks. Note that this may not be great for non 90° joints where the corner is butted against the opposing cutout.</p>
+</dd>
+</dl>
+</section>
+<section id="stackable-edge-settings">
+<h3>Stackable Edge Settings<a class="headerlink" href="#stackable-edge-settings" title="Permalink to this headline">¶</a></h3>
+<p>For boxes to actually stack they need to be the same width and depth and <code class="docutils literal notranslate"><span class="pre">angle</span></code>, <code class="docutils literal notranslate"><span class="pre">width</span></code> and <code class="docutils literal notranslate"><span class="pre">height</span></code> of the feet need to be the same.</p>
+<dl class="glossary simple">
+<dt id="term-angle">angle<a class="headerlink" href="#term-angle" title="Permalink to this term">¶</a></dt><dd><p>inside angle of the feet.</p>
+</dd>
+<dt id="term-height">height<a class="headerlink" href="#term-height" title="Permalink to this term">¶</a></dt><dd><p>height of the feet</p>
+</dd>
+<dt id="term-holedistance">holedistance<a class="headerlink" href="#term-holedistance" title="Permalink to this term">¶</a></dt><dd><p>distance from finger holes to bottom edge. May be reduced to save height by sacrificing stability of the connection to the bottom of the box.</p>
+</dd>
+<dt id="term-width">width<a class="headerlink" href="#term-width" title="Permalink to this term">¶</a></dt><dd><p>width of the feet</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="colors">
+<h2>Colors<a class="headerlink" href="#colors" title="Permalink to this headline">¶</a></h2>
+<p>The generated files uses the following color conventions:</p>
+<dl class="glossary simple">
+<dt id="term-Black">Black<a class="headerlink" href="#term-Black" title="Permalink to this term">¶</a></dt><dd><p>The outer edges of a part</p>
+</dd>
+<dt id="term-Blue">Blue<a class="headerlink" href="#term-Blue" title="Permalink to this term">¶</a></dt><dd><p>Inner edges of a part</p>
+</dd>
+<dt id="term-Red">Red<a class="headerlink" href="#term-Red" title="Permalink to this term">¶</a></dt><dd><p>Comments or help lines that are not ment to be cut or etched</p>
+</dd>
+<dt id="term-Green">Green<a class="headerlink" href="#term-Green" title="Permalink to this term">¶</a></dt><dd><p>Etchings</p>
+</dd>
+</dl>
+<p>Normaly you will cut things in the order: Green, Blue, Black. If other
+colors are present, the meaning should hopefully be obvious.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Using Boxes.py</a><ul>
+<li><a class="reference internal" href="#units-of-meassurement">Units of meassurement</a></li>
+<li><a class="reference internal" href="#default-arguments">Default arguments</a><ul>
+<li><a class="reference internal" href="#thickness">thickness</a></li>
+<li><a class="reference internal" href="#burn">burn</a></li>
+<li><a class="reference internal" href="#format">format</a></li>
+<li><a class="reference internal" href="#tabs">tabs</a></li>
+<li><a class="reference internal" href="#debug">debug</a></li>
+<li><a class="reference internal" href="#reference">reference</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#common-parameters-and-types">Common Parameters and Types</a><ul>
+<li><a class="reference internal" href="#section-parameters">Section parameters</a></li>
+<li><a class="reference internal" href="#outside">outside</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#edge-type-parameters">Edge Type parameters</a><ul>
+<li><a class="reference internal" href="#finger-joint-settings">Finger Joint Settings</a></li>
+<li><a class="reference internal" href="#stackable-edge-settings">Stackable Edge Settings</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#colors">Colors</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="install/windows.html"
+                          title="previous chapter">Windows</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="CONTRIBUTING.html"
+                          title="next chapter">Contributing to Boxes.py</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/usermanual.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="CONTRIBUTING.html" title="Contributing to Boxes.py"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="install/windows.html" title="Windows"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Using Boxes.py</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

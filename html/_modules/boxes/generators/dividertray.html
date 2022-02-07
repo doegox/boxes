@@ -1,0 +1,634 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.generators.dividertray &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/nature.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" accesskey="U">boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.dividertray</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.generators.dividertray</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Copyright (C) 2013-2014 Florian Festi</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is free software: you can redistribute it and/or modify</span>
+<span class="c1">#   it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#   the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#   (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#   This program is distributed in the hope that it will be useful,</span>
+<span class="c1">#   but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#   GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#   You should have received a copy of the GNU General Public License</span>
+<span class="c1">#   along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">boxes</span> <span class="kn">import</span> <span class="n">Boxes</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">boolarg</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="DividerTray"><a class="viewcode-back" href="../../../generators.html#boxes.generators.dividertray.DividerTray">[docs]</a><span class="k">class</span> <span class="nc">DividerTray</span><span class="p">(</span><span class="n">Boxes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Divider tray - rows and dividers&quot;&quot;&quot;</span>
+
+    <span class="n">ui_group</span> <span class="o">=</span> <span class="s2">&quot;Tray&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Boxes</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addSettingsArgs</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">FingerJointSettings</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buildArgParser</span><span class="p">(</span><span class="s2">&quot;sx&quot;</span><span class="p">,</span> <span class="s2">&quot;sy&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;outside&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--slot_depth&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;depth of the slot in mm&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--slot_angle&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;angle at which slots are generated, in degrees. 0° is vertical.&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--slot_radius&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;radius of the slot entrance in mm&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--slot_extra_slack&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;extra slack (in addition to thickness and kerf) for slot width to help insert dividers&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--divider_bottom_margin&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;margin between box&#39;s bottom and divider&#39;s&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--divider_upper_notch_radius&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;divider&#39;s notch&#39;s upper radius&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--divider_lower_notch_radius&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;divider&#39;s notch&#39;s lower radius&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--divider_notch_depth&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;divider&#39;s notch&#39;s depth&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--left_wall&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="n">boolarg</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;generate wall on the left side&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--right_wall&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="n">boolarg</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;generate wall on the right side&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argparser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--bottom&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">boolarg</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;generate wall on the bottom&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">side_walls_number</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">left_wall</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_wall</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">side_walls_number</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You need at least one side wall to generate this tray&quot;</span><span class="p">)</span>
+
+        <span class="c1"># If measures are inside, we need to adjust height before slot generation</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">outside</span><span class="p">:</span>
+            <span class="c1"># If the parameter &#39;h&#39; is the inner height of the content itself,</span>
+            <span class="c1"># then the actual tray height needs to be adjusted with the angle</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slot_angle</span><span class="p">))</span>
+
+        <span class="n">slot_descriptions</span> <span class="o">=</span> <span class="n">SlotDescriptionsGenerator</span><span class="p">()</span><span class="o">.</span><span class="n">generate_all_same_angles</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sy</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slot_extra_slack</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slot_depth</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slot_angle</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slot_radius</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># If measures are outside, we need to readjust slots afterwards</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outside</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjustSize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_wall</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_wall</span><span class="p">)</span>
+            <span class="n">side_wall_target_length</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sy</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+            <span class="n">slot_descriptions</span><span class="o">.</span><span class="n">adjust_to_target_length</span><span class="p">(</span><span class="n">side_wall_target_length</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="c1"># Facing walls (outer) with finger holes to support side walls</span>
+        <span class="n">facing_wall_length</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sx</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">side_edge</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">with_wall</span><span class="p">:</span> <span class="s2">&quot;F&quot;</span> <span class="k">if</span> <span class="n">with_wall</span> <span class="k">else</span> <span class="s2">&quot;e&quot;</span>
+        <span class="n">bottom_edge</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">with_wall</span><span class="p">:</span> <span class="s2">&quot;F&quot;</span> <span class="k">if</span> <span class="n">with_wall</span> <span class="k">else</span> <span class="s2">&quot;e&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+                <span class="n">facing_wall_length</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
+                <span class="p">[</span>
+                    <span class="n">bottom_edge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bottom</span><span class="p">),</span>
+                    <span class="n">side_edge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">right_wall</span><span class="p">),</span>
+                    <span class="s2">&quot;e&quot;</span><span class="p">,</span>
+                    <span class="n">side_edge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_wall</span><span class="p">),</span>
+                <span class="p">],</span>
+                <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_finger_holes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">)],</span>
+                <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Side walls (outer &amp; inner) with slots to support dividers</span>
+        <span class="n">side_wall_length</span> <span class="o">=</span> <span class="n">slot_descriptions</span><span class="o">.</span><span class="n">total_length</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">side_walls_number</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">_</span> <span class="o">&lt;</span> <span class="n">side_walls_number</span> <span class="o">-</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">be</span> <span class="o">=</span> <span class="s2">&quot;F&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottom</span> <span class="k">else</span> <span class="s2">&quot;e&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">be</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottom</span> <span class="k">else</span> <span class="s2">&quot;e&quot;</span>
+            <span class="n">se</span> <span class="o">=</span> <span class="n">DividerSlotsEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slot_descriptions</span><span class="o">.</span><span class="n">descriptions</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+                <span class="n">side_wall_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="p">[</span><span class="n">be</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="n">se</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">],</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Switch to right side of the file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+            <span class="nb">max</span><span class="p">(</span><span class="n">facing_wall_length</span><span class="p">,</span> <span class="n">side_wall_length</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="s2">&quot;ffff&quot;</span><span class="p">,</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;right only&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Bottom piece.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottom</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rectangularWall</span><span class="p">(</span>
+                <span class="n">facing_wall_length</span><span class="p">,</span>
+                <span class="n">side_wall_length</span><span class="p">,</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;f&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;f&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_wall</span> <span class="k">else</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;f&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;f&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_wall</span> <span class="k">else</span> <span class="s2">&quot;e&quot;</span><span class="p">,</span>
+                <span class="p">],</span>
+                <span class="n">callback</span><span class="o">=</span><span class="p">[</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_finger_holes</span><span class="p">,</span> <span class="n">side_wall_length</span><span class="p">)],</span>
+                <span class="n">move</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Dividers</span>
+        <span class="n">divider_height</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="c1"># h, with angle adjustement</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slot_angle</span><span class="p">))</span>
+            <span class="c1"># removing what exceeds in the width of the divider</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slot_angle</span><span class="p">))</span>
+            <span class="c1"># with margin</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">divider_bottom_margin</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sx</span><span class="p">):</span>
+            <span class="n">is_first_wall</span> <span class="o">=</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">is_last_wall</span> <span class="o">=</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generate_divider</span><span class="p">(</span>
+                <span class="n">length</span><span class="p">,</span>
+                <span class="n">divider_height</span><span class="p">,</span>
+                <span class="s2">&quot;up&quot;</span><span class="p">,</span>
+                <span class="n">only_one_wall</span><span class="o">=</span><span class="p">(</span><span class="n">is_first_wall</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_wall</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="n">is_last_wall</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_wall</span><span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+            <span class="n">debug_info</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Debug&quot;</span><span class="p">]</span>
+            <span class="n">debug_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Slot_edge_outer_length:</span><span class="si">{0:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">slot_descriptions</span><span class="o">.</span><span class="n">total_length</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">debug_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Slot_edge_inner_lengths:</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="s2">&quot;|&quot;</span><span class="p">,</span>
+                        <span class="p">[</span>
+                            <span class="s2">&quot;</span><span class="si">{0:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">usefull_length</span><span class="p">())</span>
+                            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">slot_descriptions</span><span class="o">.</span><span class="n">get_straigth_edges</span><span class="p">()</span>
+                        <span class="p">],</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">debug_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Face_edge_outer_length:</span><span class="si">{0:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">facing_wall_length</span>
+                    <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">*</span> <span class="nb">sum</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">left_wall</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_wall</span><span class="p">])</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">debug_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Face_edge_inner_lengths:</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{0:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sx</span><span class="p">])</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">debug_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Tray_height:</span><span class="si">{0:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="p">))</span>
+            <span class="n">debug_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s2">&quot;Content_height:</span><span class="si">{0:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slot_angle</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">debug_info</span><span class="p">),</span> <span class="n">x</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;bottom left&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate_finger_holes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="n">posx</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sx</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">posx</span> <span class="o">+=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fingerHolesAt</span><span class="p">(</span><span class="n">posx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">generate_divider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="n">only_one_wall</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">second_tab_width</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">only_one_wall</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span>
+        <span class="n">total_width</span> <span class="o">=</span> <span class="n">width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span> <span class="o">+</span> <span class="n">second_tab_width</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">total_width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Upper edge with a finger notch</span>
+
+        <span class="n">upper_radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">divider_upper_notch_radius</span>
+        <span class="n">lower_radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">divider_lower_notch_radius</span>
+        <span class="n">upper_third</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">upper_radius</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">lower_radius</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span>
+
+        <span class="c1"># Upper: first tab width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">)</span>
+
+        <span class="c1"># Upper: divider width (with notch if possible)</span>
+        <span class="k">if</span> <span class="n">upper_third</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+                <span class="n">upper_third</span><span class="p">,</span>
+                <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">upper_radius</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">divider_notch_depth</span> <span class="o">-</span> <span class="n">upper_radius</span> <span class="o">-</span> <span class="n">lower_radius</span><span class="p">,</span>
+                <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">lower_radius</span><span class="p">),</span>
+                <span class="n">upper_third</span><span class="p">,</span>
+                <span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="n">lower_radius</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">divider_notch_depth</span> <span class="o">-</span> <span class="n">upper_radius</span> <span class="o">-</span> <span class="n">lower_radius</span><span class="p">,</span>
+                <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="n">upper_radius</span><span class="p">),</span>
+                <span class="n">upper_third</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if there isn&#39;t enough room for the radius, we don&#39;t use it</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+            <span class="c1"># Upper: second tab width if needed</span>
+            <span class="n">second_tab_width</span><span class="p">,</span>
+            <span class="c1"># First side, with tab depth only if there is 2 walls</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slot_depth</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">second_tab_width</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">slot_depth</span><span class="p">,</span>
+            <span class="c1"># Lower edge</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">width</span><span class="p">,</span>
+            <span class="c1"># Second side, always a tab</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="n">height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">slot_depth</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span>
+            <span class="mi">90</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slot_depth</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Move for next piece</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">total_width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">move</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">SlottedEdgeDescriptions</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">descriptions</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">descriptions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_straigth_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">descriptions</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">StraightEdgeDescription</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">get_last_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">descriptions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">adjust_to_target_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_length</span><span class="p">):</span>
+        <span class="n">actual_length</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">tracing_length</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">descriptions</span><span class="p">])</span>
+        <span class="n">compensation</span> <span class="o">=</span> <span class="n">actual_length</span> <span class="o">-</span> <span class="n">target_length</span>
+
+        <span class="n">compensation_ratio</span> <span class="o">=</span> <span class="n">compensation</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">asked_length</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_straigth_edges</span><span class="p">()]</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_straigth_edges</span><span class="p">():</span>
+            <span class="n">edge</span><span class="o">.</span><span class="n">outside_ratio</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">compensation_ratio</span>
+
+    <span class="k">def</span> <span class="nf">total_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">tracing_length</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">descriptions</span><span class="p">])</span>
+
+
+<span class="k">class</span> <span class="nc">StraightEdgeDescription</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">asked_length</span><span class="p">,</span>
+        <span class="n">round_edge_compensation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">outside_ratio</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">angle_compensation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asked_length</span> <span class="o">=</span> <span class="n">asked_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">round_edge_compensation</span> <span class="o">=</span> <span class="n">round_edge_compensation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outside_ratio</span> <span class="o">=</span> <span class="n">outside_ratio</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle_compensation</span> <span class="o">=</span> <span class="n">angle_compensation</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;StraightEdgeDescription(</span><span class="si">{0}</span><span class="s2">, round_edge_compensation=</span><span class="si">{1}</span><span class="s2">, angle_compensation=</span><span class="si">{2}</span><span class="s2">, outside_ratio=</span><span class="si">{3}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">asked_length</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">round_edge_compensation</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">angle_compensation</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outside_ratio</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">tracing_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        How much length should take tracing this straight edge</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">asked_length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">outside_ratio</span><span class="p">)</span>
+            <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">round_edge_compensation</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_compensation</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">usefull_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Part of the length which might be used by the content of the tray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asked_length</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">outside_ratio</span>
+
+
+<span class="k">class</span> <span class="nc">Memoizer</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">computation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">computation</span> <span class="o">=</span> <span class="n">computation</span>
+
+    <span class="k">def</span> <span class="fm">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">computation</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">class</span> <span class="nc">SlotDescription</span><span class="p">:</span>
+    <span class="n">_div_by_cos_cache</span> <span class="o">=</span> <span class="n">Memoizer</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+    <span class="n">_tan_cache</span> <span class="o">=</span> <span class="n">Memoizer</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">start_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_radius</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_radius</span> <span class="o">=</span> <span class="n">radius</span> <span class="k">if</span> <span class="n">start_radius</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">start_radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_radius</span> <span class="o">=</span> <span class="n">radius</span> <span class="k">if</span> <span class="n">end_radius</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">end_radius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;SlotDescription(</span><span class="si">{0}</span><span class="s2">, depth=</span><span class="si">{1}</span><span class="s2">, angle=</span><span class="si">{2}</span><span class="s2">, start_radius=</span><span class="si">{3}</span><span class="s2">, end_radius=</span><span class="si">{4}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_radius</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_div_by_cos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SlotDescription</span><span class="o">.</span><span class="n">_div_by_cos_cache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_tan</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SlotDescription</span><span class="o">.</span><span class="n">_tan_cache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">angle</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">angle_corrected_width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns how much width is the slot when measured horizontally, since the angle makes it bigger.</span>
+<span class="sd">        It&#39;s the same as the slot entrance width when radius is 0°.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_div_by_cos</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">round_edge_start_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns by how much we need to stop tracing our straight lines at the start of the slot</span>
+<span class="sd">        in order to do a curve line instead</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_radius</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_div_by_cos</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tan</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">round_edge_end_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns by how much we need to stop tracing our straight lines at the end of the slot</span>
+<span class="sd">        in order to do a curve line instead</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_radius</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_div_by_cos</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tan</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_depth_angle_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The angle makes one side of the slot deeper than the other.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">extra_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tan</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">extra_depth</span>
+
+    <span class="k">def</span> <span class="nf">corrected_start_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the depth of the straigth part of the slot starting side</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">extra_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depth_angle_correction</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">extra_depth</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">round_edge_start_correction</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">corrected_end_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the depth of the straigth part of the slot ending side</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">extra_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depth_angle_correction</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">extra_depth</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">round_edge_end_correction</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">tracing_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        How much length this slot takes on an edge</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">round_edge_start_correction</span><span class="p">()</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_corrected_width</span><span class="p">()</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">round_edge_end_correction</span><span class="p">()</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">SlotDescriptionsGenerator</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">generate_all_same_angles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sections</span><span class="p">,</span> <span class="n">thickness</span><span class="p">,</span> <span class="n">extra_slack</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">thickness</span> <span class="o">+</span> <span class="n">extra_slack</span>
+
+        <span class="n">descriptions</span> <span class="o">=</span> <span class="n">SlottedEdgeDescriptions</span><span class="p">()</span>
+
+        <span class="c1"># Special case: if first slot start at 0, then radius is 0</span>
+        <span class="n">first_correction</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">current_section</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">slot</span> <span class="o">=</span> <span class="n">SlotDescription</span><span class="p">(</span>
+                <span class="n">width</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span> <span class="n">start_radius</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">descriptions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">slot</span><span class="p">)</span>
+            <span class="n">first_correction</span> <span class="o">=</span> <span class="n">slot</span><span class="o">.</span><span class="n">round_edge_end_correction</span><span class="p">()</span>
+            <span class="n">current_section</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">first_length</span> <span class="o">=</span> <span class="n">sections</span><span class="p">[</span><span class="n">current_section</span><span class="p">]</span>
+        <span class="n">current_section</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">descriptions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+            <span class="n">StraightEdgeDescription</span><span class="p">(</span>
+                <span class="n">first_length</span><span class="p">,</span> <span class="n">round_edge_compensation</span><span class="o">=</span><span class="n">first_correction</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">[</span><span class="n">current_section</span><span class="p">:]:</span>
+            <span class="n">slot</span> <span class="o">=</span> <span class="n">SlotDescription</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,)</span>
+
+            <span class="c1"># Fix previous edge length</span>
+            <span class="n">previous_edge</span> <span class="o">=</span> <span class="n">descriptions</span><span class="o">.</span><span class="n">get_last_edge</span><span class="p">()</span>
+            <span class="n">previous_edge</span><span class="o">.</span><span class="n">round_edge_compensation</span> <span class="o">+=</span> <span class="n">slot</span><span class="o">.</span><span class="n">round_edge_start_correction</span><span class="p">()</span>
+
+            <span class="c1"># Add this slot</span>
+            <span class="n">descriptions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">slot</span><span class="p">)</span>
+
+            <span class="c1"># Add the straigth edge after this slot</span>
+            <span class="n">descriptions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+                <span class="n">StraightEdgeDescription</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">slot</span><span class="o">.</span><span class="n">round_edge_end_correction</span><span class="p">())</span>
+            <span class="p">)</span>
+
+        <span class="c1"># We need to add extra space for the divider (or the actual content)</span>
+        <span class="c1"># to slide all the way down to the bottom of the tray in spite of walls</span>
+        <span class="n">end_length</span> <span class="o">=</span> <span class="n">height</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">angle</span><span class="p">))</span>
+        <span class="n">descriptions</span><span class="o">.</span><span class="n">get_last_edge</span><span class="p">()</span><span class="o">.</span><span class="n">angle_compensation</span> <span class="o">+=</span> <span class="n">end_length</span>
+
+        <span class="k">return</span> <span class="n">descriptions</span>
+
+
+<span class="k">class</span> <span class="nc">DividerSlotsEdge</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">BaseEdge</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Edge with multiple angled rounded slots for dividers&quot;&quot;&quot;</span>
+
+    <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Edge with multiple angled rounded slots for dividers&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes</span><span class="p">,</span> <span class="n">descriptions</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">DividerSlotsEdge</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">descriptions</span> <span class="o">=</span> <span class="n">descriptions</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">descriptions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">SlotDescription</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">do_slot</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">StraightEdgeDescription</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">do_straight_edge</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+
+        <span class="c1"># rounding errors might accumulates :</span>
+        <span class="c1"># restore context and redo the move straight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">do_straight_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">straight_edge</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span><span class="n">straight_edge</span><span class="o">.</span><span class="n">tracing_length</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">do_slot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slot</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">polyline</span><span class="p">(</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">slot</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span> <span class="n">slot</span><span class="o">.</span><span class="n">start_radius</span><span class="p">),</span>
+            <span class="n">slot</span><span class="o">.</span><span class="n">corrected_start_depth</span><span class="p">(),</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">slot</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+            <span class="o">-</span><span class="mi">90</span><span class="p">,</span>
+            <span class="n">slot</span><span class="o">.</span><span class="n">corrected_end_depth</span><span class="p">(),</span>
+            <span class="p">(</span><span class="mi">90</span> <span class="o">+</span> <span class="n">slot</span><span class="o">.</span><span class="n">angle</span><span class="p">,</span> <span class="n">slot</span><span class="o">.</span><span class="n">end_radius</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># rounding errors might accumulates :</span>
+        <span class="c1"># restore context and redo the move straight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">restore</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moveTo</span><span class="p">(</span><span class="n">slot</span><span class="o">.</span><span class="n">tracing_length</span><span class="p">())</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../boxes.html" >boxes</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../generators.html" >boxes.generators</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators.dividertray</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

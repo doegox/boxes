@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Existing Parts &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Edges" href="api_edges.html" />
+    <link rel="prev" title="Parts" href="api_parts.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_edges.html" title="Edges"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api_parts.html" title="Parts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" accesskey="U">Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Existing Parts</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="existing-parts">
+<h1>Existing Parts<a class="headerlink" href="#existing-parts" title="Permalink to this headline">¶</a></h1>
+<p>A couple of commands can create whole parts like walls. Typically the
+sizes given are the inner dimension not including additional space
+needed for burn compensation or joints.</p>
+<p>Currently there are the following parts:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.rectangularWall">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">rectangularWall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'eeee'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_widths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holesMargin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holesSettings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bedBolts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bedBoltSettings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.rectangularWall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.rectangularWall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rectangular wall for all kind of box like objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – width</p></li>
+<li><p><strong>y</strong> – height</p></li>
+<li><p><strong>edges</strong> – (Default value = “eeee”) bottom, right, top, left</p></li>
+<li><p><strong>ignore_widths</strong> – list of edge_widths added to adjacent edge</p></li>
+<li><p><strong>holesMargin</strong> – (Default value = None)</p></li>
+<li><p><strong>holesSettings</strong> – (Default value = None)</p></li>
+<li><p><strong>bedBolts</strong> – (Default value = None)</p></li>
+<li><p><strong>bedBoltSettings</strong> – (Default value = None)</p></li>
+<li><p><strong>callback</strong> – (Default value = None)</p></li>
+<li><p><strong>move</strong> – (Default value = None)</p></li>
+<li><p><strong>label</strong> – rendered to identify parts, it is not ment to be cut or etched (Default value = “”)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.flangedWall">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">flangedWall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'FFFF'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flanges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.flangedWall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.flangedWall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rectangular wall with flanges extending the regular size</p>
+<p>This is similar to the rectangularWall but it may extend to either
+side. Sides with flanges may only have e, E, or F edges - the later
+being replaced with fingerHoles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – width</p></li>
+<li><p><strong>y</strong> – height</p></li>
+<li><p><strong>edges</strong> – (Default value = “FFFF”) bottom, right, top, left</p></li>
+<li><p><strong>flanges</strong> – (Default value = None) list of width of the flanges</p></li>
+<li><p><strong>r</strong> – radius of the corners of the flange</p></li>
+<li><p><strong>callback</strong> – (Default value = None)</p></li>
+<li><p><strong>move</strong> – (Default value = None)</p></li>
+<li><p><strong>label</strong> – rendered to identify parts, it is not ment to be cut or etched (Default value = “”)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.rectangularTriangle">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">rectangularTriangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'eee'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bedBolts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bedBoltSettings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.rectangularTriangle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.rectangularTriangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rectangular triangular wall</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – width</p></li>
+<li><p><strong>y</strong> – height</p></li>
+<li><p><strong>edges</strong> – (Default value = “eee”) bottom, right[, diagonal]</p></li>
+<li><p><strong>r</strong> – radius towards the hypothenuse</p></li>
+<li><p><strong>num</strong> – (Default value = 1) number of triangles</p></li>
+<li><p><strong>bedBolts</strong> – (Default value = None)</p></li>
+<li><p><strong>bedBoltSettings</strong> – (Default value = None)</p></li>
+<li><p><strong>callback</strong> – (Default value = None)</p></li>
+<li><p><strong>move</strong> – (Default value = None)</p></li>
+<li><p><strong>label</strong> – rendered to identify parts, it is not ment to be cut or etched (Default value = “”)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.regularPolygonWall">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">regularPolygonWall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">corners</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hole</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.regularPolygonWall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.regularPolygonWall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create regular polygon as a wall</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>corners</strong> – number of corners of the polygon</p></li>
+<li><p><strong>radius</strong> – distance center to one of the corners</p></li>
+<li><p><strong>h</strong> – distance center to one of the sides (height of sector)</p></li>
+<li><p><strong>side</strong> – length of one side</p></li>
+<li><p><strong>edges</strong> – (Default value = “e”, may be string/list of length corners)</p></li>
+<li><p><strong>hole</strong> – diameter of central hole (Default value = 0)</p></li>
+<li><p><strong>callback</strong> – (Default value = None, middle=0, then sides=1..)</p></li>
+<li><p><strong>move</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.roundedPlate">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">roundedPlate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'f'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holesMargin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">holesSettings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bedBolts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bedBoltSettings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wallpieces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extend_corners</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.roundedPlate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.roundedPlate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plate with rounded corner fitting to .surroundingWall()</p>
+<p>For the callbacks the sides are counted depending on wallpieces</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – width</p></li>
+<li><p><strong>y</strong> – height</p></li>
+<li><p><strong>r</strong> – radius of the corners</p></li>
+<li><p><strong>callback</strong> – (Default value = None)</p></li>
+<li><p><strong>holesMargin</strong> – (Default value = None) set to get hex holes</p></li>
+<li><p><strong>holesSettings</strong> – (Default value = None)</p></li>
+<li><p><strong>bedBolts</strong> – (Default value = None)</p></li>
+<li><p><strong>bedBoltSettings</strong> – (Default value = None)</p></li>
+<li><p><strong>wallpieces</strong> – (Default value = 1) # of separate surrounding walls</p></li>
+<li><p><strong>extend_corners</strong> – (Default value = True) have corners outset with the edges</p></li>
+<li><p><strong>move</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.surroundingWall">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">surroundingWall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'e'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'D'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pieces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extend_corners</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.surroundingWall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.surroundingWall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wall(s) with flex fiting around a roundedPlate()</p>
+<p>For the callbacks the sides are counted depending on pieces</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – width of matching roundedPlate</p></li>
+<li><p><strong>y</strong> – height of matching roundedPlate</p></li>
+<li><p><strong>r</strong> – corner radius of matching roundedPlate</p></li>
+<li><p><strong>h</strong> – inner height of the wall (without edges)</p></li>
+<li><p><strong>bottom</strong> – (Default value = ‘e’) Edge type</p></li>
+<li><p><strong>top</strong> – (Default value = ‘e’) Edge type</p></li>
+<li><p><strong>left</strong> – (Default value = ‘D’) left edge(s)</p></li>
+<li><p><strong>right</strong> – (Default value = ‘d’) right edge(s)</p></li>
+<li><p><strong>pieces</strong> – (Default value = 1) number of separate pieces</p></li>
+<li><p><strong>callback</strong> – (Default value = None)</p></li>
+<li><p><strong>move</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="parts-class">
+<h2>Parts Class<a class="headerlink" href="#parts-class" title="Permalink to this headline">¶</a></h2>
+<p>More parts are available in a separete class. An instance is available as
+<strong>Boxes.parts</strong></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.parts.Parts.disc">
+<span class="sig-prename descclassname"><span class="pre">Parts.</span></span><span class="sig-name descname"><span class="pre">disc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diameter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hole</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/parts.html#Parts.disc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.parts.Parts.disc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple disc</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diameter</strong> – diameter of the disc</p></li>
+<li><p><strong>hole</strong> – (Default value = 0)</p></li>
+<li><p><strong>callback</strong> – (Default value = None) called in the center</p></li>
+<li><p><strong>move</strong> – (Defaultvalue = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.parts.Parts.waivyKnob">
+<span class="sig-prename descclassname"><span class="pre">Parts.</span></span><span class="sig-name descname"><span class="pre">waivyKnob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diameter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">45</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hole</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/parts.html#Parts.waivyKnob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.parts.Parts.waivyKnob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disc with a waivy edge to be easier to be gripped</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diameter</strong> – diameter of the knob</p></li>
+<li><p><strong>n</strong> – (Default value = 20) number of waves</p></li>
+<li><p><strong>angle</strong> – (Default value = 45) maximum angle of the wave</p></li>
+<li><p><strong>hole</strong> – (Default value = 0)</p></li>
+<li><p><strong>callback</strong> – (Default value = None) called in the center</p></li>
+<li><p><strong>move</strong> – (Defaultvalue = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.parts.Parts.concaveKnob">
+<span class="sig-prename descclassname"><span class="pre">Parts.</span></span><span class="sig-name descname"><span class="pre">concaveKnob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diameter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rounded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">70</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hole</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/parts.html#Parts.concaveKnob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.parts.Parts.concaveKnob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Knob with dents to be easier to be gripped</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diameter</strong> – diameter of the knob</p></li>
+<li><p><strong>n</strong> – (Default value = 3) number of dents</p></li>
+<li><p><strong>rounded</strong> – (Default value = 0.2) proportion of circumferen remaining</p></li>
+<li><p><strong>angle</strong> – (Default value = 70) angle the dents meet the circumference</p></li>
+<li><p><strong>hole</strong> – (Default value = 0)</p></li>
+<li><p><strong>callback</strong> – (Default value = None) called in the center</p></li>
+<li><p><strong>move</strong> – (Defaultvalue = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.parts.Parts.ringSegment">
+<span class="sig-prename descclassname"><span class="pre">Parts.</span></span><span class="sig-name descname"><span class="pre">ringSegment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r_outside</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_inside</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/parts.html#Parts.ringSegment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.parts.Parts.ringSegment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ring Segment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r_outside</strong> – outer radius</p></li>
+<li><p><strong>r_inside</strong> – inner radius</p></li>
+<li><p><strong>angle</strong> – anlge the segment is spanning</p></li>
+<li><p><strong>n</strong> – (Default value = 1) number of segments</p></li>
+<li><p><strong>move</strong> – (Defaultvalue = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Existing Parts</a><ul>
+<li><a class="reference internal" href="#parts-class">Parts Class</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="api_parts.html"
+                          title="previous chapter">Parts</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="api_edges.html"
+                          title="next chapter">Edges</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api_existing_parts.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_edges.html" title="Edges"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api_parts.html" title="Parts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" >Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Existing Parts</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

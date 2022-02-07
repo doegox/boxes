@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Generator Arguments &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Navigation" href="api_navigation.html" />
+    <link rel="prev" title="Generators" href="api_generator.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_navigation.html" title="Navigation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api_generator.html" title="Generators"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" accesskey="U">Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Generator Arguments</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="generator-arguments">
+<h1>Generator Arguments<a class="headerlink" href="#generator-arguments" title="Permalink to this headline">¶</a></h1>
+<p>Boxes.py uses the <code class="docutils literal notranslate"><span class="pre">argparse</span></code> standard library for handling the
+arguments for the generators. It is used directly for the <code class="docutils literal notranslate"><span class="pre">boxes</span></code>
+command line tool. But it also handles – with some additional code –
+the web interface and the Inkscape extensions. To make this work one
+has to limit the kind of parameters used. Boxes.py supports the
+following types:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">boxes.boolarg</span></code> – an alternative to <code class="docutils literal notranslate"><span class="pre">bool</span></code> that works with the
+web interface</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">boxes.argparseSections</span></code> – multiple lengths e.g. for dividing up
+a box in one direction</p></li>
+</ul>
+</div></blockquote>
+<p>and</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="boxes.ArgparseEdgeType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">boxes.</span></span><span class="sig-name descname"><span class="pre">ArgparseEdgeType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#ArgparseEdgeType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.ArgparseEdgeType" title="Permalink to this definition">¶</a></dt>
+<dd><p>argparse type to select from a set of edge types</p>
+</dd></dl>
+
+<p>For the standard types there is code to create HTML and Inkscape
+extensions. The other types can have <code class="docutils literal notranslate"><span class="pre">.html()</span></code> and <code class="docutils literal notranslate"><span class="pre">.inx()</span></code>
+methods.</p>
+<p>The argument parser need to be built in the <code class="docutils literal notranslate"><span class="pre">.__init__()</span></code> method
+after calling the method of the super class. Have a look at</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.generators._template.BOX.__init__">
+<span class="sig-prename descclassname"><span class="pre">BOX.</span></span><span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/generators/_template.html#BOX.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.generators._template.BOX.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>As many arguments are used over and over there is a function that can
+add the most common ones:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.Boxes.buildArgParser">
+<span class="sig-prename descclassname"><span class="pre">Boxes.</span></span><span class="sig-name descname"><span class="pre">buildArgParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">l</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes.html#Boxes.buildArgParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.Boxes.buildArgParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add commonly used arguments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*l</strong> – parameter names</p></li>
+<li><p><strong>**kw</strong> – parameters with new default values</p></li>
+</ul>
+</dd>
+</dl>
+<p>Supported parameters are</p>
+<ul class="simple">
+<li><p>floats: x, y, h, hi</p></li>
+<li><p>argparseSections: sx, sy, sh</p></li>
+<li><p>ArgparseEdgeType: bottom_edge, top_edge</p></li>
+<li><p>boolarg: outside</p></li>
+<li><p>str (selection): nema_mount</p></li>
+</ul>
+</dd></dl>
+
+<p>Check the source for details about the single arguments.</p>
+<p>Other arguments can be added with the normal argparser API - namely</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="argparse.ArgumentParser.add_argument">
+<span class="sig-prename descclassname"><span class="pre">ArgumentParser.</span></span><span class="sig-name descname"><span class="pre">add_argument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name=value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#argparse.ArgumentParser.add_argument" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">ArgumentParser.</span></span><span class="sig-name descname"><span class="pre">add_argument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name=value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd></dd></dl>
+
+<p>of the <code class="docutils literal notranslate"><span class="pre">Boxes.argparser</span></code> attribute.</p>
+<section id="edge-style-arguments">
+<h2>Edge style arguments<a class="headerlink" href="#edge-style-arguments" title="Permalink to this headline">¶</a></h2>
+<p>Edges that work together share a Settings class (and object). These
+classes can create <code class="docutils literal notranslate"><span class="pre">argparse</span></code> groups:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="boxes.edges.Settings.parserArguments">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Settings.</span></span><span class="sig-name descname"><span class="pre">parserArguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">defaults</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/edges.html#Settings.parserArguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#boxes.edges.Settings.parserArguments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-prename descclassname"><span class="pre">BOX.</span></span><span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/boxes/generators/_template.html#BOX.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>for a list of possible edge settings. These regular settings are used
+in the standard edge instances used everywhere. For special edge
+instances you can call them with a <code class="docutils literal notranslate"><span class="pre">prefix</span></code> parameter. But you then
+need to deal with the results on your own.</p>
+</section>
+<section id="default-arguments">
+<h2>Default Arguments<a class="headerlink" href="#default-arguments" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="usermanual.html#default-args"><span class="std std-ref">Default arguments</span></a> get added automatically by the super class’s
+constructor.</p>
+</section>
+<section id="accessing-the-arguments">
+<h2>Accessing the Arguments<a class="headerlink" href="#accessing-the-arguments" title="Permalink to this headline">¶</a></h2>
+<p>For convenience content of the arguments are written to attributes of
+the Boxes instance before <code class="docutils literal notranslate"><span class="pre">.render()</span></code> is called. This is done by
+<code class="docutils literal notranslate"><span class="pre">Boxes.parseArgs</span></code>. But most people won’t need to care as this is
+handled by the frame work.  Be careful to <strong>not overwrite important
+methods or attributes by using conflicting argument names</strong>.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Generator Arguments</a><ul>
+<li><a class="reference internal" href="#edge-style-arguments">Edge style arguments</a></li>
+<li><a class="reference internal" href="#default-arguments">Default Arguments</a></li>
+<li><a class="reference internal" href="#accessing-the-arguments">Accessing the Arguments</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="api_generator.html"
+                          title="previous chapter">Generators</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="api_navigation.html"
+                          title="next chapter">Navigation</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api_arguments.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api_navigation.html" title="Navigation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api_generator.html" title="Generators"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="apidoc.html" >Using the Boxes.py API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Generator Arguments</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

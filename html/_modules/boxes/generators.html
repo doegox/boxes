@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boxes.generators &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nature.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../boxes.html" accesskey="U">boxes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for boxes.generators</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pkgutil</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">boxes</span>
+
+<span class="n">ui_groups_by_name</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="UIGroup"><a class="viewcode-back" href="../../boxes.html#boxes.generators.UIGroup">[docs]</a><span class="k">class</span> <span class="nc">UIGroup</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span> <span class="ow">or</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="n">image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generators</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># register</span>
+        <span class="n">ui_groups_by_name</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="UIGroup.add"><a class="viewcode-back" href="../../boxes.html#boxes.generators.UIGroup.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generators</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">b</span><span class="p">:</span><span class="nb">getattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">b</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">thumbnail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="ow">and</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_image</span><span class="si">}</span><span class="s2">-thumb.jpg&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="ow">and</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_image</span><span class="si">}</span><span class="s2">.jpg&quot;</span></div>
+
+<span class="n">ui_groups</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">UIGroup</span><span class="p">(</span><span class="s2">&quot;Box&quot;</span><span class="p">,</span> <span class="s2">&quot;Boxes&quot;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s2">&quot;UniversalBox&quot;</span><span class="p">),</span>
+    <span class="n">UIGroup</span><span class="p">(</span><span class="s2">&quot;FlexBox&quot;</span><span class="p">,</span> <span class="s2">&quot;Boxes with flex&quot;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s2">&quot;RoundedBox&quot;</span><span class="p">),</span>
+    <span class="n">UIGroup</span><span class="p">(</span><span class="s2">&quot;Tray&quot;</span><span class="p">,</span> <span class="s2">&quot;Trays and Drawer Inserts&quot;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s2">&quot;TypeTray&quot;</span><span class="p">),</span>
+    <span class="n">UIGroup</span><span class="p">(</span><span class="s2">&quot;Shelf&quot;</span><span class="p">,</span> <span class="s2">&quot;Shelves&quot;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s2">&quot;DisplayShelf&quot;</span><span class="p">),</span>
+    <span class="n">UIGroup</span><span class="p">(</span><span class="s2">&quot;SlatWall&quot;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s2">&quot;SlatwallTypeTray&quot;</span><span class="p">),</span>
+    <span class="n">UIGroup</span><span class="p">(</span><span class="s2">&quot;Holes&quot;</span><span class="p">,</span> <span class="s2">&quot;Hole patterns&quot;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
+    <span class="n">UIGroup</span><span class="p">(</span><span class="s2">&quot;Part&quot;</span><span class="p">,</span> <span class="s2">&quot;Parts and Samples&quot;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s2">&quot;BurnTest&quot;</span><span class="p">),</span>
+    <span class="n">UIGroup</span><span class="p">(</span><span class="s2">&quot;Misc&quot;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s2">&quot;TrafficLight&quot;</span><span class="p">),</span>
+    <span class="n">UIGroup</span><span class="p">(</span><span class="s2">&quot;Unstable&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Generators are still untested or need manual adjustment to be useful.&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+
+<div class="viewcode-block" id="getAllBoxGenerators"><a class="viewcode-back" href="../../boxes.html#boxes.generators.getAllBoxGenerators">[docs]</a><span class="k">def</span> <span class="nf">getAllBoxGenerators</span><span class="p">():</span>
+    <span class="n">generators</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">ispkg</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">walk_packages</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">__path__</span><span class="p">,</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="vm">__name__</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="n">boxes</span><span class="o">.</span><span class="n">Boxes</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">boxes</span><span class="o">.</span><span class="n">Boxes</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="n">v</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span><span class="p">):</span>
+                <span class="n">generators</span><span class="p">[</span><span class="n">modname</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">return</span> <span class="n">generators</span></div>
+
+<div class="viewcode-block" id="getAllGeneratorModules"><a class="viewcode-back" href="../../boxes.html#boxes.generators.getAllGeneratorModules">[docs]</a><span class="k">def</span> <span class="nf">getAllGeneratorModules</span><span class="p">():</span>
+    <span class="n">generators</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">importer</span><span class="p">,</span> <span class="n">modname</span><span class="p">,</span> <span class="n">ispkg</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">walk_packages</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">__path__</span><span class="p">,</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="vm">__name__</span><span class="o">+</span><span class="s1">&#39;.&#39;</span><span class="p">,</span>
+            <span class="n">onerror</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
+        <span class="n">generators</span><span class="p">[</span><span class="n">modname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">module</span>
+    <span class="k">return</span> <span class="n">generators</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">boxes.py 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../boxes.html" >boxes</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">boxes.generators</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

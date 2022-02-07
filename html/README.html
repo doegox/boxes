@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>About Boxes.py &#8212; boxes.py 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nature.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Frequently Asked Questions" href="faq.html" />
+    <link rel="prev" title="Boxes.py" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="faq.html" title="Frequently Asked Questions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Boxes.py"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">About Boxes.py</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="about-boxes-py">
+<h1>About Boxes.py<a class="headerlink" href="#about-boxes-py" title="Permalink to this headline">¶</a></h1>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><img alt="_images/NotesHolder.jpg" src="_images/NotesHolder.jpg" />
+</td>
+<td><img alt="_images/OttoBody.jpg" src="_images/OttoBody.jpg" />
+</td>
+<td><img alt="_images/PaintStorage.jpg" src="_images/PaintStorage.jpg" />
+</td>
+<td><img alt="_images/ShutterBox.jpg" src="_images/ShutterBox.jpg" />
+</td>
+<td><img alt="_images/TwoPiece.jpg" src="_images/TwoPiece.jpg" />
+</td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>Boxes.py is an online box generator</p>
+<ul>
+<li><p><a class="reference external" href="https://www.festi.info/boxes.py/index.html">https://www.festi.info/boxes.py/index.html</a></p></li>
+</ul>
+</li>
+<li><p>Boxes.py is an Inkscape plug-in</p></li>
+<li><p>Boxes.py is library to write your own</p></li>
+<li><p>Boxes.py is free software licensed under GPL v3+</p></li>
+<li><p>Boxes.py is written in Python and runs with Python 3</p></li>
+</ul>
+<p>Boxes.py comes with a growing set of ready-to-use, fully parametrized
+generators. See <a class="reference external" href="https://florianfesti.github.io/boxes/html/generators.html">https://florianfesti.github.io/boxes/html/generators.html</a> for the full list.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><img alt="_images/AngledBox.jpg" src="_images/AngledBox.jpg" />
+</td>
+<td><img alt="_images/FlexBox2.jpg" src="_images/FlexBox2.jpg" />
+</td>
+<td><img alt="_images/HingeBox.jpg" src="_images/HingeBox.jpg" />
+</td>
+</tr>
+</tbody>
+</table>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<p>Boxes.py generates SVG images that can be viewed directly in a web browser but also
+postscript and - with pstoedit as external helper - other vector formats
+including dxf, plt (aka hpgl) and gcode.</p>
+<p>Of course the library and the generators allow selecting the “thickness”
+of the material used and automatically adjusts lengths and width of
+joining fingers and other elements.</p>
+<p>The “burn” parameter compensates for the material removed by the laser. This
+allows fine tuning the gaps between joins up to the point where plywood
+can be press fitted even without any glue.</p>
+<p>Finger Joints are the work horse of the library. They allow 90° edges
+and T connections. Their size is scaled up with the material
+“thickness” to maintain the same appearance. The library also allows
+putting holes and slots for screws (bed bolts) into finger joints,
+although this is currently not supported for the included generators.</p>
+<p>Dovetail joints can be used to join pieces in the same plane.</p>
+<p>Flex cuts allows bending and stretching the material in one direction. This
+is used for rounded edges and living hinges.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><img alt="_images/TypeTray.jpg" src="_images/TypeTray.jpg" />
+</td>
+<td><img alt="_images/BinTray.jpg" src="_images/BinTray.jpg" />
+</td>
+<td><img alt="_images/DisplayShelf.jpg" src="_images/DisplayShelf.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td><img alt="_images/AgricolaInsert.jpg" src="_images/AgricolaInsert.jpg" />
+</td>
+<td><img alt="_images/HeartBox.jpg" src="_images/HeartBox.jpg" />
+</td>
+<td><img alt="_images/Atreus21.jpg" src="_images/Atreus21.jpg" />
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/boxes-logo.svg" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">About Boxes.py</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Boxes.py</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="faq.html"
+                          title="next chapter">Frequently Asked Questions</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/README.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="faq.html" title="Frequently Asked Questions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Boxes.py"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">boxes.py 0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">About Boxes.py</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Florian Festi.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>
