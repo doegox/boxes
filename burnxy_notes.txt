@@ -1,0 +1,6 @@
+Generator attempt to compensate for a rectangular diode laser spot
+
+scripts/boxes closedboxburnxy --x=40 --y=40 --h=40 --outside=True --burnx=0.07 --burny=0.12 --output=xybox-40.svg
+scripts/boxes closedboxburnxy --x=180 --y=68 --h=60 --outside=False --burnx=0.07 --burny=0.12 --output=xytoolbox.svg
+
+Code not factored at all.
